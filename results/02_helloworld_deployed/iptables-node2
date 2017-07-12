@@ -1,0 +1,369 @@
+=> iptables -nL
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+KUBE-NODEPORT-NON-LOCAL  all  --  0.0.0.0/0            0.0.0.0/0            /* Ensure that non-local NodePort traffic can flow */
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            /* traffic from docker */
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            /* traffic from SDN */
+ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0            multiport dports 4789 /* 001 vxlan incoming */
+KUBE-FIREWALL  all  --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:22
+OS_FIREWALL_ALLOW  all  --  0.0.0.0/0            0.0.0.0/0           
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+DOCKER-ISOLATION  all  --  0.0.0.0/0            0.0.0.0/0           
+DOCKER     all  --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     all  --  10.128.0.0/14        0.0.0.0/0           
+ACCEPT     all  --  0.0.0.0/0            10.128.0.0/14       
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+KUBE-SERVICES  all  --  0.0.0.0/0            0.0.0.0/0            /* kubernetes service portals */
+KUBE-FIREWALL  all  --  0.0.0.0/0            0.0.0.0/0           
+
+Chain DOCKER (1 references)
+target     prot opt source               destination         
+
+Chain DOCKER-ISOLATION (1 references)
+target     prot opt source               destination         
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0           
+
+Chain KUBE-FIREWALL (2 references)
+target     prot opt source               destination         
+DROP       all  --  0.0.0.0/0            0.0.0.0/0            /* kubernetes firewall for dropping marked packets */ mark match 0x8000/0x8000
+
+Chain KUBE-NODEPORT-NON-LOCAL (1 references)
+target     prot opt source               destination         
+
+Chain KUBE-SERVICES (1 references)
+target     prot opt source               destination         
+
+Chain OS_FIREWALL_ALLOW (1 references)
+target     prot opt source               destination         
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:10250
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:80
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:443
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:10255
+ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0            state NEW udp dpt:10255
+ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0            state NEW udp dpt:4789
+=> iptables -nL -t nat
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination         
+KUBE-PORTALS-CONTAINER  all  --  0.0.0.0/0            0.0.0.0/0            /* handle ClusterIPs; NOTE: this must be before the NodePort rules */
+KUBE-HOSTPORTS  all  --  0.0.0.0/0            0.0.0.0/0            /* kube hostport portals */ ADDRTYPE match dst-type LOCAL
+KUBE-SERVICES  all  --  0.0.0.0/0            0.0.0.0/0            /* kubernetes service portals */
+DOCKER     all  --  0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type LOCAL
+KUBE-NODEPORT-CONTAINER  all  --  0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type LOCAL /* handle service NodePorts; NOTE: this must be the last rule in the chain */
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+KUBE-PORTALS-HOST  all  --  0.0.0.0/0            0.0.0.0/0            /* handle ClusterIPs; NOTE: this must be before the NodePort rules */
+KUBE-HOSTPORTS  all  --  0.0.0.0/0            0.0.0.0/0            /* kube hostport portals */ ADDRTYPE match dst-type LOCAL
+KUBE-SERVICES  all  --  0.0.0.0/0            0.0.0.0/0            /* kubernetes service portals */
+DOCKER     all  --  0.0.0.0/0           !127.0.0.0/8          ADDRTYPE match dst-type LOCAL
+KUBE-NODEPORT-HOST  all  --  0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type LOCAL /* handle service NodePorts; NOTE: this must be the last rule in the chain */
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+MASQUERADE  all  --  172.17.0.0/16        0.0.0.0/0           
+MASQUERADE  all  --  10.128.0.0/14        0.0.0.0/0           
+KUBE-POSTROUTING  all  --  0.0.0.0/0            0.0.0.0/0            /* kubernetes postrouting rules */
+MASQUERADE  all  --  127.0.0.0/8          0.0.0.0/0            /* SNAT for localhost access to hostports */
+
+Chain DOCKER (2 references)
+target     prot opt source               destination         
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0           
+
+Chain KUBE-HOSTPORTS (2 references)
+target     prot opt source               destination         
+
+Chain KUBE-MARK-DROP (0 references)
+target     prot opt source               destination         
+MARK       all  --  0.0.0.0/0            0.0.0.0/0            MARK or 0x8000
+
+Chain KUBE-MARK-MASQ (10 references)
+target     prot opt source               destination         
+MARK       all  --  0.0.0.0/0            0.0.0.0/0            MARK or 0x4000
+
+Chain KUBE-NODEPORT-CONTAINER (1 references)
+target     prot opt source               destination         
+
+Chain KUBE-NODEPORT-HOST (1 references)
+target     prot opt source               destination         
+
+Chain KUBE-NODEPORTS (1 references)
+target     prot opt source               destination         
+
+Chain KUBE-PORTALS-CONTAINER (1 references)
+target     prot opt source               destination         
+
+Chain KUBE-PORTALS-HOST (1 references)
+target     prot opt source               destination         
+
+Chain KUBE-POSTROUTING (1 references)
+target     prot opt source               destination         
+MASQUERADE  all  --  0.0.0.0/0            0.0.0.0/0            /* kubernetes service traffic requiring SNAT */ mark match 0x4000/0x4000
+
+Chain KUBE-SEP-4ILD22KQXSDQWKDL (1 references)
+target     prot opt source               destination         
+KUBE-MARK-MASQ  all  --  10.0.1.31            0.0.0.0/0            /* default/router:1936-tcp */
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            /* default/router:1936-tcp */ tcp to:10.0.1.31:1936
+
+Chain KUBE-SEP-4TUTTIJ2UOQVWSKB (2 references)
+target     prot opt source               destination         
+KUBE-MARK-MASQ  all  --  172.16.99.21         0.0.0.0/0            /* default/kubernetes:dns */
+DNAT       udp  --  0.0.0.0/0            0.0.0.0/0            /* default/kubernetes:dns */ recent: SET name: KUBE-SEP-4TUTTIJ2UOQVWSKB side: source mask: 255.255.255.255 udp to:172.16.99.21:8053
+
+Chain KUBE-SEP-A6SJPZHX36FRC5XA (1 references)
+target     prot opt source               destination         
+KUBE-MARK-MASQ  all  --  10.129.0.6           0.0.0.0/0            /* proj1/database:mysql */
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            /* proj1/database:mysql */ tcp to:10.129.0.6:3306
+
+Chain KUBE-SEP-HOTHMQFZYP23WQ4Z (1 references)
+target     prot opt source               destination         
+KUBE-MARK-MASQ  all  --  10.128.0.9           0.0.0.0/0            /* default/registry-console:registry-console */
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            /* default/registry-console:registry-console */ tcp to:10.128.0.9:9090
+
+Chain KUBE-SEP-IKYHWPR237VRLK44 (2 references)
+target     prot opt source               destination         
+KUBE-MARK-MASQ  all  --  172.16.99.21         0.0.0.0/0            /* default/kubernetes:dns-tcp */
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            /* default/kubernetes:dns-tcp */ recent: SET name: KUBE-SEP-IKYHWPR237VRLK44 side: source mask: 255.255.255.255 tcp to:172.16.99.21:8053
+
+Chain KUBE-SEP-ILFPZHKNTI4SGUPT (2 references)
+target     prot opt source               destination         
+KUBE-MARK-MASQ  all  --  10.128.0.8           0.0.0.0/0            /* default/docker-registry:5000-tcp */
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            /* default/docker-registry:5000-tcp */ recent: SET name: KUBE-SEP-ILFPZHKNTI4SGUPT side: source mask: 255.255.255.255 tcp to:10.128.0.8:5000
+
+Chain KUBE-SEP-PUNSIY6BZWG7GPMC (1 references)
+target     prot opt source               destination         
+KUBE-MARK-MASQ  all  --  10.0.1.31            0.0.0.0/0            /* default/router:80-tcp */
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            /* default/router:80-tcp */ tcp to:10.0.1.31:80
+
+Chain KUBE-SEP-VFPUK2KIRC7GSYZ5 (1 references)
+target     prot opt source               destination         
+KUBE-MARK-MASQ  all  --  10.129.0.10          0.0.0.0/0            /* proj1/ruby-hello-world:8080-tcp */
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            /* proj1/ruby-hello-world:8080-tcp */ tcp to:10.129.0.10:8080
+
+Chain KUBE-SEP-VVAKUCBAYBP7DQSG (2 references)
+target     prot opt source               destination         
+KUBE-MARK-MASQ  all  --  172.16.99.21         0.0.0.0/0            /* default/kubernetes:https */
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            /* default/kubernetes:https */ recent: SET name: KUBE-SEP-VVAKUCBAYBP7DQSG side: source mask: 255.255.255.255 tcp to:172.16.99.21:8443
+
+Chain KUBE-SEP-YTA23ME2IFKEX7YP (1 references)
+target     prot opt source               destination         
+KUBE-MARK-MASQ  all  --  10.0.1.31            0.0.0.0/0            /* default/router:443-tcp */
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            /* default/router:443-tcp */ tcp to:10.0.1.31:443
+
+Chain KUBE-SERVICES (2 references)
+target     prot opt source               destination         
+KUBE-SVC-NPX46M4PTMTKRN6Y  tcp  --  0.0.0.0/0            172.30.0.1           /* default/kubernetes:https cluster IP */ tcp dpt:443
+KUBE-SVC-GQKZAHCS5DTMHUQ6  tcp  --  0.0.0.0/0            172.30.100.86        /* default/router:80-tcp cluster IP */ tcp dpt:80
+KUBE-SVC-ECTPRXTXBM34L34Q  tcp  --  0.0.0.0/0            172.30.248.36        /* default/docker-registry:5000-tcp cluster IP */ tcp dpt:5000
+KUBE-SVC-IDPP7MBTBFCKUQ52  tcp  --  0.0.0.0/0            172.30.230.237       /* proj1/ruby-hello-world:8080-tcp cluster IP */ tcp dpt:8080
+KUBE-SVC-3VQ6B3MLH7E2SZT4  udp  --  0.0.0.0/0            172.30.0.1           /* default/kubernetes:dns cluster IP */ udp dpt:53
+KUBE-SVC-BA6I5HTZKAAAJT56  tcp  --  0.0.0.0/0            172.30.0.1           /* default/kubernetes:dns-tcp cluster IP */ tcp dpt:53
+KUBE-SVC-IKV43KYNCXS2W7KZ  tcp  --  0.0.0.0/0            172.30.100.86        /* default/router:443-tcp cluster IP */ tcp dpt:443
+KUBE-SVC-4JCRTMMYZAAYMIJ2  tcp  --  0.0.0.0/0            172.30.100.86        /* default/router:1936-tcp cluster IP */ tcp dpt:1936
+KUBE-SVC-DEGCXZMVXZMJS2KL  tcp  --  0.0.0.0/0            172.30.166.243       /* default/registry-console:registry-console cluster IP */ tcp dpt:9000
+KUBE-SVC-INEGDXEDK2OXSOVF  tcp  --  0.0.0.0/0            172.30.109.129       /* proj1/database:mysql cluster IP */ tcp dpt:3306
+KUBE-NODEPORTS  all  --  0.0.0.0/0            0.0.0.0/0            /* kubernetes service nodeports; NOTE: this must be the last rule in this chain */ ADDRTYPE match dst-type LOCAL
+
+Chain KUBE-SVC-3VQ6B3MLH7E2SZT4 (1 references)
+target     prot opt source               destination         
+KUBE-SEP-4TUTTIJ2UOQVWSKB  all  --  0.0.0.0/0            0.0.0.0/0            /* default/kubernetes:dns */ recent: CHECK seconds: 10800 reap name: KUBE-SEP-4TUTTIJ2UOQVWSKB side: source mask: 255.255.255.255
+KUBE-SEP-4TUTTIJ2UOQVWSKB  all  --  0.0.0.0/0            0.0.0.0/0            /* default/kubernetes:dns */
+
+Chain KUBE-SVC-4JCRTMMYZAAYMIJ2 (1 references)
+target     prot opt source               destination         
+KUBE-SEP-4ILD22KQXSDQWKDL  all  --  0.0.0.0/0            0.0.0.0/0            /* default/router:1936-tcp */
+
+Chain KUBE-SVC-BA6I5HTZKAAAJT56 (1 references)
+target     prot opt source               destination         
+KUBE-SEP-IKYHWPR237VRLK44  all  --  0.0.0.0/0            0.0.0.0/0            /* default/kubernetes:dns-tcp */ recent: CHECK seconds: 10800 reap name: KUBE-SEP-IKYHWPR237VRLK44 side: source mask: 255.255.255.255
+KUBE-SEP-IKYHWPR237VRLK44  all  --  0.0.0.0/0            0.0.0.0/0            /* default/kubernetes:dns-tcp */
+
+Chain KUBE-SVC-DEGCXZMVXZMJS2KL (1 references)
+target     prot opt source               destination         
+KUBE-SEP-HOTHMQFZYP23WQ4Z  all  --  0.0.0.0/0            0.0.0.0/0            /* default/registry-console:registry-console */
+
+Chain KUBE-SVC-ECTPRXTXBM34L34Q (1 references)
+target     prot opt source               destination         
+KUBE-SEP-ILFPZHKNTI4SGUPT  all  --  0.0.0.0/0            0.0.0.0/0            /* default/docker-registry:5000-tcp */ recent: CHECK seconds: 10800 reap name: KUBE-SEP-ILFPZHKNTI4SGUPT side: source mask: 255.255.255.255
+KUBE-SEP-ILFPZHKNTI4SGUPT  all  --  0.0.0.0/0            0.0.0.0/0            /* default/docker-registry:5000-tcp */
+
+Chain KUBE-SVC-GQKZAHCS5DTMHUQ6 (1 references)
+target     prot opt source               destination         
+KUBE-SEP-PUNSIY6BZWG7GPMC  all  --  0.0.0.0/0            0.0.0.0/0            /* default/router:80-tcp */
+
+Chain KUBE-SVC-IDPP7MBTBFCKUQ52 (1 references)
+target     prot opt source               destination         
+KUBE-SEP-VFPUK2KIRC7GSYZ5  all  --  0.0.0.0/0            0.0.0.0/0            /* proj1/ruby-hello-world:8080-tcp */
+
+Chain KUBE-SVC-IKV43KYNCXS2W7KZ (1 references)
+target     prot opt source               destination         
+KUBE-SEP-YTA23ME2IFKEX7YP  all  --  0.0.0.0/0            0.0.0.0/0            /* default/router:443-tcp */
+
+Chain KUBE-SVC-INEGDXEDK2OXSOVF (1 references)
+target     prot opt source               destination         
+KUBE-SEP-A6SJPZHX36FRC5XA  all  --  0.0.0.0/0            0.0.0.0/0            /* proj1/database:mysql */
+
+Chain KUBE-SVC-NPX46M4PTMTKRN6Y (1 references)
+target     prot opt source               destination         
+KUBE-SEP-VVAKUCBAYBP7DQSG  all  --  0.0.0.0/0            0.0.0.0/0            /* default/kubernetes:https */ recent: CHECK seconds: 10800 reap name: KUBE-SEP-VVAKUCBAYBP7DQSG side: source mask: 255.255.255.255
+KUBE-SEP-VVAKUCBAYBP7DQSG  all  --  0.0.0.0/0            0.0.0.0/0            /* default/kubernetes:https */
+=> iptables-save
+# Generated by iptables-save v1.4.21 on Wed Jul 12 15:26:16 2017
+*nat
+:PREROUTING ACCEPT [72:8016]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+:DOCKER - [0:0]
+:KUBE-HOSTPORTS - [0:0]
+:KUBE-MARK-DROP - [0:0]
+:KUBE-MARK-MASQ - [0:0]
+:KUBE-NODEPORT-CONTAINER - [0:0]
+:KUBE-NODEPORT-HOST - [0:0]
+:KUBE-NODEPORTS - [0:0]
+:KUBE-PORTALS-CONTAINER - [0:0]
+:KUBE-PORTALS-HOST - [0:0]
+:KUBE-POSTROUTING - [0:0]
+:KUBE-SEP-4ILD22KQXSDQWKDL - [0:0]
+:KUBE-SEP-4TUTTIJ2UOQVWSKB - [0:0]
+:KUBE-SEP-A6SJPZHX36FRC5XA - [0:0]
+:KUBE-SEP-HOTHMQFZYP23WQ4Z - [0:0]
+:KUBE-SEP-IKYHWPR237VRLK44 - [0:0]
+:KUBE-SEP-ILFPZHKNTI4SGUPT - [0:0]
+:KUBE-SEP-PUNSIY6BZWG7GPMC - [0:0]
+:KUBE-SEP-VFPUK2KIRC7GSYZ5 - [0:0]
+:KUBE-SEP-VVAKUCBAYBP7DQSG - [0:0]
+:KUBE-SEP-YTA23ME2IFKEX7YP - [0:0]
+:KUBE-SERVICES - [0:0]
+:KUBE-SVC-3VQ6B3MLH7E2SZT4 - [0:0]
+:KUBE-SVC-4JCRTMMYZAAYMIJ2 - [0:0]
+:KUBE-SVC-BA6I5HTZKAAAJT56 - [0:0]
+:KUBE-SVC-DEGCXZMVXZMJS2KL - [0:0]
+:KUBE-SVC-ECTPRXTXBM34L34Q - [0:0]
+:KUBE-SVC-GQKZAHCS5DTMHUQ6 - [0:0]
+:KUBE-SVC-IDPP7MBTBFCKUQ52 - [0:0]
+:KUBE-SVC-IKV43KYNCXS2W7KZ - [0:0]
+:KUBE-SVC-INEGDXEDK2OXSOVF - [0:0]
+:KUBE-SVC-NPX46M4PTMTKRN6Y - [0:0]
+-A PREROUTING -m comment --comment "handle ClusterIPs; NOTE: this must be before the NodePort rules" -j KUBE-PORTALS-CONTAINER
+-A PREROUTING -m comment --comment "kube hostport portals" -m addrtype --dst-type LOCAL -j KUBE-HOSTPORTS
+-A PREROUTING -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+-A PREROUTING -m addrtype --dst-type LOCAL -j DOCKER
+-A PREROUTING -m addrtype --dst-type LOCAL -m comment --comment "handle service NodePorts; NOTE: this must be the last rule in the chain" -j KUBE-NODEPORT-CONTAINER
+-A OUTPUT -m comment --comment "handle ClusterIPs; NOTE: this must be before the NodePort rules" -j KUBE-PORTALS-HOST
+-A OUTPUT -m comment --comment "kube hostport portals" -m addrtype --dst-type LOCAL -j KUBE-HOSTPORTS
+-A OUTPUT -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+-A OUTPUT ! -d 127.0.0.0/8 -m addrtype --dst-type LOCAL -j DOCKER
+-A OUTPUT -m addrtype --dst-type LOCAL -m comment --comment "handle service NodePorts; NOTE: this must be the last rule in the chain" -j KUBE-NODEPORT-HOST
+-A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE
+-A POSTROUTING -s 10.128.0.0/14 -j MASQUERADE
+-A POSTROUTING -m comment --comment "kubernetes postrouting rules" -j KUBE-POSTROUTING
+-A POSTROUTING -s 127.0.0.0/8 -o tun0 -m comment --comment "SNAT for localhost access to hostports" -j MASQUERADE
+-A DOCKER -i docker0 -j RETURN
+-A KUBE-MARK-DROP -j MARK --set-xmark 0x8000/0x8000
+-A KUBE-MARK-MASQ -j MARK --set-xmark 0x4000/0x4000
+-A KUBE-POSTROUTING -m comment --comment "kubernetes service traffic requiring SNAT" -m mark --mark 0x4000/0x4000 -j MASQUERADE
+-A KUBE-SEP-4ILD22KQXSDQWKDL -s 10.0.1.31/32 -m comment --comment "default/router:1936-tcp" -j KUBE-MARK-MASQ
+-A KUBE-SEP-4ILD22KQXSDQWKDL -p tcp -m comment --comment "default/router:1936-tcp" -m tcp -j DNAT --to-destination 10.0.1.31:1936
+-A KUBE-SEP-4TUTTIJ2UOQVWSKB -s 172.16.99.21/32 -m comment --comment "default/kubernetes:dns" -j KUBE-MARK-MASQ
+-A KUBE-SEP-4TUTTIJ2UOQVWSKB -p udp -m comment --comment "default/kubernetes:dns" -m recent --set --name KUBE-SEP-4TUTTIJ2UOQVWSKB --mask 255.255.255.255 --rsource -m udp -j DNAT --to-destination 172.16.99.21:8053
+-A KUBE-SEP-A6SJPZHX36FRC5XA -s 10.129.0.6/32 -m comment --comment "proj1/database:mysql" -j KUBE-MARK-MASQ
+-A KUBE-SEP-A6SJPZHX36FRC5XA -p tcp -m comment --comment "proj1/database:mysql" -m tcp -j DNAT --to-destination 10.129.0.6:3306
+-A KUBE-SEP-HOTHMQFZYP23WQ4Z -s 10.128.0.9/32 -m comment --comment "default/registry-console:registry-console" -j KUBE-MARK-MASQ
+-A KUBE-SEP-HOTHMQFZYP23WQ4Z -p tcp -m comment --comment "default/registry-console:registry-console" -m tcp -j DNAT --to-destination 10.128.0.9:9090
+-A KUBE-SEP-IKYHWPR237VRLK44 -s 172.16.99.21/32 -m comment --comment "default/kubernetes:dns-tcp" -j KUBE-MARK-MASQ
+-A KUBE-SEP-IKYHWPR237VRLK44 -p tcp -m comment --comment "default/kubernetes:dns-tcp" -m recent --set --name KUBE-SEP-IKYHWPR237VRLK44 --mask 255.255.255.255 --rsource -m tcp -j DNAT --to-destination 172.16.99.21:8053
+-A KUBE-SEP-ILFPZHKNTI4SGUPT -s 10.128.0.8/32 -m comment --comment "default/docker-registry:5000-tcp" -j KUBE-MARK-MASQ
+-A KUBE-SEP-ILFPZHKNTI4SGUPT -p tcp -m comment --comment "default/docker-registry:5000-tcp" -m recent --set --name KUBE-SEP-ILFPZHKNTI4SGUPT --mask 255.255.255.255 --rsource -m tcp -j DNAT --to-destination 10.128.0.8:5000
+-A KUBE-SEP-PUNSIY6BZWG7GPMC -s 10.0.1.31/32 -m comment --comment "default/router:80-tcp" -j KUBE-MARK-MASQ
+-A KUBE-SEP-PUNSIY6BZWG7GPMC -p tcp -m comment --comment "default/router:80-tcp" -m tcp -j DNAT --to-destination 10.0.1.31:80
+-A KUBE-SEP-VFPUK2KIRC7GSYZ5 -s 10.129.0.10/32 -m comment --comment "proj1/ruby-hello-world:8080-tcp" -j KUBE-MARK-MASQ
+-A KUBE-SEP-VFPUK2KIRC7GSYZ5 -p tcp -m comment --comment "proj1/ruby-hello-world:8080-tcp" -m tcp -j DNAT --to-destination 10.129.0.10:8080
+-A KUBE-SEP-VVAKUCBAYBP7DQSG -s 172.16.99.21/32 -m comment --comment "default/kubernetes:https" -j KUBE-MARK-MASQ
+-A KUBE-SEP-VVAKUCBAYBP7DQSG -p tcp -m comment --comment "default/kubernetes:https" -m recent --set --name KUBE-SEP-VVAKUCBAYBP7DQSG --mask 255.255.255.255 --rsource -m tcp -j DNAT --to-destination 172.16.99.21:8443
+-A KUBE-SEP-YTA23ME2IFKEX7YP -s 10.0.1.31/32 -m comment --comment "default/router:443-tcp" -j KUBE-MARK-MASQ
+-A KUBE-SEP-YTA23ME2IFKEX7YP -p tcp -m comment --comment "default/router:443-tcp" -m tcp -j DNAT --to-destination 10.0.1.31:443
+-A KUBE-SERVICES -d 172.30.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-SVC-NPX46M4PTMTKRN6Y
+-A KUBE-SERVICES -d 172.30.100.86/32 -p tcp -m comment --comment "default/router:80-tcp cluster IP" -m tcp --dport 80 -j KUBE-SVC-GQKZAHCS5DTMHUQ6
+-A KUBE-SERVICES -d 172.30.248.36/32 -p tcp -m comment --comment "default/docker-registry:5000-tcp cluster IP" -m tcp --dport 5000 -j KUBE-SVC-ECTPRXTXBM34L34Q
+-A KUBE-SERVICES -d 172.30.230.237/32 -p tcp -m comment --comment "proj1/ruby-hello-world:8080-tcp cluster IP" -m tcp --dport 8080 -j KUBE-SVC-IDPP7MBTBFCKUQ52
+-A KUBE-SERVICES -d 172.30.0.1/32 -p udp -m comment --comment "default/kubernetes:dns cluster IP" -m udp --dport 53 -j KUBE-SVC-3VQ6B3MLH7E2SZT4
+-A KUBE-SERVICES -d 172.30.0.1/32 -p tcp -m comment --comment "default/kubernetes:dns-tcp cluster IP" -m tcp --dport 53 -j KUBE-SVC-BA6I5HTZKAAAJT56
+-A KUBE-SERVICES -d 172.30.100.86/32 -p tcp -m comment --comment "default/router:443-tcp cluster IP" -m tcp --dport 443 -j KUBE-SVC-IKV43KYNCXS2W7KZ
+-A KUBE-SERVICES -d 172.30.100.86/32 -p tcp -m comment --comment "default/router:1936-tcp cluster IP" -m tcp --dport 1936 -j KUBE-SVC-4JCRTMMYZAAYMIJ2
+-A KUBE-SERVICES -d 172.30.166.243/32 -p tcp -m comment --comment "default/registry-console:registry-console cluster IP" -m tcp --dport 9000 -j KUBE-SVC-DEGCXZMVXZMJS2KL
+-A KUBE-SERVICES -d 172.30.109.129/32 -p tcp -m comment --comment "proj1/database:mysql cluster IP" -m tcp --dport 3306 -j KUBE-SVC-INEGDXEDK2OXSOVF
+-A KUBE-SERVICES -m comment --comment "kubernetes service nodeports; NOTE: this must be the last rule in this chain" -m addrtype --dst-type LOCAL -j KUBE-NODEPORTS
+-A KUBE-SVC-3VQ6B3MLH7E2SZT4 -m comment --comment "default/kubernetes:dns" -m recent --rcheck --seconds 10800 --reap --name KUBE-SEP-4TUTTIJ2UOQVWSKB --mask 255.255.255.255 --rsource -j KUBE-SEP-4TUTTIJ2UOQVWSKB
+-A KUBE-SVC-3VQ6B3MLH7E2SZT4 -m comment --comment "default/kubernetes:dns" -j KUBE-SEP-4TUTTIJ2UOQVWSKB
+-A KUBE-SVC-4JCRTMMYZAAYMIJ2 -m comment --comment "default/router:1936-tcp" -j KUBE-SEP-4ILD22KQXSDQWKDL
+-A KUBE-SVC-BA6I5HTZKAAAJT56 -m comment --comment "default/kubernetes:dns-tcp" -m recent --rcheck --seconds 10800 --reap --name KUBE-SEP-IKYHWPR237VRLK44 --mask 255.255.255.255 --rsource -j KUBE-SEP-IKYHWPR237VRLK44
+-A KUBE-SVC-BA6I5HTZKAAAJT56 -m comment --comment "default/kubernetes:dns-tcp" -j KUBE-SEP-IKYHWPR237VRLK44
+-A KUBE-SVC-DEGCXZMVXZMJS2KL -m comment --comment "default/registry-console:registry-console" -j KUBE-SEP-HOTHMQFZYP23WQ4Z
+-A KUBE-SVC-ECTPRXTXBM34L34Q -m comment --comment "default/docker-registry:5000-tcp" -m recent --rcheck --seconds 10800 --reap --name KUBE-SEP-ILFPZHKNTI4SGUPT --mask 255.255.255.255 --rsource -j KUBE-SEP-ILFPZHKNTI4SGUPT
+-A KUBE-SVC-ECTPRXTXBM34L34Q -m comment --comment "default/docker-registry:5000-tcp" -j KUBE-SEP-ILFPZHKNTI4SGUPT
+-A KUBE-SVC-GQKZAHCS5DTMHUQ6 -m comment --comment "default/router:80-tcp" -j KUBE-SEP-PUNSIY6BZWG7GPMC
+-A KUBE-SVC-IDPP7MBTBFCKUQ52 -m comment --comment "proj1/ruby-hello-world:8080-tcp" -j KUBE-SEP-VFPUK2KIRC7GSYZ5
+-A KUBE-SVC-IKV43KYNCXS2W7KZ -m comment --comment "default/router:443-tcp" -j KUBE-SEP-YTA23ME2IFKEX7YP
+-A KUBE-SVC-INEGDXEDK2OXSOVF -m comment --comment "proj1/database:mysql" -j KUBE-SEP-A6SJPZHX36FRC5XA
+-A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https" -m recent --rcheck --seconds 10800 --reap --name KUBE-SEP-VVAKUCBAYBP7DQSG --mask 255.255.255.255 --rsource -j KUBE-SEP-VVAKUCBAYBP7DQSG
+-A KUBE-SVC-NPX46M4PTMTKRN6Y -m comment --comment "default/kubernetes:https" -j KUBE-SEP-VVAKUCBAYBP7DQSG
+COMMIT
+# Completed on Wed Jul 12 15:26:16 2017
+# Generated by iptables-save v1.4.21 on Wed Jul 12 15:26:16 2017
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [5:744]
+:DOCKER - [0:0]
+:DOCKER-ISOLATION - [0:0]
+:KUBE-FIREWALL - [0:0]
+:KUBE-NODEPORT-NON-LOCAL - [0:0]
+:KUBE-SERVICES - [0:0]
+:OS_FIREWALL_ALLOW - [0:0]
+-A INPUT -m comment --comment "Ensure that non-local NodePort traffic can flow" -j KUBE-NODEPORT-NON-LOCAL
+-A INPUT -i docker0 -m comment --comment "traffic from docker" -j ACCEPT
+-A INPUT -i tun0 -m comment --comment "traffic from SDN" -j ACCEPT
+-A INPUT -p udp -m multiport --dports 4789 -m comment --comment "001 vxlan incoming" -j ACCEPT
+-A INPUT -j KUBE-FIREWALL
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A INPUT -j OS_FIREWALL_ALLOW
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j DOCKER-ISOLATION
+-A FORWARD -o docker0 -j DOCKER
+-A FORWARD -o docker0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i docker0 ! -o docker0 -j ACCEPT
+-A FORWARD -i docker0 -o docker0 -j ACCEPT
+-A FORWARD -s 10.128.0.0/14 -j ACCEPT
+-A FORWARD -d 10.128.0.0/14 -j ACCEPT
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+-A OUTPUT -m comment --comment "kubernetes service portals" -j KUBE-SERVICES
+-A OUTPUT -j KUBE-FIREWALL
+-A DOCKER-ISOLATION -j RETURN
+-A KUBE-FIREWALL -m comment --comment "kubernetes firewall for dropping marked packets" -m mark --mark 0x8000/0x8000 -j DROP
+-A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 10250 -j ACCEPT
+-A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+-A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT
+-A OS_FIREWALL_ALLOW -p tcp -m state --state NEW -m tcp --dport 10255 -j ACCEPT
+-A OS_FIREWALL_ALLOW -p udp -m state --state NEW -m udp --dport 10255 -j ACCEPT
+-A OS_FIREWALL_ALLOW -p udp -m state --state NEW -m udp --dport 4789 -j ACCEPT
+COMMIT
+# Completed on Wed Jul 12 15:26:16 2017

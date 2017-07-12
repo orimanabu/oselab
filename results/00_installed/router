@@ -46,7 +46,7 @@ listen stats :1936
     stats hide-version
     stats realm Haproxy\ Statistics
     stats uri /
-    stats auth admin:5OHb9ipfSD
+    stats auth admin:sdzelO8Rxd
 frontend public
   bind :80
   mode http
@@ -148,13 +148,13 @@ backend be_tcp_default_docker-registry
   balance source
   hash-type consistent
   timeout check 5000ms
-  server fffd59de724b536fc0130a6d93248a83 10.131.0.8:5000 check inter 5000ms weight 100
+  server 3dfea0e772199cf271e5a3b420bdd1ce 10.128.0.8:5000 check inter 5000ms weight 100
 # Secure backend, pass through
 backend be_tcp_default_registry-console
   balance source
   hash-type consistent
   timeout check 5000ms
-  server 1330bca34bc9429a7cd06193f62cb4a7 10.130.0.3:9090 check inter 5000ms weight 100
+  server 99a4fe4328218dac964dae3e619af46a 10.128.0.9:9090 check inter 5000ms weight 100
 => *.map
 ==> cert_config.map
 ==> os_edge_http_be.map
