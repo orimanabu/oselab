@@ -1,0 +1,300 @@
+=> oc get all -o wide
+NAME                  DOCKER REPO                                   TAGS      UPDATED
+is/registry-console   172.30.187.69:5000/default/registry-console   3.5       19 hours ago
+NAME                  REVISION   DESIRED   CURRENT   TRIGGERED BY
+dc/docker-registry    1          1         1         config
+dc/registry-console   1          1         1         config
+dc/router             1          1         1         config
+NAME                    DESIRED   CURRENT   READY     AGE       CONTAINER(S)       IMAGE(S)                                                     SELECTOR
+rc/docker-registry-1    1         1         1         19h       registry           openshift3/ose-docker-registry:v3.5.5.24                     deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default
+rc/registry-console-1   1         1         1         19h       registry-console   registry.access.redhat.com/openshift3/registry-console:3.5   deployment=registry-console-1,deploymentconfig=registry-console,name=registry-console
+rc/router-1             1         1         1         19h       router             openshift3/ose-haproxy-router:v3.5.5.24                      deployment=router-1,deploymentconfig=router,router=router
+NAME                      HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION   WILDCARD
+routes/docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough   None
+routes/registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough   None
+NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE       SELECTOR
+svc/docker-registry    172.30.187.69    <none>        5000/TCP                  19h       docker-registry=default
+svc/kubernetes         172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     19h       <none>
+svc/registry-console   172.30.183.252   <none>        9000/TCP                  19h       name=registry-console
+svc/router             172.30.56.108    <none>        80/TCP,443/TCP,1936/TCP   19h       router=router
+NAME                          READY     STATUS    RESTARTS   AGE       IP           NODE
+po/docker-registry-1-4vg53    1/1       Running   0          19h       10.131.0.8   infra1.osetest.local
+po/registry-console-1-blp37   1/1       Running   0          19h       10.130.0.3   node2.osetest.local
+po/router-1-tvljj             1/1       Running   0          19h       10.0.1.31    infra1.osetest.local
+=> oc get node --show-labels
+NAME                    STATUS                     AGE       LABELS
+infra1.osetest.local    Ready                      19h       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=infra1.osetest.local,region=infra
+master1.osetest.local   Ready,SchedulingDisabled   19h       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=master1.osetest.local,region=infra
+node1.osetest.local     Ready                      19h       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1.osetest.local,region=primary,zone=east
+node2.osetest.local     Ready                      19h       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node2.osetest.local,region=primary,zone=west
+=> oc get pod -o wide
+NAME                       READY     STATUS    RESTARTS   AGE       IP           NODE
+docker-registry-1-4vg53    1/1       Running   0          19h       10.131.0.8   infra1.osetest.local
+registry-console-1-blp37   1/1       Running   0          19h       10.130.0.3   node2.osetest.local
+router-1-tvljj             1/1       Running   0          19h       10.0.1.31    infra1.osetest.local
+=> oc get svc
+NAME               CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
+docker-registry    172.30.187.69    <none>        5000/TCP                  19h
+kubernetes         172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     19h
+registry-console   172.30.183.252   <none>        9000/TCP                  19h
+router             172.30.56.108    <none>        80/TCP,443/TCP,1936/TCP   19h
+=> oc get route
+NAME               HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION   WILDCARD
+docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough   None
+registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough   None
+
+==>
+==> oc describe pod/docker-registry-1-4vg53
+Name:			docker-registry-1-4vg53
+Namespace:		default
+Security Policy:	hostnetwork
+Node:			infra1.osetest.local/10.0.1.31
+Start Time:		Tue, 11 Jul 2017 17:28:32 +0900
+Labels:			deployment=docker-registry-1
+			deploymentconfig=docker-registry
+			docker-registry=default
+Status:			Running
+IP:			10.131.0.8
+Controllers:		ReplicationController/docker-registry-1
+Containers:
+  registry:
+    Container ID:	docker://59098440de5d6817ea1ead2f8e59c15ee3ff3cad06e38d009d84bc3847424721
+    Image:		openshift3/ose-docker-registry:v3.5.5.24
+    Image ID:		docker-pullable://registry.access.redhat.com/openshift3/ose-docker-registry@sha256:9b1ef4abbce573c9a55e54dec24c87b798539c2f2bb5c39304aa80fda9e08f7d
+    Port:		5000/TCP
+    Requests:
+      cpu:		100m
+      memory:		256Mi
+    State:		Running
+      Started:		Tue, 11 Jul 2017 17:28:33 +0900
+    Ready:		True
+    Restart Count:	0
+    Liveness:		http-get https://:5000/healthz delay=10s timeout=5s period=10s #success=1 #failure=3
+    Readiness:		http-get https://:5000/healthz delay=0s timeout=5s period=10s #success=1 #failure=3
+    Volume Mounts:
+      /etc/secrets from registry-certificates (rw)
+      /registry from registry-storage (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from registry-token-g6lqb (ro)
+    Environment Variables:
+      REGISTRY_HTTP_ADDR:					:5000
+      REGISTRY_HTTP_NET:					tcp
+      REGISTRY_HTTP_SECRET:					M9NaS3OEnqvyHGyF+lmcfn/uHOsgSKQ8gE4Y8VkGTGA=
+      REGISTRY_MIDDLEWARE_REPOSITORY_OPENSHIFT_ENFORCEQUOTA:	false
+      REGISTRY_HTTP_TLS_KEY:					/etc/secrets/registry.key
+      REGISTRY_HTTP_TLS_CERTIFICATE:				/etc/secrets/registry.crt
+Conditions:
+  Type		Status
+  Initialized 	True 
+  Ready 	True 
+  PodScheduled 	True 
+Volumes:
+  registry-storage:
+    Type:	EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:	
+  registry-certificates:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	registry-certificates
+  registry-token-g6lqb:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	registry-token-g6lqb
+QoS Class:	Burstable
+Tolerations:	<none>
+No events.
+==> oc describe pod/registry-console-1-blp37
+Name:			registry-console-1-blp37
+Namespace:		default
+Security Policy:	restricted
+Node:			node2.osetest.local/10.0.1.42
+Start Time:		Tue, 11 Jul 2017 17:29:01 +0900
+Labels:			app=registry-console
+			deployment=registry-console-1
+			deploymentconfig=registry-console
+			name=registry-console
+Status:			Running
+IP:			10.130.0.3
+Controllers:		ReplicationController/registry-console-1
+Containers:
+  registry-console:
+    Container ID:	docker://4bee6de7a562bd015c3105506b4c181386d60bab948a831c35925d6eed53483b
+    Image:		registry.access.redhat.com/openshift3/registry-console:3.5
+    Image ID:		docker-pullable://registry.access.redhat.com/openshift3/registry-console@sha256:01bdca4b130b1c9c7ae8402e01060fae5871045dc0e9a176f6033aff471a53d2
+    Port:		9090/TCP
+    State:		Running
+      Started:		Tue, 11 Jul 2017 17:29:02 +0900
+    Ready:		True
+    Restart Count:	0
+    Liveness:		http-get http://:9090/ping delay=10s timeout=5s period=10s #success=1 #failure=3
+    Readiness:		http-get http://:9090/ping delay=0s timeout=5s period=10s #success=1 #failure=3
+    Volume Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-mvn1f (ro)
+    Environment Variables:
+      OPENSHIFT_OAUTH_PROVIDER_URL:	https://master1.example.com:8443
+      OPENSHIFT_OAUTH_CLIENT_ID:	cockpit-oauth-client
+      KUBERNETES_INSECURE:		false
+      COCKPIT_KUBE_INSECURE:		false
+      REGISTRY_ONLY:			true
+      REGISTRY_HOST:			docker-registry-default.app.example.com
+Conditions:
+  Type		Status
+  Initialized 	True 
+  Ready 	True 
+  PodScheduled 	True 
+Volumes:
+  default-token-mvn1f:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	default-token-mvn1f
+QoS Class:	BestEffort
+Tolerations:	<none>
+No events.
+==> oc describe pod/router-1-tvljj
+Name:			router-1-tvljj
+Namespace:		default
+Security Policy:	hostnetwork
+Node:			infra1.osetest.local/10.0.1.31
+Start Time:		Tue, 11 Jul 2017 17:27:53 +0900
+Labels:			deployment=router-1
+			deploymentconfig=router
+			router=router
+Status:			Running
+IP:			10.0.1.31
+Controllers:		ReplicationController/router-1
+Containers:
+  router:
+    Container ID:	docker://c5008682acc546293cf40137cb875a6ed3661138da633b6a0b4067cd4e512715
+    Image:		openshift3/ose-haproxy-router:v3.5.5.24
+    Image ID:		docker-pullable://registry.access.redhat.com/openshift3/ose-haproxy-router@sha256:40e587a0369bf3ab612c31d40cddbed8318025724219d898d8471d515d5d98c2
+    Ports:		80/TCP, 443/TCP, 1936/TCP
+    Requests:
+      cpu:		100m
+      memory:		256Mi
+    State:		Running
+      Started:		Tue, 11 Jul 2017 17:27:54 +0900
+    Ready:		True
+    Restart Count:	0
+    Liveness:		http-get http://localhost:1936/healthz delay=10s timeout=1s period=10s #success=1 #failure=3
+    Readiness:		http-get http://localhost:1936/healthz delay=10s timeout=1s period=10s #success=1 #failure=3
+    Volume Mounts:
+      /etc/pki/tls/private from server-certificate (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from router-token-w76mv (ro)
+    Environment Variables:
+      DEFAULT_CERTIFICATE_DIR:			/etc/pki/tls/private
+      ROUTER_EXTERNAL_HOST_HOSTNAME:		
+      ROUTER_EXTERNAL_HOST_HTTPS_VSERVER:	
+      ROUTER_EXTERNAL_HOST_HTTP_VSERVER:	
+      ROUTER_EXTERNAL_HOST_INSECURE:		false
+      ROUTER_EXTERNAL_HOST_INTERNAL_ADDRESS:	
+      ROUTER_EXTERNAL_HOST_PARTITION_PATH:	
+      ROUTER_EXTERNAL_HOST_PASSWORD:		
+      ROUTER_EXTERNAL_HOST_PRIVKEY:		/etc/secret-volume/router.pem
+      ROUTER_EXTERNAL_HOST_USERNAME:		
+      ROUTER_EXTERNAL_HOST_VXLAN_GW_CIDR:	
+      ROUTER_SERVICE_HTTPS_PORT:		443
+      ROUTER_SERVICE_HTTP_PORT:			80
+      ROUTER_SERVICE_NAME:			router
+      ROUTER_SERVICE_NAMESPACE:			default
+      ROUTER_SUBDOMAIN:				
+      STATS_PASSWORD:				5OHb9ipfSD
+      STATS_PORT:				1936
+      STATS_USERNAME:				admin
+Conditions:
+  Type		Status
+  Initialized 	True 
+  Ready 	True 
+  PodScheduled 	True 
+Volumes:
+  server-certificate:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	router-certs
+  router-token-w76mv:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	router-token-w76mv
+QoS Class:	Burstable
+Tolerations:	<none>
+No events.
+==> oc describe service/docker-registry
+Name:			docker-registry
+Namespace:		default
+Labels:			<none>
+Selector:		docker-registry=default
+Type:			ClusterIP
+IP:			172.30.187.69
+Port:			5000-tcp	5000/TCP
+Endpoints:		10.131.0.8:5000
+Session Affinity:	ClientIP
+No events.
+==> oc describe service/kubernetes
+Name:			kubernetes
+Namespace:		default
+Labels:			component=apiserver
+			provider=kubernetes
+Selector:		<none>
+Type:			ClusterIP
+IP:			172.30.0.1
+Port:			https	443/TCP
+Endpoints:		172.16.99.21:8443
+Port:			dns	53/UDP
+Endpoints:		172.16.99.21:8053
+Port:			dns-tcp	53/TCP
+Endpoints:		172.16.99.21:8053
+Session Affinity:	ClientIP
+No events.
+==> oc describe service/registry-console
+Name:			registry-console
+Namespace:		default
+Labels:			app=registry-console
+			createdBy=registry-console-template
+			name=registry-console
+Selector:		name=registry-console
+Type:			ClusterIP
+IP:			172.30.183.252
+Port:			registry-console	9000/TCP
+Endpoints:		10.130.0.3:9090
+Session Affinity:	None
+No events.
+==> oc describe service/router
+Name:			router
+Namespace:		default
+Labels:			router=router
+Selector:		router=router
+Type:			ClusterIP
+IP:			172.30.56.108
+Port:			80-tcp	80/TCP
+Endpoints:		10.0.1.31:80
+Port:			443-tcp	443/TCP
+Endpoints:		10.0.1.31:443
+Port:			1936-tcp	1936/TCP
+Endpoints:		10.0.1.31:1936
+Session Affinity:	None
+No events.
+==> oc describe route/docker-registry
+Name:			docker-registry
+Namespace:		default
+Created:		19 hours ago
+Labels:			<none>
+Annotations:		<none>
+Requested Host:		docker-registry-default.app.example.com
+			  exposed on router router 19 hours ago
+Path:			<none>
+TLS Termination:	passthrough
+Insecure Policy:	<none>
+Endpoint Port:		<all endpoint ports>
+
+Service:	docker-registry
+Weight:		100 (100%)
+Endpoints:	10.131.0.8:5000
+==> oc describe route/registry-console
+Name:			registry-console
+Namespace:		default
+Created:		19 hours ago
+Labels:			<none>
+Annotations:		openshift.io/host.generated=true
+Requested Host:		registry-console-default.app.example.com
+			  exposed on router router 19 hours ago
+Path:			<none>
+TLS Termination:	passthrough
+Insecure Policy:	<none>
+Endpoint Port:		<all endpoint ports>
+
+Service:	registry-console
+Weight:		100 (100%)
+Endpoints:	10.130.0.3:9090
