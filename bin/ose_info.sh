@@ -14,11 +14,11 @@ function do_command {
 
 case ${op} in
 master)
-	do_command oc get all -o wide
+	do_command oc get all -o wide --all-namespaces
 	do_command oc get node --show-labels
-	do_command oc get pod -o wide
-	do_command oc get svc
-	do_command oc get route
+	do_command oc get pod -o wide --all-namespaces
+	do_command oc get svc --all-namespaces
+	do_command oc get route --all-namespaces
 
 	echo
 	echo "==>"
