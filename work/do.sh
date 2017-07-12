@@ -16,3 +16,4 @@ hostname | grep master && ${bindir}/etcdctl.sh 2> /dev/null > ${logdir}/etcd
 hostname | grep master && ${bindir}/ose_router.sh > ${logdir}/router
 ${bindir}/ose_iptables.sh > ${logdir}/iptables-${self}
 ${bindir}/ose_network.sh > ${logdir}/network-${self}
+${bindir}/ose_ovs.sh > ${logdir}/flow-${self}
