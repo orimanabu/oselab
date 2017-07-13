@@ -14,5 +14,9 @@ oc new-app --template=mysql-ephemeral --name=database --param MYSQL_USER=mysqlus
 mysql -umysqluser -predhat -h $(oc get svc database --template='{{.spec.clusterIP}}') -e 'show databases;'
 
 oc new-app -i openshift/ruby https://github.com/openshift/ruby-hello-world MYSQL_USER=mysqluser MYSQL_PASSWORD=redhat MYSQL_DATABASE=mydb
+curl http://$(oc get svc ruby-hello-world --template='{{.spec.clusterIP}}'):8080/
+
 oc expose svc ruby-hello-world --hostname hello.app.example.com
-oc scale --replicas=6 dc ruby-hello-world
+curl http://hello.app.example.com/
+
+oc scale --replicas=4 dc ruby-hello-world
