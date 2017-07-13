@@ -1,128 +1,45 @@
 => node
 ==> oc get node --show-labels
 NAME                    STATUS                     AGE       LABELS
-infra1.osetest.local    Ready                      46m       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=infra1.osetest.local,region=infra
-master1.osetest.local   Ready,SchedulingDisabled   46m       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=master1.osetest.local,region=infra
-node1.osetest.local     Ready                      46m       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1.osetest.local,region=primary,zone=east
-node2.osetest.local     Ready                      46m       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node2.osetest.local,region=primary,zone=west
-
-=> project: default
-==> oc get all -o wide -n default
-NAME                  DOCKER REPO                                  TAGS      UPDATED
-is/registry-console   172.30.92.50:5000/default/registry-console   3.5       44 minutes ago
-NAME                  REVISION   DESIRED   CURRENT   TRIGGERED BY
-dc/docker-registry    1          1         1         config
-dc/registry-console   1          1         1         config
-dc/router             1          1         1         config
-NAME                    DESIRED   CURRENT   READY     AGE       CONTAINER(S)       IMAGE(S)                                                     SELECTOR
-rc/docker-registry-1    1         1         1         44m       registry           openshift3/ose-docker-registry:v3.5.5.24                     deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default
-rc/registry-console-1   1         1         1         44m       registry-console   registry.access.redhat.com/openshift3/registry-console:3.5   deployment=registry-console-1,deploymentconfig=registry-console,name=registry-console
-rc/router-1             1         1         1         45m       router             openshift3/ose-haproxy-router:v3.5.5.24                      deployment=router-1,deploymentconfig=router,router=router
-NAME                      HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION   WILDCARD
-routes/docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough   None
-routes/registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough   None
-NAME                   CLUSTER-IP      EXTERNAL-IP   PORT(S)                   AGE       SELECTOR
-svc/docker-registry    172.30.92.50    <none>        5000/TCP                  44m       docker-registry=default
-svc/kubernetes         172.30.0.1      <none>        443/TCP,53/UDP,53/TCP     48m       <none>
-svc/registry-console   172.30.159.58   <none>        9000/TCP                  44m       name=registry-console
-svc/router             172.30.247.76   <none>        80/TCP,443/TCP,1936/TCP   45m       router=router
-NAME                          READY     STATUS    RESTARTS   AGE       IP            NODE
-po/docker-registry-1-g2gkv    1/1       Running   0          44m       10.131.0.9    infra1.osetest.local
-po/registry-console-1-2kxh6   1/1       Running   0          44m       10.131.0.10   infra1.osetest.local
-po/router-1-mqjsw             1/1       Running   0          45m       10.0.1.31     infra1.osetest.local
-==> oc get pod -o wide -n default
-NAME                       READY     STATUS    RESTARTS   AGE       IP            NODE
-docker-registry-1-g2gkv    1/1       Running   0          44m       10.131.0.9    infra1.osetest.local
-registry-console-1-2kxh6   1/1       Running   0          44m       10.131.0.10   infra1.osetest.local
-router-1-mqjsw             1/1       Running   0          45m       10.0.1.31     infra1.osetest.local
-==> oc get svc -n default
-NAME               CLUSTER-IP      EXTERNAL-IP   PORT(S)                   AGE
-docker-registry    172.30.92.50    <none>        5000/TCP                  44m
-kubernetes         172.30.0.1      <none>        443/TCP,53/UDP,53/TCP     48m
-registry-console   172.30.159.58   <none>        9000/TCP                  44m
-router             172.30.247.76   <none>        80/TCP,443/TCP,1936/TCP   45m
-==> oc get route -n default
-NAME               HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION   WILDCARD
-docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough   None
-registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough   None
-
-=> project: proj1
-==> oc get all -o wide -n proj1
-NAME                  TYPE      FROM      LATEST
-bc/ruby-hello-world   Source    Git       1
-NAME                        TYPE      FROM          STATUS     STARTED         DURATION
-builds/ruby-hello-world-1   Source    Git@022d87e   Complete   7 minutes ago   27s
-NAME                  DOCKER REPO                                TAGS      UPDATED
-is/ruby-hello-world   172.30.92.50:5000/proj1/ruby-hello-world   latest    7 minutes ago
-NAME                  REVISION   DESIRED   CURRENT   TRIGGERED BY
-dc/database           1          1         1         config,image(mysql:5.7)
-dc/ruby-hello-world   1          4         4         config,image(ruby-hello-world:latest)
-NAME                    DESIRED   CURRENT   READY     AGE       CONTAINER(S)       IMAGE(S)                                                                                                                  SELECTOR
-rc/database-1           1         1         1         27m       mysql              registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8   deployment=database-1,deploymentconfig=database,name=database
-rc/ruby-hello-world-1   4         4         4         7m        ruby-hello-world   172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e          app=ruby-hello-world,deployment=ruby-hello-world-1,deploymentconfig=ruby-hello-world
-NAME                      HOST/PORT               PATH      SERVICES           PORT       TERMINATION   WILDCARD
-routes/ruby-hello-world   hello.app.example.com             ruby-hello-world   8080-tcp                 None
-NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE       SELECTOR
-svc/database           172.30.208.205   <none>        3306/TCP   27m       name=database
-svc/ruby-hello-world   172.30.224.65    <none>        8080/TCP   7m        app=ruby-hello-world,deploymentconfig=ruby-hello-world
-NAME                          READY     STATUS      RESTARTS   AGE       IP            NODE
-po/database-1-4gvpg           1/1       Running     0          27m       10.130.0.5    node1.osetest.local
-po/ruby-hello-world-1-0s3pt   1/1       Running     0          1m        10.130.0.13   node1.osetest.local
-po/ruby-hello-world-1-72x0l   1/1       Running     0          1m        10.129.0.11   node2.osetest.local
-po/ruby-hello-world-1-build   0/1       Completed   0          7m        10.129.0.9    node2.osetest.local
-po/ruby-hello-world-1-x7x24   1/1       Running     0          7m        10.129.0.10   node2.osetest.local
-po/ruby-hello-world-1-zldhq   1/1       Running     0          1m        10.130.0.12   node1.osetest.local
-==> oc get pod -o wide -n proj1
-NAME                       READY     STATUS      RESTARTS   AGE       IP            NODE
-database-1-4gvpg           1/1       Running     0          27m       10.130.0.5    node1.osetest.local
-ruby-hello-world-1-0s3pt   1/1       Running     0          1m        10.130.0.13   node1.osetest.local
-ruby-hello-world-1-72x0l   1/1       Running     0          1m        10.129.0.11   node2.osetest.local
-ruby-hello-world-1-build   0/1       Completed   0          7m        10.129.0.9    node2.osetest.local
-ruby-hello-world-1-x7x24   1/1       Running     0          7m        10.129.0.10   node2.osetest.local
-ruby-hello-world-1-zldhq   1/1       Running     0          1m        10.130.0.12   node1.osetest.local
-==> oc get svc -n proj1
-NAME               CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
-database           172.30.208.205   <none>        3306/TCP   27m
-ruby-hello-world   172.30.224.65    <none>        8080/TCP   7m
-==> oc get route -n proj1
-NAME               HOST/PORT               PATH      SERVICES           PORT       TERMINATION   WILDCARD
-ruby-hello-world   hello.app.example.com             ruby-hello-world   8080-tcp                 None
-
+infra1.osetest.local    Ready                      1h        beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=infra1.osetest.local,region=infra
+master1.osetest.local   Ready,SchedulingDisabled   1h        beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=master1.osetest.local,region=infra
+node1.osetest.local     Ready                      1h        beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1.osetest.local,region=primary,zone=east
+node2.osetest.local     Ready                      1h        beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node2.osetest.local,region=primary,zone=west
 => project: all_namespaces
-==> oc get all -o wide --all-namespaces
+==> oc get all,pvc -o wide --all-namespaces
 NAMESPACE   NAME                  TYPE      FROM      LATEST
 proj1       bc/ruby-hello-world   Source    Git       1
-NAMESPACE   NAME                        TYPE      FROM          STATUS     STARTED         DURATION
-proj1       builds/ruby-hello-world-1   Source    Git@022d87e   Complete   7 minutes ago   27s
-NAMESPACE   NAME                                     DOCKER REPO                                                                    TAGS                             UPDATED
-default     is/registry-console                      172.30.92.50:5000/default/registry-console                                     3.5                              44 minutes ago
-openshift   is/dotnet                                172.30.92.50:5000/openshift/dotnet                                             latest,1.1,1.0                   About an hour ago
-openshift   is/fis-java-openshift                    registry.access.redhat.com/jboss-fuse-6/fis-java-openshift                     2.0-6,2.0-5,latest + 2 more...   About an hour ago
-openshift   is/fis-karaf-openshift                   registry.access.redhat.com/jboss-fuse-6/fis-karaf-openshift                    latest,2.0,2.0-7 + 2 more...     About an hour ago
-openshift   is/jboss-amq-62                          registry.access.redhat.com/jboss-amq-6/amq62-openshift                         1.3-14,latest,1.4 + 2 more...    About an hour ago
-openshift   is/jboss-datagrid65-openshift            registry.access.redhat.com/jboss-datagrid-6/datagrid65-openshift               1.4,1.4-7,1.3 + 2 more...        About an hour ago
-openshift   is/jboss-datavirt63-openshift            registry.access.redhat.com/jboss-datavirt-6/datavirt63-openshift               latest,1.2,1.2-6 + 2 more...     About an hour ago
-openshift   is/jboss-decisionserver62-openshift      registry.access.redhat.com/jboss-decisionserver-6/decisionserver62-openshift   latest,1.2,1.2-23 + 2 more...    About an hour ago
-openshift   is/jboss-decisionserver63-openshift      registry.access.redhat.com/jboss-decisionserver-6/decisionserver63-openshift   latest,1.4,1.4-10 + 2 more...    About an hour ago
-openshift   is/jboss-eap64-openshift                 registry.access.redhat.com/jboss-eap-6/eap64-openshift                         latest,1.5,1.5-12 + 2 more...    About an hour ago
-openshift   is/jboss-eap70-openshift                 registry.access.redhat.com/jboss-eap-7/eap70-openshift                         1.4-36,latest,1.5 + 2 more...    About an hour ago
-openshift   is/jboss-processserver63-openshift       registry.access.redhat.com/jboss-processserver-6/processserver63-openshift     1.3-34,latest,1.4 + 2 more...    About an hour ago
-openshift   is/jboss-webserver30-tomcat7-openshift   registry.access.redhat.com/jboss-webserver-3/webserver30-tomcat7-openshift     latest,1.3,1.3-9 + 2 more...     About an hour ago
-openshift   is/jboss-webserver30-tomcat8-openshift   registry.access.redhat.com/jboss-webserver-3/webserver30-tomcat8-openshift     1.3,1.3-9,1.2 + 2 more...        About an hour ago
-openshift   is/jenkins                               172.30.92.50:5000/openshift/jenkins                                            1,2,latest                       About an hour ago
-openshift   is/mariadb                               172.30.92.50:5000/openshift/mariadb                                            latest,10.1                      About an hour ago
-openshift   is/mongodb                               172.30.92.50:5000/openshift/mongodb                                            2.6,2.4,latest + 1 more...       About an hour ago
-openshift   is/mysql                                 172.30.92.50:5000/openshift/mysql                                              5.7,5.6,5.5 + 1 more...          About an hour ago
-openshift   is/nodejs                                172.30.92.50:5000/openshift/nodejs                                             latest,0.10,4                    About an hour ago
-openshift   is/perl                                  172.30.92.50:5000/openshift/perl                                               latest,5.24,5.20 + 1 more...     About an hour ago
-openshift   is/php                                   172.30.92.50:5000/openshift/php                                                7.0,5.6,5.5 + 1 more...          About an hour ago
-openshift   is/postgresql                            172.30.92.50:5000/openshift/postgresql                                         9.5,9.4,9.2 + 1 more...          About an hour ago
-openshift   is/python                                172.30.92.50:5000/openshift/python                                             latest,3.5,3.4 + 2 more...       About an hour ago
-openshift   is/redhat-openjdk18-openshift            registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift               latest,1.1,1.1-8 + 2 more...     45 minutes ago
-openshift   is/redhat-sso70-openshift                registry.access.redhat.com/redhat-sso-7/sso70-openshift                        latest,1.4,1.4-7 + 2 more...     45 minutes ago
-openshift   is/redis                                 172.30.92.50:5000/openshift/redis                                              3.2,latest                       About an hour ago
-openshift   is/ruby                                  172.30.92.50:5000/openshift/ruby                                               2.3,2.2,2.0 + 1 more...          About an hour ago
-proj1       is/ruby-hello-world                      172.30.92.50:5000/proj1/ruby-hello-world                                       latest                           7 minutes ago
+NAMESPACE   NAME                        TYPE      FROM          STATUS     STARTED          DURATION
+proj1       builds/ruby-hello-world-1   Source    Git@022d87e   Complete   27 minutes ago   27s
+NAMESPACE   NAME                                     DOCKER REPO                                                                    TAGS                            UPDATED
+default     is/registry-console                      172.30.92.50:5000/default/registry-console                                     3.5                             About an hour ago
+openshift   is/dotnet                                172.30.92.50:5000/openshift/dotnet                                             latest,1.1,1.0                  About an hour ago
+openshift   is/fis-java-openshift                    registry.access.redhat.com/jboss-fuse-6/fis-java-openshift                     2.0,2.0-7,2.0-6 + 2 more...     About an hour ago
+openshift   is/fis-karaf-openshift                   registry.access.redhat.com/jboss-fuse-6/fis-karaf-openshift                    2.0,2.0-7,2.0-6 + 2 more...     About an hour ago
+openshift   is/jboss-amq-62                          registry.access.redhat.com/jboss-amq-6/amq62-openshift                         1.4,1.4-12,1.3 + 2 more...      About an hour ago
+openshift   is/jboss-datagrid65-openshift            registry.access.redhat.com/jboss-datagrid-6/datagrid65-openshift               latest,1.4,1.4-7 + 2 more...    About an hour ago
+openshift   is/jboss-datavirt63-openshift            registry.access.redhat.com/jboss-datavirt-6/datavirt63-openshift               1.1,1.1-11,latest + 2 more...   About an hour ago
+openshift   is/jboss-decisionserver62-openshift      registry.access.redhat.com/jboss-decisionserver-6/decisionserver62-openshift   latest,1.2,1.2-23 + 2 more...   About an hour ago
+openshift   is/jboss-decisionserver63-openshift      registry.access.redhat.com/jboss-decisionserver-6/decisionserver63-openshift   latest,1.4,1.4-10 + 2 more...   About an hour ago
+openshift   is/jboss-eap64-openshift                 registry.access.redhat.com/jboss-eap-6/eap64-openshift                         latest,1.5,1.5-12 + 2 more...   About an hour ago
+openshift   is/jboss-eap70-openshift                 registry.access.redhat.com/jboss-eap-7/eap70-openshift                         latest,1.5,1.5-13 + 2 more...   About an hour ago
+openshift   is/jboss-processserver63-openshift       registry.access.redhat.com/jboss-processserver-6/processserver63-openshift     1.4,1.4-10,1.3 + 2 more...      About an hour ago
+openshift   is/jboss-webserver30-tomcat7-openshift   registry.access.redhat.com/jboss-webserver-3/webserver30-tomcat7-openshift     latest,1.3,1.3-9 + 2 more...    About an hour ago
+openshift   is/jboss-webserver30-tomcat8-openshift   registry.access.redhat.com/jboss-webserver-3/webserver30-tomcat8-openshift     1.3,1.3-9,1.2 + 2 more...       About an hour ago
+openshift   is/jenkins                               172.30.92.50:5000/openshift/jenkins                                            latest,1,2                      About an hour ago
+openshift   is/mariadb                               172.30.92.50:5000/openshift/mariadb                                            latest,10.1                     About an hour ago
+openshift   is/mongodb                               172.30.92.50:5000/openshift/mongodb                                            latest,3.2,2.6 + 1 more...      About an hour ago
+openshift   is/mysql                                 172.30.92.50:5000/openshift/mysql                                              latest,5.7,5.6 + 1 more...      About an hour ago
+openshift   is/nodejs                                172.30.92.50:5000/openshift/nodejs                                             latest,0.10,4                   About an hour ago
+openshift   is/perl                                  172.30.92.50:5000/openshift/perl                                               5.20,5.16,latest + 1 more...    About an hour ago
+openshift   is/php                                   172.30.92.50:5000/openshift/php                                                5.6,5.5,latest + 1 more...      About an hour ago
+openshift   is/postgresql                            172.30.92.50:5000/openshift/postgresql                                         latest,9.5,9.4 + 1 more...      About an hour ago
+openshift   is/python                                172.30.92.50:5000/openshift/python                                             latest,3.5,3.4 + 2 more...      About an hour ago
+openshift   is/redhat-openjdk18-openshift            registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift               latest,1.1,1.1-8 + 2 more...    About an hour ago
+openshift   is/redhat-sso70-openshift                registry.access.redhat.com/redhat-sso-7/sso70-openshift                        1.4-7,1.3,1.3-33 + 2 more...    About an hour ago
+openshift   is/redis                                 172.30.92.50:5000/openshift/redis                                              3.2,latest                      About an hour ago
+openshift   is/ruby                                  172.30.92.50:5000/openshift/ruby                                               latest,2.3,2.2 + 1 more...      About an hour ago
+proj1       is/ruby-hello-world                      172.30.92.50:5000/proj1/ruby-hello-world                                       latest                          26 minutes ago
 NAMESPACE   NAME                  REVISION   DESIRED   CURRENT   TRIGGERED BY
 default     dc/docker-registry    1          1         1         config
 default     dc/registry-console   1          1         1         config
@@ -131,64 +48,105 @@ proj1       dc/database           1          1         1         config,image(my
 proj1       dc/ruby-hello-world   1          4         4         config,image(ruby-hello-world:latest)
 proj2       dc/database           1          1         1         config,image(mysql:5.7)
 NAMESPACE   NAME                    DESIRED   CURRENT   READY     AGE       CONTAINER(S)       IMAGE(S)                                                                                                                  SELECTOR
-default     rc/docker-registry-1    1         1         1         44m       registry           openshift3/ose-docker-registry:v3.5.5.24                                                                                  deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default
-default     rc/registry-console-1   1         1         1         44m       registry-console   registry.access.redhat.com/openshift3/registry-console:3.5                                                                deployment=registry-console-1,deploymentconfig=registry-console,name=registry-console
-default     rc/router-1             1         1         1         45m       router             openshift3/ose-haproxy-router:v3.5.5.24                                                                                   deployment=router-1,deploymentconfig=router,router=router
-proj1       rc/database-1           1         1         1         27m       mysql              registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8   deployment=database-1,deploymentconfig=database,name=database
-proj1       rc/ruby-hello-world-1   4         4         4         7m        ruby-hello-world   172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e          app=ruby-hello-world,deployment=ruby-hello-world-1,deploymentconfig=ruby-hello-world
-proj2       rc/database-1           1         1         1         12m       mysql              registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8   deployment=database-1,deploymentconfig=database,name=database
+default     rc/docker-registry-1    1         1         1         1h        registry           openshift3/ose-docker-registry:v3.5.5.24                                                                                  deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default
+default     rc/registry-console-1   1         1         1         1h        registry-console   registry.access.redhat.com/openshift3/registry-console:3.5                                                                deployment=registry-console-1,deploymentconfig=registry-console,name=registry-console
+default     rc/router-1             1         1         1         1h        router             openshift3/ose-haproxy-router:v3.5.5.24                                                                                   deployment=router-1,deploymentconfig=router,router=router
+proj1       rc/database-1           1         1         1         47m       mysql              registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8   deployment=database-1,deploymentconfig=database,name=database
+proj1       rc/ruby-hello-world-1   4         4         4         26m       ruby-hello-world   172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e          app=ruby-hello-world,deployment=ruby-hello-world-1,deploymentconfig=ruby-hello-world
+proj2       rc/database-1           1         1         1         31m       mysql              registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8   deployment=database-1,deploymentconfig=database,name=database
 NAMESPACE   NAME                      HOST/PORT                                  PATH      SERVICES           PORT       TERMINATION   WILDCARD
 default     routes/docker-registry    docker-registry-default.app.example.com              docker-registry    <all>      passthrough   None
 default     routes/registry-console   registry-console-default.app.example.com             registry-console   <all>      passthrough   None
 proj1       routes/ruby-hello-world   hello.app.example.com                                ruby-hello-world   8080-tcp                 None
 NAMESPACE   NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE       SELECTOR
-default     svc/docker-registry    172.30.92.50     <none>        5000/TCP                  44m       docker-registry=default
-default     svc/kubernetes         172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     48m       <none>
-default     svc/registry-console   172.30.159.58    <none>        9000/TCP                  44m       name=registry-console
-default     svc/router             172.30.247.76    <none>        80/TCP,443/TCP,1936/TCP   45m       router=router
-proj1       svc/database           172.30.208.205   <none>        3306/TCP                  27m       name=database
-proj1       svc/ruby-hello-world   172.30.224.65    <none>        8080/TCP                  7m        app=ruby-hello-world,deploymentconfig=ruby-hello-world
-proj2       svc/database           172.30.123.68    <none>        3306/TCP                  12m       name=database
+default     svc/docker-registry    172.30.92.50     <none>        5000/TCP                  1h        docker-registry=default
+default     svc/kubernetes         172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     1h        <none>
+default     svc/registry-console   172.30.159.58    <none>        9000/TCP                  1h        name=registry-console
+default     svc/router             172.30.247.76    <none>        80/TCP,443/TCP,1936/TCP   1h        router=router
+proj1       svc/database           172.30.208.205   <none>        3306/TCP                  47m       name=database
+proj1       svc/ruby-hello-world   172.30.224.65    <none>        8080/TCP                  27m       app=ruby-hello-world,deploymentconfig=ruby-hello-world
+proj2       svc/database           172.30.123.68    <none>        3306/TCP                  31m       name=database
 NAMESPACE   NAME                          READY     STATUS      RESTARTS   AGE       IP            NODE
-default     po/docker-registry-1-g2gkv    1/1       Running     0          44m       10.131.0.9    infra1.osetest.local
-default     po/registry-console-1-2kxh6   1/1       Running     0          44m       10.131.0.10   infra1.osetest.local
-default     po/router-1-mqjsw             1/1       Running     0          45m       10.0.1.31     infra1.osetest.local
-proj1       po/database-1-4gvpg           1/1       Running     0          27m       10.130.0.5    node1.osetest.local
-proj1       po/ruby-hello-world-1-0s3pt   1/1       Running     0          1m        10.130.0.13   node1.osetest.local
-proj1       po/ruby-hello-world-1-72x0l   1/1       Running     0          1m        10.129.0.11   node2.osetest.local
-proj1       po/ruby-hello-world-1-build   0/1       Completed   0          7m        10.129.0.9    node2.osetest.local
-proj1       po/ruby-hello-world-1-x7x24   1/1       Running     0          7m        10.129.0.10   node2.osetest.local
-proj1       po/ruby-hello-world-1-zldhq   1/1       Running     0          1m        10.130.0.12   node1.osetest.local
-proj2       po/database-1-jd4qm           1/1       Running     0          12m       10.129.0.8    node2.osetest.local
+default     po/docker-registry-1-g2gkv    1/1       Running     0          1h        10.131.0.9    infra1.osetest.local
+default     po/registry-console-1-2kxh6   1/1       Running     0          1h        10.131.0.10   infra1.osetest.local
+default     po/router-1-mqjsw             1/1       Running     0          1h        10.0.1.31     infra1.osetest.local
+proj1       po/database-1-4gvpg           1/1       Running     0          47m       10.130.0.5    node1.osetest.local
+proj1       po/ruby-hello-world-1-0s3pt   1/1       Running     0          20m       10.130.0.13   node1.osetest.local
+proj1       po/ruby-hello-world-1-72x0l   1/1       Running     0          20m       10.129.0.11   node2.osetest.local
+proj1       po/ruby-hello-world-1-build   0/1       Completed   0          27m       10.129.0.9    node2.osetest.local
+proj1       po/ruby-hello-world-1-x7x24   1/1       Running     0          26m       10.129.0.10   node2.osetest.local
+proj1       po/ruby-hello-world-1-zldhq   1/1       Running     0          20m       10.130.0.12   node1.osetest.local
+proj2       po/database-1-jd4qm           1/1       Running     0          31m       10.129.0.8    node2.osetest.local
 ==> oc get pod -o wide --all-namespaces
 NAMESPACE   NAME                       READY     STATUS      RESTARTS   AGE       IP            NODE
-default     docker-registry-1-g2gkv    1/1       Running     0          44m       10.131.0.9    infra1.osetest.local
-default     registry-console-1-2kxh6   1/1       Running     0          44m       10.131.0.10   infra1.osetest.local
-default     router-1-mqjsw             1/1       Running     0          45m       10.0.1.31     infra1.osetest.local
-proj1       database-1-4gvpg           1/1       Running     0          27m       10.130.0.5    node1.osetest.local
-proj1       ruby-hello-world-1-0s3pt   1/1       Running     0          1m        10.130.0.13   node1.osetest.local
-proj1       ruby-hello-world-1-72x0l   1/1       Running     0          1m        10.129.0.11   node2.osetest.local
-proj1       ruby-hello-world-1-build   0/1       Completed   0          7m        10.129.0.9    node2.osetest.local
-proj1       ruby-hello-world-1-x7x24   1/1       Running     0          7m        10.129.0.10   node2.osetest.local
-proj1       ruby-hello-world-1-zldhq   1/1       Running     0          1m        10.130.0.12   node1.osetest.local
-proj2       database-1-jd4qm           1/1       Running     0          12m       10.129.0.8    node2.osetest.local
+default     docker-registry-1-g2gkv    1/1       Running     0          1h        10.131.0.9    infra1.osetest.local
+default     registry-console-1-2kxh6   1/1       Running     0          1h        10.131.0.10   infra1.osetest.local
+default     router-1-mqjsw             1/1       Running     0          1h        10.0.1.31     infra1.osetest.local
+proj1       database-1-4gvpg           1/1       Running     0          47m       10.130.0.5    node1.osetest.local
+proj1       ruby-hello-world-1-0s3pt   1/1       Running     0          20m       10.130.0.13   node1.osetest.local
+proj1       ruby-hello-world-1-72x0l   1/1       Running     0          20m       10.129.0.11   node2.osetest.local
+proj1       ruby-hello-world-1-build   0/1       Completed   0          27m       10.129.0.9    node2.osetest.local
+proj1       ruby-hello-world-1-x7x24   1/1       Running     0          26m       10.129.0.10   node2.osetest.local
+proj1       ruby-hello-world-1-zldhq   1/1       Running     0          20m       10.130.0.12   node1.osetest.local
+proj2       database-1-jd4qm           1/1       Running     0          31m       10.129.0.8    node2.osetest.local
 ==> oc get svc --all-namespaces
 NAMESPACE   NAME               CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
-default     docker-registry    172.30.92.50     <none>        5000/TCP                  44m
-default     kubernetes         172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     48m
-default     registry-console   172.30.159.58    <none>        9000/TCP                  44m
-default     router             172.30.247.76    <none>        80/TCP,443/TCP,1936/TCP   45m
-proj1       database           172.30.208.205   <none>        3306/TCP                  27m
-proj1       ruby-hello-world   172.30.224.65    <none>        8080/TCP                  7m
-proj2       database           172.30.123.68    <none>        3306/TCP                  12m
+default     docker-registry    172.30.92.50     <none>        5000/TCP                  1h
+default     kubernetes         172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     1h
+default     registry-console   172.30.159.58    <none>        9000/TCP                  1h
+default     router             172.30.247.76    <none>        80/TCP,443/TCP,1936/TCP   1h
+proj1       database           172.30.208.205   <none>        3306/TCP                  47m
+proj1       ruby-hello-world   172.30.224.65    <none>        8080/TCP                  27m
+proj2       database           172.30.123.68    <none>        3306/TCP                  31m
 ==> oc get route --all-namespaces
 NAMESPACE   NAME               HOST/PORT                                  PATH      SERVICES           PORT       TERMINATION   WILDCARD
 default     docker-registry    docker-registry-default.app.example.com              docker-registry    <all>      passthrough   None
 default     registry-console   registry-console-default.app.example.com             registry-console   <all>      passthrough   None
 proj1       ruby-hello-world   hello.app.example.com                                ruby-hello-world   8080-tcp                 None
 
+=> project: default
+==> oc get all,pvc -o wide -n default
+NAME                  DOCKER REPO                                  TAGS      UPDATED
+is/registry-console   172.30.92.50:5000/default/registry-console   3.5       About an hour ago
+NAME                  REVISION   DESIRED   CURRENT   TRIGGERED BY
+dc/docker-registry    1          1         1         config
+dc/registry-console   1          1         1         config
+dc/router             1          1         1         config
+NAME                    DESIRED   CURRENT   READY     AGE       CONTAINER(S)       IMAGE(S)                                                     SELECTOR
+rc/docker-registry-1    1         1         1         1h        registry           openshift3/ose-docker-registry:v3.5.5.24                     deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default
+rc/registry-console-1   1         1         1         1h        registry-console   registry.access.redhat.com/openshift3/registry-console:3.5   deployment=registry-console-1,deploymentconfig=registry-console,name=registry-console
+rc/router-1             1         1         1         1h        router             openshift3/ose-haproxy-router:v3.5.5.24                      deployment=router-1,deploymentconfig=router,router=router
+NAME                      HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION   WILDCARD
+routes/docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough   None
+routes/registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough   None
+NAME                   CLUSTER-IP      EXTERNAL-IP   PORT(S)                   AGE       SELECTOR
+svc/docker-registry    172.30.92.50    <none>        5000/TCP                  1h        docker-registry=default
+svc/kubernetes         172.30.0.1      <none>        443/TCP,53/UDP,53/TCP     1h        <none>
+svc/registry-console   172.30.159.58   <none>        9000/TCP                  1h        name=registry-console
+svc/router             172.30.247.76   <none>        80/TCP,443/TCP,1936/TCP   1h        router=router
+NAME                          READY     STATUS    RESTARTS   AGE       IP            NODE
+po/docker-registry-1-g2gkv    1/1       Running   0          1h        10.131.0.9    infra1.osetest.local
+po/registry-console-1-2kxh6   1/1       Running   0          1h        10.131.0.10   infra1.osetest.local
+po/router-1-mqjsw             1/1       Running   0          1h        10.0.1.31     infra1.osetest.local
+==> oc get pod -o wide -n default
+NAME                       READY     STATUS    RESTARTS   AGE       IP            NODE
+docker-registry-1-g2gkv    1/1       Running   0          1h        10.131.0.9    infra1.osetest.local
+registry-console-1-2kxh6   1/1       Running   0          1h        10.131.0.10   infra1.osetest.local
+router-1-mqjsw             1/1       Running   0          1h        10.0.1.31     infra1.osetest.local
+==> oc get svc -n default
+NAME               CLUSTER-IP      EXTERNAL-IP   PORT(S)                   AGE
+docker-registry    172.30.92.50    <none>        5000/TCP                  1h
+kubernetes         172.30.0.1      <none>        443/TCP,53/UDP,53/TCP     1h
+registry-console   172.30.159.58   <none>        9000/TCP                  1h
+router             172.30.247.76   <none>        80/TCP,443/TCP,1936/TCP   1h
+==> oc get route -n default
+NAME               HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION   WILDCARD
+docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough   None
+registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough   None
+
+
 ==>
-===> oc describe pod/docker-registry-1-g2gkv
+===> oc describe pod/docker-registry-1-g2gkv -n default
 Name:			docker-registry-1-g2gkv
 Namespace:		default
 Security Policy:	hostnetwork
@@ -246,11 +204,11 @@ Tolerations:	<none>
 Events:
   FirstSeen	LastSeen	Count	From				SubObjectPath			Type		Reason		Message
   ---------	--------	-----	----				-------------			--------	------		-------
-  44m		44m		1	{default-scheduler }						Normal		Scheduled	Successfully assigned docker-registry-1-g2gkv to infra1.osetest.local
-  44m		44m		1	{kubelet infra1.osetest.local}	spec.containers{registry}	Normal		Pulled		Container image "openshift3/ose-docker-registry:v3.5.5.24" already present on machine
-  44m		44m		1	{kubelet infra1.osetest.local}	spec.containers{registry}	Normal		Created		Created container with docker id 31a3c221607f; Security:[seccomp=unconfined]
-  44m		44m		1	{kubelet infra1.osetest.local}	spec.containers{registry}	Normal		Started		Started container with docker id 31a3c221607f
-===> oc describe pod/registry-console-1-2kxh6
+  1h		1h		1	{default-scheduler }						Normal		Scheduled	Successfully assigned docker-registry-1-g2gkv to infra1.osetest.local
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{registry}	Normal		Pulled		Container image "openshift3/ose-docker-registry:v3.5.5.24" already present on machine
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{registry}	Normal		Created		Created container with docker id 31a3c221607f; Security:[seccomp=unconfined]
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{registry}	Normal		Started		Started container with docker id 31a3c221607f
+===> oc describe pod/registry-console-1-2kxh6 -n default
 Name:			registry-console-1-2kxh6
 Namespace:		default
 Security Policy:	restricted
@@ -298,11 +256,11 @@ Tolerations:	<none>
 Events:
   FirstSeen	LastSeen	Count	From				SubObjectPath				Type		Reason		Message
   ---------	--------	-----	----				-------------				--------	------		-------
-  44m		44m		1	{default-scheduler }							Normal		Scheduled	Successfully assigned registry-console-1-2kxh6 to infra1.osetest.local
-  44m		44m		1	{kubelet infra1.osetest.local}	spec.containers{registry-console}	Normal		Pulled		Container image "registry.access.redhat.com/openshift3/registry-console:3.5" already present on machine
-  44m		44m		1	{kubelet infra1.osetest.local}	spec.containers{registry-console}	Normal		Created		Created container with docker id 764f930ef912; Security:[seccomp=unconfined]
-  44m		44m		1	{kubelet infra1.osetest.local}	spec.containers{registry-console}	Normal		Started		Started container with docker id 764f930ef912
-===> oc describe pod/router-1-mqjsw
+  1h		1h		1	{default-scheduler }							Normal		Scheduled	Successfully assigned registry-console-1-2kxh6 to infra1.osetest.local
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{registry-console}	Normal		Pulled		Container image "registry.access.redhat.com/openshift3/registry-console:3.5" already present on machine
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{registry-console}	Normal		Created		Created container with docker id 764f930ef912; Security:[seccomp=unconfined]
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{registry-console}	Normal		Started		Started container with docker id 764f930ef912
+===> oc describe pod/router-1-mqjsw -n default
 Name:			router-1-mqjsw
 Namespace:		default
 Security Policy:	hostnetwork
@@ -369,11 +327,214 @@ Tolerations:	<none>
 Events:
   FirstSeen	LastSeen	Count	From				SubObjectPath		Type		Reason		Message
   ---------	--------	-----	----				-------------		--------	------		-------
-  45m		45m		1	{default-scheduler }					Normal		Scheduled	Successfully assigned router-1-mqjsw to infra1.osetest.local
-  45m		45m		1	{kubelet infra1.osetest.local}	spec.containers{router}	Normal		Pulled		Container image "openshift3/ose-haproxy-router:v3.5.5.24" already present on machine
-  45m		45m		1	{kubelet infra1.osetest.local}	spec.containers{router}	Normal		Created		Created container with docker id 0ae9b97c3626; Security:[seccomp=unconfined]
-  45m		45m		1	{kubelet infra1.osetest.local}	spec.containers{router}	Normal		Started		Started container with docker id 0ae9b97c3626
-===> oc describe pod/database-1-4gvpg
+  1h		1h		1	{default-scheduler }					Normal		Scheduled	Successfully assigned router-1-mqjsw to infra1.osetest.local
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{router}	Normal		Pulled		Container image "openshift3/ose-haproxy-router:v3.5.5.24" already present on machine
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{router}	Normal		Created		Created container with docker id 0ae9b97c3626; Security:[seccomp=unconfined]
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{router}	Normal		Started		Started container with docker id 0ae9b97c3626
+===> oc describe service/docker-registry -n default
+Name:			docker-registry
+Namespace:		default
+Labels:			<none>
+Selector:		docker-registry=default
+Type:			ClusterIP
+IP:			172.30.92.50
+Port:			5000-tcp	5000/TCP
+Endpoints:		10.131.0.9:5000
+Session Affinity:	ClientIP
+No events.
+===> oc describe service/kubernetes -n default
+Name:			kubernetes
+Namespace:		default
+Labels:			component=apiserver
+			provider=kubernetes
+Selector:		<none>
+Type:			ClusterIP
+IP:			172.30.0.1
+Port:			https	443/TCP
+Endpoints:		172.16.99.21:8443
+Port:			dns	53/UDP
+Endpoints:		172.16.99.21:8053
+Port:			dns-tcp	53/TCP
+Endpoints:		172.16.99.21:8053
+Session Affinity:	ClientIP
+No events.
+===> oc describe service/registry-console -n default
+Name:			registry-console
+Namespace:		default
+Labels:			app=registry-console
+			createdBy=registry-console-template
+			name=registry-console
+Selector:		name=registry-console
+Type:			ClusterIP
+IP:			172.30.159.58
+Port:			registry-console	9000/TCP
+Endpoints:		10.131.0.10:9090
+Session Affinity:	None
+No events.
+===> oc describe service/router -n default
+Name:			router
+Namespace:		default
+Labels:			router=router
+Selector:		router=router
+Type:			ClusterIP
+IP:			172.30.247.76
+Port:			80-tcp	80/TCP
+Endpoints:		10.0.1.31:80
+Port:			443-tcp	443/TCP
+Endpoints:		10.0.1.31:443
+Port:			1936-tcp	1936/TCP
+Endpoints:		10.0.1.31:1936
+Session Affinity:	None
+No events.
+===> oc describe route/docker-registry -n default
+Name:			docker-registry
+Namespace:		default
+Created:		About an hour ago
+Labels:			<none>
+Annotations:		<none>
+Requested Host:		docker-registry-default.app.example.com
+			  exposed on router router about an hour ago
+Path:			<none>
+TLS Termination:	passthrough
+Insecure Policy:	<none>
+Endpoint Port:		<all endpoint ports>
+
+Service:	docker-registry
+Weight:		100 (100%)
+Endpoints:	10.131.0.9:5000
+===> oc describe route/registry-console -n default
+Name:			registry-console
+Namespace:		default
+Created:		About an hour ago
+Labels:			<none>
+Annotations:		openshift.io/host.generated=true
+Requested Host:		registry-console-default.app.example.com
+			  exposed on router router about an hour ago
+Path:			<none>
+TLS Termination:	passthrough
+Insecure Policy:	<none>
+Endpoint Port:		<all endpoint ports>
+
+Service:	registry-console
+Weight:		100 (100%)
+Endpoints:	10.131.0.10:9090
+
+=> project: kube-system
+==> oc get all,pvc -o wide -n kube-system
+==> oc get pod -o wide -n kube-system
+==> oc get svc -n kube-system
+==> oc get route -n kube-system
+
+
+==>
+
+=> project: logging
+==> oc get all,pvc -o wide -n logging
+==> oc get pod -o wide -n logging
+==> oc get svc -n logging
+==> oc get route -n logging
+
+
+==>
+
+=> project: management-infra
+==> oc get all,pvc -o wide -n management-infra
+==> oc get pod -o wide -n management-infra
+==> oc get svc -n management-infra
+==> oc get route -n management-infra
+
+
+==>
+
+=> project: openshift
+==> oc get all,pvc -o wide -n openshift
+NAME                                  DOCKER REPO                                                                    TAGS                            UPDATED
+dotnet                                172.30.92.50:5000/openshift/dotnet                                             latest,1.1,1.0                  About an hour ago
+fis-java-openshift                    registry.access.redhat.com/jboss-fuse-6/fis-java-openshift                     latest,2.0,2.0-7 + 2 more...    About an hour ago
+fis-karaf-openshift                   registry.access.redhat.com/jboss-fuse-6/fis-karaf-openshift                    2.0,2.0-7,2.0-6 + 2 more...     About an hour ago
+jboss-amq-62                          registry.access.redhat.com/jboss-amq-6/amq62-openshift                         1.3,1.3-14,latest + 2 more...   About an hour ago
+jboss-datagrid65-openshift            registry.access.redhat.com/jboss-datagrid-6/datagrid65-openshift               1.3-11,latest,1.4 + 2 more...   About an hour ago
+jboss-datavirt63-openshift            registry.access.redhat.com/jboss-datavirt-6/datavirt63-openshift               latest,1.2,1.2-6 + 2 more...    About an hour ago
+jboss-decisionserver62-openshift      registry.access.redhat.com/jboss-decisionserver-6/decisionserver62-openshift   latest,1.2,1.2-23 + 2 more...   About an hour ago
+jboss-decisionserver63-openshift      registry.access.redhat.com/jboss-decisionserver-6/decisionserver63-openshift   latest,1.4,1.4-10 + 2 more...   About an hour ago
+jboss-eap64-openshift                 registry.access.redhat.com/jboss-eap-6/eap64-openshift                         1.4,1.4-37,latest + 2 more...   About an hour ago
+jboss-eap70-openshift                 registry.access.redhat.com/jboss-eap-7/eap70-openshift                         1.4-36,latest,1.5 + 2 more...   About an hour ago
+jboss-processserver63-openshift       registry.access.redhat.com/jboss-processserver-6/processserver63-openshift     1.4-10,1.3,1.3-34 + 2 more...   About an hour ago
+jboss-webserver30-tomcat7-openshift   registry.access.redhat.com/jboss-webserver-3/webserver30-tomcat7-openshift     1.2,1.2-32,latest + 2 more...   About an hour ago
+jboss-webserver30-tomcat8-openshift   registry.access.redhat.com/jboss-webserver-3/webserver30-tomcat8-openshift     latest,1.3,1.3-9 + 2 more...    About an hour ago
+jenkins                               172.30.92.50:5000/openshift/jenkins                                            latest,1,2                      About an hour ago
+mariadb                               172.30.92.50:5000/openshift/mariadb                                            latest,10.1                     About an hour ago
+mongodb                               172.30.92.50:5000/openshift/mongodb                                            latest,3.2,2.6 + 1 more...      About an hour ago
+mysql                                 172.30.92.50:5000/openshift/mysql                                              latest,5.7,5.6 + 1 more...      About an hour ago
+nodejs                                172.30.92.50:5000/openshift/nodejs                                             0.10,4,latest                   About an hour ago
+perl                                  172.30.92.50:5000/openshift/perl                                               5.24,5.20,5.16 + 1 more...      About an hour ago
+php                                   172.30.92.50:5000/openshift/php                                                latest,7.0,5.6 + 1 more...      About an hour ago
+postgresql                            172.30.92.50:5000/openshift/postgresql                                         9.2,latest,9.5 + 1 more...      About an hour ago
+python                                172.30.92.50:5000/openshift/python                                             latest,3.5,3.4 + 2 more...      About an hour ago
+redhat-openjdk18-openshift            registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift               1.0-6,latest,1.1 + 2 more...    About an hour ago
+redhat-sso70-openshift                registry.access.redhat.com/redhat-sso-7/sso70-openshift                        1.4,1.4-7,1.3 + 2 more...       About an hour ago
+redis                                 172.30.92.50:5000/openshift/redis                                              3.2,latest                      About an hour ago
+ruby                                  172.30.92.50:5000/openshift/ruby                                               2.3,2.2,2.0 + 1 more...         About an hour ago
+==> oc get pod -o wide -n openshift
+==> oc get svc -n openshift
+==> oc get route -n openshift
+
+
+==>
+
+=> project: openshift-infra
+==> oc get all,pvc -o wide -n openshift-infra
+==> oc get pod -o wide -n openshift-infra
+==> oc get svc -n openshift-infra
+==> oc get route -n openshift-infra
+
+
+==>
+
+=> project: proj1
+==> oc get all,pvc -o wide -n proj1
+NAME                  TYPE      FROM      LATEST
+bc/ruby-hello-world   Source    Git       1
+NAME                        TYPE      FROM          STATUS     STARTED          DURATION
+builds/ruby-hello-world-1   Source    Git@022d87e   Complete   27 minutes ago   27s
+NAME                  DOCKER REPO                                TAGS      UPDATED
+is/ruby-hello-world   172.30.92.50:5000/proj1/ruby-hello-world   latest    26 minutes ago
+NAME                  REVISION   DESIRED   CURRENT   TRIGGERED BY
+dc/database           1          1         1         config,image(mysql:5.7)
+dc/ruby-hello-world   1          4         4         config,image(ruby-hello-world:latest)
+NAME                    DESIRED   CURRENT   READY     AGE       CONTAINER(S)       IMAGE(S)                                                                                                                  SELECTOR
+rc/database-1           1         1         1         47m       mysql              registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8   deployment=database-1,deploymentconfig=database,name=database
+rc/ruby-hello-world-1   4         4         4         26m       ruby-hello-world   172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e          app=ruby-hello-world,deployment=ruby-hello-world-1,deploymentconfig=ruby-hello-world
+NAME                      HOST/PORT               PATH      SERVICES           PORT       TERMINATION   WILDCARD
+routes/ruby-hello-world   hello.app.example.com             ruby-hello-world   8080-tcp                 None
+NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE       SELECTOR
+svc/database           172.30.208.205   <none>        3306/TCP   47m       name=database
+svc/ruby-hello-world   172.30.224.65    <none>        8080/TCP   27m       app=ruby-hello-world,deploymentconfig=ruby-hello-world
+NAME                          READY     STATUS      RESTARTS   AGE       IP            NODE
+po/database-1-4gvpg           1/1       Running     0          47m       10.130.0.5    node1.osetest.local
+po/ruby-hello-world-1-0s3pt   1/1       Running     0          20m       10.130.0.13   node1.osetest.local
+po/ruby-hello-world-1-72x0l   1/1       Running     0          20m       10.129.0.11   node2.osetest.local
+po/ruby-hello-world-1-build   0/1       Completed   0          27m       10.129.0.9    node2.osetest.local
+po/ruby-hello-world-1-x7x24   1/1       Running     0          26m       10.129.0.10   node2.osetest.local
+po/ruby-hello-world-1-zldhq   1/1       Running     0          20m       10.130.0.12   node1.osetest.local
+==> oc get pod -o wide -n proj1
+NAME                       READY     STATUS      RESTARTS   AGE       IP            NODE
+database-1-4gvpg           1/1       Running     0          47m       10.130.0.5    node1.osetest.local
+ruby-hello-world-1-0s3pt   1/1       Running     0          20m       10.130.0.13   node1.osetest.local
+ruby-hello-world-1-72x0l   1/1       Running     0          20m       10.129.0.11   node2.osetest.local
+ruby-hello-world-1-build   0/1       Completed   0          27m       10.129.0.9    node2.osetest.local
+ruby-hello-world-1-x7x24   1/1       Running     0          26m       10.129.0.10   node2.osetest.local
+ruby-hello-world-1-zldhq   1/1       Running     0          20m       10.130.0.12   node1.osetest.local
+==> oc get svc -n proj1
+NAME               CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+database           172.30.208.205   <none>        3306/TCP   47m
+ruby-hello-world   172.30.224.65    <none>        8080/TCP   27m
+==> oc get route -n proj1
+NAME               HOST/PORT               PATH      SERVICES           PORT       TERMINATION   WILDCARD
+ruby-hello-world   hello.app.example.com             ruby-hello-world   8080-tcp                 None
+
+
+==>
 ===> oc describe pod/database-1-4gvpg -n proj1
 Name:			database-1-4gvpg
 Namespace:		proj1
@@ -428,11 +589,10 @@ Tolerations:	<none>
 Events:
   FirstSeen	LastSeen	Count	From				SubObjectPath		Type		Reason		Message
   ---------	--------	-----	----				-------------		--------	------		-------
-  27m		27m		1	{default-scheduler }					Normal		Scheduled	Successfully assigned database-1-4gvpg to node1.osetest.local
-  27m		27m		1	{kubelet node1.osetest.local}	spec.containers{mysql}	Normal		Pulled		Container image "registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8" already present on machine
-  27m		27m		1	{kubelet node1.osetest.local}	spec.containers{mysql}	Normal		Created		Created container with docker id 1a71614f37ad; Security:[seccomp=unconfined]
-  27m		27m		1	{kubelet node1.osetest.local}	spec.containers{mysql}	Normal		Started		Started container with docker id 1a71614f37ad
-===> oc describe pod/ruby-hello-world-1-0s3pt
+  47m		47m		1	{default-scheduler }					Normal		Scheduled	Successfully assigned database-1-4gvpg to node1.osetest.local
+  47m		47m		1	{kubelet node1.osetest.local}	spec.containers{mysql}	Normal		Pulled		Container image "registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8" already present on machine
+  47m		47m		1	{kubelet node1.osetest.local}	spec.containers{mysql}	Normal		Created		Created container with docker id 1a71614f37ad; Security:[seccomp=unconfined]
+  47m		47m		1	{kubelet node1.osetest.local}	spec.containers{mysql}	Normal		Started		Started container with docker id 1a71614f37ad
 ===> oc describe pod/ruby-hello-world-1-0s3pt -n proj1
 Name:			ruby-hello-world-1-0s3pt
 Namespace:		proj1
@@ -475,12 +635,11 @@ Tolerations:	<none>
 Events:
   FirstSeen	LastSeen	Count	From				SubObjectPath				Type		Reason		Message
   ---------	--------	-----	----				-------------				--------	------		-------
-  1m		1m		1	{default-scheduler }							Normal		Scheduled	Successfully assigned ruby-hello-world-1-0s3pt to node1.osetest.local
-  1m		1m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulling		pulling image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
-  1m		1m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulled		Successfully pulled image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
-  59s		59s		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Created		Created container with docker id 6922b58458a5; Security:[seccomp=unconfined]
-  59s		59s		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Started		Started container with docker id 6922b58458a5
-===> oc describe pod/ruby-hello-world-1-72x0l
+  20m		20m		1	{default-scheduler }							Normal		Scheduled	Successfully assigned ruby-hello-world-1-0s3pt to node1.osetest.local
+  20m		20m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulling		pulling image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
+  20m		20m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulled		Successfully pulled image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
+  20m		20m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Created		Created container with docker id 6922b58458a5; Security:[seccomp=unconfined]
+  20m		20m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Started		Started container with docker id 6922b58458a5
 ===> oc describe pod/ruby-hello-world-1-72x0l -n proj1
 Name:			ruby-hello-world-1-72x0l
 Namespace:		proj1
@@ -523,12 +682,11 @@ Tolerations:	<none>
 Events:
   FirstSeen	LastSeen	Count	From				SubObjectPath				Type		Reason		Message
   ---------	--------	-----	----				-------------				--------	------		-------
-  1m		1m		1	{default-scheduler }							Normal		Scheduled	Successfully assigned ruby-hello-world-1-72x0l to node2.osetest.local
-  1m		1m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulling		pulling image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
-  1m		1m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulled		Successfully pulled image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
-  1m		1m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Created		Created container with docker id 70f7545ecc7f; Security:[seccomp=unconfined]
-  1m		1m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Started		Started container with docker id 70f7545ecc7f
-===> oc describe pod/ruby-hello-world-1-build
+  20m		20m		1	{default-scheduler }							Normal		Scheduled	Successfully assigned ruby-hello-world-1-72x0l to node2.osetest.local
+  20m		20m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulling		pulling image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
+  20m		20m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulled		Successfully pulled image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
+  20m		20m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Created		Created container with docker id 70f7545ecc7f; Security:[seccomp=unconfined]
+  20m		20m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Started		Started container with docker id 70f7545ecc7f
 ===> oc describe pod/ruby-hello-world-1-build -n proj1
 Name:			ruby-hello-world-1-build
 Namespace:		proj1
@@ -587,12 +745,11 @@ Tolerations:	<none>
 Events:
   FirstSeen	LastSeen	Count	From				SubObjectPath			Type		Reason		Message
   ---------	--------	-----	----				-------------			--------	------		-------
-  7m		7m		1	{default-scheduler }						Normal		Scheduled	Successfully assigned ruby-hello-world-1-build to node2.osetest.local
-  7m		7m		1	{kubelet node2.osetest.local}	spec.containers{sti-build}	Normal		Pulling		pulling image "openshift3/ose-sti-builder:v3.5.5.24"
-  7m		7m		1	{kubelet node2.osetest.local}	spec.containers{sti-build}	Normal		Pulled		Successfully pulled image "openshift3/ose-sti-builder:v3.5.5.24"
-  7m		7m		1	{kubelet node2.osetest.local}	spec.containers{sti-build}	Normal		Created		Created container with docker id 84befea4db2b; Security:[seccomp=unconfined]
-  7m		7m		1	{kubelet node2.osetest.local}	spec.containers{sti-build}	Normal		Started		Started container with docker id 84befea4db2b
-===> oc describe pod/ruby-hello-world-1-x7x24
+  27m		27m		1	{default-scheduler }						Normal		Scheduled	Successfully assigned ruby-hello-world-1-build to node2.osetest.local
+  27m		27m		1	{kubelet node2.osetest.local}	spec.containers{sti-build}	Normal		Pulling		pulling image "openshift3/ose-sti-builder:v3.5.5.24"
+  27m		27m		1	{kubelet node2.osetest.local}	spec.containers{sti-build}	Normal		Pulled		Successfully pulled image "openshift3/ose-sti-builder:v3.5.5.24"
+  27m		27m		1	{kubelet node2.osetest.local}	spec.containers{sti-build}	Normal		Created		Created container with docker id 84befea4db2b; Security:[seccomp=unconfined]
+  27m		27m		1	{kubelet node2.osetest.local}	spec.containers{sti-build}	Normal		Started		Started container with docker id 84befea4db2b
 ===> oc describe pod/ruby-hello-world-1-x7x24 -n proj1
 Name:			ruby-hello-world-1-x7x24
 Namespace:		proj1
@@ -635,12 +792,11 @@ Tolerations:	<none>
 Events:
   FirstSeen	LastSeen	Count	From				SubObjectPath				Type		Reason		Message
   ---------	--------	-----	----				-------------				--------	------		-------
-  7m		7m		1	{default-scheduler }							Normal		Scheduled	Successfully assigned ruby-hello-world-1-x7x24 to node2.osetest.local
-  7m		7m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulling		pulling image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
-  7m		7m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulled		Successfully pulled image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
-  7m		7m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Created		Created container with docker id b515d66ad0b0; Security:[seccomp=unconfined]
-  7m		7m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Started		Started container with docker id b515d66ad0b0
-===> oc describe pod/ruby-hello-world-1-zldhq
+  26m		26m		1	{default-scheduler }							Normal		Scheduled	Successfully assigned ruby-hello-world-1-x7x24 to node2.osetest.local
+  26m		26m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulling		pulling image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
+  26m		26m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulled		Successfully pulled image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
+  26m		26m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Created		Created container with docker id b515d66ad0b0; Security:[seccomp=unconfined]
+  26m		26m		1	{kubelet node2.osetest.local}	spec.containers{ruby-hello-world}	Normal		Started		Started container with docker id b515d66ad0b0
 ===> oc describe pod/ruby-hello-world-1-zldhq -n proj1
 Name:			ruby-hello-world-1-zldhq
 Namespace:		proj1
@@ -683,69 +839,11 @@ Tolerations:	<none>
 Events:
   FirstSeen	LastSeen	Count	From				SubObjectPath				Type		Reason		Message
   ---------	--------	-----	----				-------------				--------	------		-------
-  1m		1m		1	{default-scheduler }							Normal		Scheduled	Successfully assigned ruby-hello-world-1-zldhq to node1.osetest.local
-  1m		1m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulling		pulling image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
-  1m		1m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulled		Successfully pulled image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
-  1m		1m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Created		Created container with docker id 98175365656c; Security:[seccomp=unconfined]
-  1m		1m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Started		Started container with docker id 98175365656c
-===> oc describe pod/database-1-jd4qm
-===> oc describe pod/database-1-jd4qm -n proj1
-===> oc describe service/docker-registry
-Name:			docker-registry
-Namespace:		default
-Labels:			<none>
-Selector:		docker-registry=default
-Type:			ClusterIP
-IP:			172.30.92.50
-Port:			5000-tcp	5000/TCP
-Endpoints:		10.131.0.9:5000
-Session Affinity:	ClientIP
-No events.
-===> oc describe service/kubernetes
-Name:			kubernetes
-Namespace:		default
-Labels:			component=apiserver
-			provider=kubernetes
-Selector:		<none>
-Type:			ClusterIP
-IP:			172.30.0.1
-Port:			https	443/TCP
-Endpoints:		172.16.99.21:8443
-Port:			dns	53/UDP
-Endpoints:		172.16.99.21:8053
-Port:			dns-tcp	53/TCP
-Endpoints:		172.16.99.21:8053
-Session Affinity:	ClientIP
-No events.
-===> oc describe service/registry-console
-Name:			registry-console
-Namespace:		default
-Labels:			app=registry-console
-			createdBy=registry-console-template
-			name=registry-console
-Selector:		name=registry-console
-Type:			ClusterIP
-IP:			172.30.159.58
-Port:			registry-console	9000/TCP
-Endpoints:		10.131.0.10:9090
-Session Affinity:	None
-No events.
-===> oc describe service/router
-Name:			router
-Namespace:		default
-Labels:			router=router
-Selector:		router=router
-Type:			ClusterIP
-IP:			172.30.247.76
-Port:			80-tcp	80/TCP
-Endpoints:		10.0.1.31:80
-Port:			443-tcp	443/TCP
-Endpoints:		10.0.1.31:443
-Port:			1936-tcp	1936/TCP
-Endpoints:		10.0.1.31:1936
-Session Affinity:	None
-No events.
-===> oc describe service/database
+  20m		20m		1	{default-scheduler }							Normal		Scheduled	Successfully assigned ruby-hello-world-1-zldhq to node1.osetest.local
+  20m		20m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulling		pulling image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
+  20m		20m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Pulled		Successfully pulled image "172.30.92.50:5000/proj1/ruby-hello-world@sha256:a15e3bc9631770ce5cc720e19cdde25ea14cfefd2550a831a868c7371d366d2e"
+  20m		20m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Created		Created container with docker id 98175365656c; Security:[seccomp=unconfined]
+  20m		20m		1	{kubelet node1.osetest.local}	spec.containers{ruby-hello-world}	Normal		Started		Started container with docker id 98175365656c
 ===> oc describe service/database -n proj1
 Name:			database
 Namespace:		proj1
@@ -758,7 +856,6 @@ Port:			mysql	3306/TCP
 Endpoints:		10.130.0.5:3306
 Session Affinity:	None
 No events.
-===> oc describe service/ruby-hello-world
 ===> oc describe service/ruby-hello-world -n proj1
 Name:			ruby-hello-world
 Namespace:		proj1
@@ -770,60 +867,14 @@ Port:			8080-tcp	8080/TCP
 Endpoints:		10.129.0.10:8080,10.129.0.11:8080,10.130.0.12:8080 + 1 more...
 Session Affinity:	None
 No events.
-===> oc describe service/database
-===> oc describe service/database -n proj1
-Name:			database
-Namespace:		proj1
-Labels:			app=database
-			template=mysql-ephemeral-template
-Selector:		name=database
-Type:			ClusterIP
-IP:			172.30.208.205
-Port:			mysql	3306/TCP
-Endpoints:		10.130.0.5:3306
-Session Affinity:	None
-No events.
-===> oc describe route/docker-registry
-Name:			docker-registry
-Namespace:		default
-Created:		44 minutes ago
-Labels:			<none>
-Annotations:		<none>
-Requested Host:		docker-registry-default.app.example.com
-			  exposed on router router 44 minutes ago
-Path:			<none>
-TLS Termination:	passthrough
-Insecure Policy:	<none>
-Endpoint Port:		<all endpoint ports>
-
-Service:	docker-registry
-Weight:		100 (100%)
-Endpoints:	10.131.0.9:5000
-===> oc describe route/registry-console
-Name:			registry-console
-Namespace:		default
-Created:		44 minutes ago
-Labels:			<none>
-Annotations:		openshift.io/host.generated=true
-Requested Host:		registry-console-default.app.example.com
-			  exposed on router router 44 minutes ago
-Path:			<none>
-TLS Termination:	passthrough
-Insecure Policy:	<none>
-Endpoint Port:		<all endpoint ports>
-
-Service:	registry-console
-Weight:		100 (100%)
-Endpoints:	10.131.0.10:9090
-===> oc describe route/ruby-hello-world
 ===> oc describe route/ruby-hello-world -n proj1
 Name:			ruby-hello-world
 Namespace:		proj1
-Created:		2 minutes ago
+Created:		22 minutes ago
 Labels:			app=ruby-hello-world
 Annotations:		<none>
 Requested Host:		hello.app.example.com
-			  exposed on router router 2 minutes ago
+			  exposed on router router 22 minutes ago
 Path:			<none>
 TLS Termination:	<none>
 Insecure Policy:	<none>
@@ -832,3 +883,99 @@ Endpoint Port:		8080-tcp
 Service:	ruby-hello-world
 Weight:		100 (100%)
 Endpoints:	10.129.0.10:8080, 10.129.0.11:8080, 10.130.0.12:8080 + 1 more...
+
+=> project: proj2
+==> oc get all,pvc -o wide -n proj2
+NAME          REVISION   DESIRED   CURRENT   TRIGGERED BY
+dc/database   1          1         1         config,image(mysql:5.7)
+NAME            DESIRED   CURRENT   READY     AGE       CONTAINER(S)   IMAGE(S)                                                                                                                  SELECTOR
+rc/database-1   1         1         1         31m       mysql          registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8   deployment=database-1,deploymentconfig=database,name=database
+NAME           CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE       SELECTOR
+svc/database   172.30.123.68   <none>        3306/TCP   31m       name=database
+NAME                  READY     STATUS    RESTARTS   AGE       IP           NODE
+po/database-1-jd4qm   1/1       Running   0          31m       10.129.0.8   node2.osetest.local
+==> oc get pod -o wide -n proj2
+NAME               READY     STATUS    RESTARTS   AGE       IP           NODE
+database-1-jd4qm   1/1       Running   0          31m       10.129.0.8   node2.osetest.local
+==> oc get svc -n proj2
+NAME       CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+database   172.30.123.68   <none>        3306/TCP   31m
+==> oc get route -n proj2
+
+
+==>
+===> oc describe pod/database-1-jd4qm -n proj2
+Name:			database-1-jd4qm
+Namespace:		proj2
+Security Policy:	restricted
+Node:			node2.osetest.local/10.0.1.42
+Start Time:		Thu, 13 Jul 2017 15:47:48 +0900
+Labels:			app=database
+			deployment=database-1
+			deploymentconfig=database
+			name=database
+Status:			Running
+IP:			10.129.0.8
+Controllers:		ReplicationController/database-1
+Containers:
+  mysql:
+    Container ID:	docker://0bfe9ed54ea3c92fa20ab3030cfe2f2a79394a9e7dfa1425644d4b9de9099b26
+    Image:		registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8
+    Image ID:		docker-pullable://registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8
+    Port:		3306/TCP
+    Limits:
+      memory:	512Mi
+    Requests:
+      memory:		512Mi
+    State:		Running
+      Started:		Thu, 13 Jul 2017 15:47:59 +0900
+    Ready:		True
+    Restart Count:	0
+    Liveness:		tcp-socket :3306 delay=30s timeout=1s period=10s #success=1 #failure=3
+    Readiness:		exec [/bin/sh -i -c MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'] delay=5s timeout=1s period=10s #success=1 #failure=3
+    Volume Mounts:
+      /var/lib/mysql/data from database-data (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-jpx21 (ro)
+    Environment Variables:
+      MYSQL_USER:		<set to the key 'database-user' in secret 'database'>
+      MYSQL_PASSWORD:		<set to the key 'database-password' in secret 'database'>
+      MYSQL_ROOT_PASSWORD:	<set to the key 'database-root-password' in secret 'database'>
+      MYSQL_DATABASE:		mydb
+Conditions:
+  Type		Status
+  Initialized 	True 
+  Ready 	True 
+  PodScheduled 	True 
+Volumes:
+  database-data:
+    Type:	EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:	
+  default-token-jpx21:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	default-token-jpx21
+QoS Class:	Burstable
+Tolerations:	<none>
+Events:
+  FirstSeen	LastSeen	Count	From				SubObjectPath		Type		Reason		Message
+  ---------	--------	-----	----				-------------		--------	------		-------
+  31m		31m		1	{default-scheduler }					Normal		Scheduled	Successfully assigned database-1-jd4qm to node2.osetest.local
+  31m		31m		1	{kubelet node2.osetest.local}	spec.containers{mysql}	Normal		Pulling		pulling image "registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8"
+  31m		31m		1	{kubelet node2.osetest.local}	spec.containers{mysql}	Normal		Pulled		Successfully pulled image "registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8"
+  31m		31m		1	{kubelet node2.osetest.local}	spec.containers{mysql}	Normal		Created		Created container with docker id 0bfe9ed54ea3; Security:[seccomp=unconfined]
+  31m		31m		1	{kubelet node2.osetest.local}	spec.containers{mysql}	Normal		Started		Started container with docker id 0bfe9ed54ea3
+  31m		31m		1	{kubelet node2.osetest.local}	spec.containers{mysql}	Warning		Unhealthy	Readiness probe failed: sh: cannot set terminal process group (-1): Inappropriate ioctl for device
+sh: no job control in this shell
+ERROR 2003 (HY000): Can't connect to MySQL server on '127.0.0.1' (111)
+
+===> oc describe service/database -n proj2
+Name:			database
+Namespace:		proj2
+Labels:			app=database
+			template=mysql-ephemeral-template
+Selector:		name=database
+Type:			ClusterIP
+IP:			172.30.123.68
+Port:			mysql	3306/TCP
+Endpoints:		10.129.0.8:3306
+Session Affinity:	None
+No events.
