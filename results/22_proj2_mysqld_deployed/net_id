@@ -1,0 +1,9 @@
+[root@master1 work]# ./netid.sh proj1
+{"kind":"NetNamespace","apiVersion":"v1","metadata":{"name":"proj1","uid":"83b4fa57-6b81-11e7-b88b-52540002a13d","creationTimestamp":"2017-07-18T06:22:46Z"},"netname":"proj1","netid":11741764}
+11741764
+0xb32a44
+[root@master1 work]# ./netid.sh proj2
+{"kind":"NetNamespace","apiVersion":"v1","metadata":{"name":"proj2","uid":"cded3e54-6b85-11e7-b88b-52540002a13d","creationTimestamp":"2017-07-18T06:53:28Z"},"netname":"proj2","netid":13283365}
+13283365
+0xcab025
+[root@master1 work]#

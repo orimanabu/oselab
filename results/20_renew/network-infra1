@@ -1,0 +1,255 @@
+=> ip -o l
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT qlen 1\    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT qlen 1000\    link/ether 52:54:00:ef:02:18 brd ff:ff:ff:ff:ff:ff
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT qlen 1000\    link/ether 52:54:00:0a:55:cb brd ff:ff:ff:ff:ff:ff
+4: eth2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT qlen 1000\    link/ether 52:54:00:f1:58:58 brd ff:ff:ff:ff:ff:ff
+5: eth3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT qlen 1000\    link/ether 52:54:00:1c:12:9d brd ff:ff:ff:ff:ff:ff
+6: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT \    link/ether 02:42:dc:ed:48:37 brd ff:ff:ff:ff:ff:ff
+7: ovs-system: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT qlen 1000\    link/ether da:b6:b8:7d:40:bf brd ff:ff:ff:ff:ff:ff
+10: br0: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN mode DEFAULT qlen 1000\    link/ether 2e:18:ef:53:ba:4b brd ff:ff:ff:ff:ff:ff
+26: vxlan_sys_4789: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 65470 qdisc noqueue master ovs-system state UNKNOWN mode DEFAULT qlen 1000\    link/ether 36:91:2d:62:26:98 brd ff:ff:ff:ff:ff:ff
+27: tun0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UNKNOWN mode DEFAULT qlen 1000\    link/ether a6:4f:b2:0b:f2:3d brd ff:ff:ff:ff:ff:ff
+30: vethd6e5bb5a@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue master ovs-system state UP mode DEFAULT \    link/ether da:bb:96:8e:d9:50 brd ff:ff:ff:ff:ff:ff link-netnsid 1
+=> ip -d l
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 promiscuity 0 addrgenmode eui64 
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT qlen 1000
+    link/ether 52:54:00:ef:02:18 brd ff:ff:ff:ff:ff:ff promiscuity 0 addrgenmode none 
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT qlen 1000
+    link/ether 52:54:00:0a:55:cb brd ff:ff:ff:ff:ff:ff promiscuity 0 addrgenmode none 
+4: eth2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT qlen 1000
+    link/ether 52:54:00:f1:58:58 brd ff:ff:ff:ff:ff:ff promiscuity 0 addrgenmode none 
+5: eth3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT qlen 1000
+    link/ether 52:54:00:1c:12:9d brd ff:ff:ff:ff:ff:ff promiscuity 0 addrgenmode none 
+6: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN mode DEFAULT 
+    link/ether 02:42:dc:ed:48:37 brd ff:ff:ff:ff:ff:ff promiscuity 0 
+    bridge forward_delay 1500 hello_time 200 max_age 2000 addrgenmode eui64 
+7: ovs-system: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT qlen 1000
+    link/ether da:b6:b8:7d:40:bf brd ff:ff:ff:ff:ff:ff promiscuity 1 
+    openvswitch addrgenmode eui64 
+10: br0: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN mode DEFAULT qlen 1000
+    link/ether 2e:18:ef:53:ba:4b brd ff:ff:ff:ff:ff:ff promiscuity 1 
+    openvswitch addrgenmode eui64 
+26: vxlan_sys_4789: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 65470 qdisc noqueue master ovs-system state UNKNOWN mode DEFAULT qlen 1000
+    link/ether 36:91:2d:62:26:98 brd ff:ff:ff:ff:ff:ff promiscuity 1 
+    vxlan id 0 srcport 0 0 dstport 4789 nolearning ageing 300 udpcsum udp6zerocsumrx 
+    openvswitch_slave addrgenmode none 
+27: tun0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UNKNOWN mode DEFAULT qlen 1000
+    link/ether a6:4f:b2:0b:f2:3d brd ff:ff:ff:ff:ff:ff promiscuity 1 
+    openvswitch addrgenmode eui64 
+30: vethd6e5bb5a@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue master ovs-system state UP mode DEFAULT 
+    link/ether da:bb:96:8e:d9:50 brd ff:ff:ff:ff:ff:ff link-netnsid 1 promiscuity 1 
+    veth 
+    openvswitch_slave addrgenmode eui64 
+=> ip -4 -o a
+1: lo    inet 127.0.0.1/8 scope host lo\       valid_lft forever preferred_lft forever
+3: eth1    inet 10.0.1.31/24 brd 10.0.1.255 scope global eth1\       valid_lft forever preferred_lft forever
+4: eth2    inet 10.0.2.31/24 brd 10.0.2.255 scope global eth2\       valid_lft forever preferred_lft forever
+5: eth3    inet 172.16.99.31/24 brd 172.16.99.255 scope global eth3\       valid_lft forever preferred_lft forever
+6: docker0    inet 172.17.0.1/16 scope global docker0\       valid_lft forever preferred_lft forever
+27: tun0    inet 10.131.0.1/23 scope global tun0\       valid_lft forever preferred_lft forever
+=> ip -d a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 promiscuity 0 
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether 52:54:00:ef:02:18 brd ff:ff:ff:ff:ff:ff promiscuity 0 
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether 52:54:00:0a:55:cb brd ff:ff:ff:ff:ff:ff promiscuity 0 
+    inet 10.0.1.31/24 brd 10.0.1.255 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::b4db:466:9fb8:a72c/64 scope link 
+       valid_lft forever preferred_lft forever
+4: eth2: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether 52:54:00:f1:58:58 brd ff:ff:ff:ff:ff:ff promiscuity 0 
+    inet 10.0.2.31/24 brd 10.0.2.255 scope global eth2
+       valid_lft forever preferred_lft forever
+    inet6 fe80::8eb6:e222:e7b8:fffb/64 scope link 
+       valid_lft forever preferred_lft forever
+5: eth3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP qlen 1000
+    link/ether 52:54:00:1c:12:9d brd ff:ff:ff:ff:ff:ff promiscuity 0 
+    inet 172.16.99.31/24 brd 172.16.99.255 scope global eth3
+       valid_lft forever preferred_lft forever
+    inet6 fe80::195e:f174:3a04:b961/64 scope link 
+       valid_lft forever preferred_lft forever
+6: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN 
+    link/ether 02:42:dc:ed:48:37 brd ff:ff:ff:ff:ff:ff promiscuity 0 
+    bridge forward_delay 1500 hello_time 200 max_age 2000 
+    inet 172.17.0.1/16 scope global docker0
+       valid_lft forever preferred_lft forever
+7: ovs-system: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 1000
+    link/ether da:b6:b8:7d:40:bf brd ff:ff:ff:ff:ff:ff promiscuity 1 
+    openvswitch 
+10: br0: <BROADCAST,MULTICAST> mtu 1450 qdisc noop state DOWN qlen 1000
+    link/ether 2e:18:ef:53:ba:4b brd ff:ff:ff:ff:ff:ff promiscuity 1 
+    openvswitch 
+26: vxlan_sys_4789: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 65470 qdisc noqueue master ovs-system state UNKNOWN qlen 1000
+    link/ether 36:91:2d:62:26:98 brd ff:ff:ff:ff:ff:ff promiscuity 1 
+    vxlan id 0 srcport 0 0 dstport 4789 nolearning ageing 300 udpcsum udp6zerocsumrx 
+    openvswitch_slave 
+27: tun0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UNKNOWN qlen 1000
+    link/ether a6:4f:b2:0b:f2:3d brd ff:ff:ff:ff:ff:ff promiscuity 1 
+    openvswitch 
+    inet 10.131.0.1/23 scope global tun0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a44f:b2ff:fe0b:f23d/64 scope link 
+       valid_lft forever preferred_lft forever
+30: vethd6e5bb5a@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue master ovs-system state UP 
+    link/ether da:bb:96:8e:d9:50 brd ff:ff:ff:ff:ff:ff link-netnsid 1 promiscuity 1 
+    veth 
+    openvswitch_slave 
+    inet6 fe80::d8bb:96ff:fe8e:d950/64 scope link 
+       valid_lft forever preferred_lft forever
+=> ip r
+default via 172.16.99.254 dev eth3  proto static  metric 100 
+10.0.1.0/24 dev eth1  proto kernel  scope link  src 10.0.1.31  metric 100 
+10.0.2.0/24 dev eth2  proto kernel  scope link  src 10.0.2.31  metric 100 
+10.128.0.0/14 dev tun0  proto kernel  scope link 
+172.16.99.0/24 dev eth3  proto kernel  scope link  src 172.16.99.31  metric 100 
+172.17.0.0/16 dev docker0  proto kernel  scope link  src 172.17.0.1 
+172.30.0.0/16 dev tun0  scope link 
+=> ovs-vsctl show
+16d890f8-e0a4-418f-a15f-cbcb17365bd3
+    Bridge "br0"
+        fail_mode: secure
+        Port "br0"
+            Interface "br0"
+                type: internal
+        Port "vethd6e5bb5a"
+            Interface "vethd6e5bb5a"
+        Port "tun0"
+            Interface "tun0"
+                type: internal
+        Port "vxlan0"
+            Interface "vxlan0"
+                type: vxlan
+                options: {key=flow, remote_ip=flow}
+    ovs_version: "2.6.1"
+=> ovs-ofctl -O OpenFlow13 show br0
+OFPT_FEATURES_REPLY (OF1.3) (xid=0x2): dpid:00002e18ef53ba4b
+n_tables:254, n_buffers:256
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS GROUP_STATS QUEUE_STATS
+OFPST_PORT_DESC reply (OF1.3) (xid=0x3):
+ 1(vxlan0): addr:36:72:cf:69:f0:8f
+     config:     0
+     state:      0
+     speed: 0 Mbps now, 0 Mbps max
+ 2(tun0): addr:a6:4f:b2:0b:f2:3d
+     config:     0
+     state:      0
+     speed: 0 Mbps now, 0 Mbps max
+ 5(vethd6e5bb5a): addr:da:bb:96:8e:d9:50
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(br0): addr:2e:18:ef:53:ba:4b
+     config:     PORT_DOWN
+     state:      LINK_DOWN
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (OF1.3) (xid=0x5): frags=normal miss_send_len=0
+=> ovs-ofctl -O OpenFlow13 dump-ports-desc br0
+OFPST_PORT_DESC reply (OF1.3) (xid=0x2):
+ 1(vxlan0): addr:36:72:cf:69:f0:8f
+     config:     0
+     state:      0
+     speed: 0 Mbps now, 0 Mbps max
+ 2(tun0): addr:a6:4f:b2:0b:f2:3d
+     config:     0
+     state:      0
+     speed: 0 Mbps now, 0 Mbps max
+ 5(vethd6e5bb5a): addr:da:bb:96:8e:d9:50
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(br0): addr:2e:18:ef:53:ba:4b
+     config:     PORT_DOWN
+     state:      LINK_DOWN
+     speed: 0 Mbps now, 0 Mbps max
+=> ovs-ofctl -O OpenFlow13 dump-flows br0
+OFPST_FLOW reply (OF1.3) (xid=0x2):
+ cookie=0x0, duration=1537.442s, table=0, n_packets=0, n_bytes=0, priority=250,ip,in_port=2,nw_dst=224.0.0.0/4 actions=drop
+ cookie=0x0, duration=1537.460s, table=0, n_packets=41, n_bytes=1722, priority=200,arp,in_port=1,arp_spa=10.128.0.0/14,arp_tpa=10.131.0.0/23 actions=move:NXM_NX_TUN_ID[0..31]->NXM_NX_REG0[],goto_table:10
+ cookie=0x0, duration=1537.455s, table=0, n_packets=534, n_bytes=39516, priority=200,ip,in_port=1,nw_src=10.128.0.0/14,nw_dst=10.131.0.0/23 actions=move:NXM_NX_TUN_ID[0..31]->NXM_NX_REG0[],goto_table:10
+ cookie=0x0, duration=1537.451s, table=0, n_packets=0, n_bytes=0, priority=200,ip,in_port=1,nw_src=10.128.0.0/14,nw_dst=224.0.0.0/4 actions=move:NXM_NX_TUN_ID[0..31]->NXM_NX_REG0[],goto_table:10
+ cookie=0x0, duration=1537.438s, table=0, n_packets=46, n_bytes=1932, priority=200,arp,in_port=2,arp_spa=10.131.0.1,arp_tpa=10.128.0.0/14 actions=goto_table:30
+ cookie=0x0, duration=1537.433s, table=0, n_packets=5067, n_bytes=606060, priority=200,ip,in_port=2 actions=goto_table:30
+ cookie=0x0, duration=1537.446s, table=0, n_packets=0, n_bytes=0, priority=150,in_port=1 actions=drop
+ cookie=0x0, duration=1537.430s, table=0, n_packets=8, n_bytes=648, priority=150,in_port=2 actions=drop
+ cookie=0x0, duration=1537.426s, table=0, n_packets=5, n_bytes=210, priority=100,arp actions=goto_table:20
+ cookie=0x0, duration=1537.422s, table=0, n_packets=3020, n_bytes=875626, priority=100,ip actions=goto_table:20
+ cookie=0x0, duration=1537.418s, table=0, n_packets=21, n_bytes=1674, priority=0 actions=drop
+ cookie=0x0, duration=1537.273s, table=10, n_packets=0, n_bytes=0, priority=100,tun_src=10.0.1.21 actions=goto_table:30
+ cookie=0x0, duration=1537.251s, table=10, n_packets=575, n_bytes=41238, priority=100,tun_src=10.0.1.41 actions=goto_table:30
+ cookie=0x0, duration=1537.236s, table=10, n_packets=0, n_bytes=0, priority=100,tun_src=10.0.1.42 actions=goto_table:30
+ cookie=0x0, duration=1537.413s, table=10, n_packets=0, n_bytes=0, priority=0 actions=drop
+ cookie=0x0, duration=1445.213s, table=20, n_packets=1, n_bytes=42, priority=100,arp,in_port=5,arp_spa=10.131.0.13,arp_sha=0e:d5:b5:3a:9c:24 actions=load:0->NXM_NX_REG0[],goto_table:21
+ cookie=0x0, duration=1445.211s, table=20, n_packets=2920, n_bytes=850250, priority=100,ip,in_port=5,nw_src=10.131.0.13 actions=load:0->NXM_NX_REG0[],goto_table:21
+ cookie=0x0, duration=1537.409s, table=20, n_packets=0, n_bytes=0, priority=0 actions=drop
+ cookie=0x0, duration=1537.406s, table=21, n_packets=3025, n_bytes=875836, priority=0 actions=goto_table:30
+ cookie=0x0, duration=1537.401s, table=30, n_packets=46, n_bytes=1932, priority=300,arp,arp_tpa=10.131.0.1 actions=output:2
+ cookie=0x0, duration=1537.390s, table=30, n_packets=3454, n_bytes=889766, priority=300,ip,nw_dst=10.131.0.1 actions=output:2
+ cookie=0x0, duration=1537.397s, table=30, n_packets=5, n_bytes=210, priority=200,arp,arp_tpa=10.131.0.0/23 actions=goto_table:40
+ cookie=0x0, duration=1537.383s, table=30, n_packets=4266, n_bytes=554262, priority=200,ip,nw_dst=10.131.0.0/23 actions=goto_table:70
+ cookie=0x0, duration=1537.394s, table=30, n_packets=41, n_bytes=1722, priority=100,arp,arp_tpa=10.128.0.0/14 actions=goto_table:50
+ cookie=0x0, duration=1537.380s, table=30, n_packets=801, n_bytes=51798, priority=100,ip,nw_dst=10.128.0.0/14 actions=goto_table:90
+ cookie=0x0, duration=1537.387s, table=30, n_packets=100, n_bytes=25376, priority=100,ip,nw_dst=172.30.0.0/16 actions=goto_table:60
+ cookie=0x0, duration=1537.376s, table=30, n_packets=0, n_bytes=0, priority=50,ip,in_port=1,nw_dst=224.0.0.0/4 actions=goto_table:120
+ cookie=0x0, duration=1537.371s, table=30, n_packets=0, n_bytes=0, priority=25,ip,nw_dst=224.0.0.0/4 actions=goto_table:110
+ cookie=0x0, duration=1537.367s, table=30, n_packets=0, n_bytes=0, priority=0,ip actions=goto_table:100
+ cookie=0x0, duration=1537.364s, table=30, n_packets=0, n_bytes=0, priority=0,arp actions=drop
+ cookie=0x0, duration=1445.209s, table=40, n_packets=1, n_bytes=42, priority=100,arp,arp_tpa=10.131.0.13 actions=output:5
+ cookie=0x0, duration=1537.360s, table=40, n_packets=0, n_bytes=0, priority=0 actions=drop
+ cookie=0x0, duration=1537.269s, table=50, n_packets=0, n_bytes=0, priority=100,arp,arp_tpa=10.128.0.0/23 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:10.0.1.21->tun_dst,output:1
+ cookie=0x0, duration=1537.246s, table=50, n_packets=41, n_bytes=1722, priority=100,arp,arp_tpa=10.129.0.0/23 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:10.0.1.41->tun_dst,output:1
+ cookie=0x0, duration=1537.232s, table=50, n_packets=0, n_bytes=0, priority=100,arp,arp_tpa=10.130.0.0/23 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:10.0.1.42->tun_dst,output:1
+ cookie=0x0, duration=1537.356s, table=50, n_packets=0, n_bytes=0, priority=0 actions=drop
+ cookie=0x0, duration=1537.351s, table=60, n_packets=100, n_bytes=25376, priority=200,reg0=0 actions=output:2
+ cookie=0x0, duration=1537.258s, table=60, n_packets=0, n_bytes=0, priority=100,tcp,nw_dst=172.30.0.1,tp_dst=443 actions=load:0->NXM_NX_REG1[],load:0x2->NXM_NX_REG2[],goto_table:80
+ cookie=0x0, duration=1537.252s, table=60, n_packets=0, n_bytes=0, priority=100,udp,nw_dst=172.30.0.1,tp_dst=53 actions=load:0->NXM_NX_REG1[],load:0x2->NXM_NX_REG2[],goto_table:80
+ cookie=0x0, duration=1537.247s, table=60, n_packets=0, n_bytes=0, priority=100,tcp,nw_dst=172.30.0.1,tp_dst=53 actions=load:0->NXM_NX_REG1[],load:0x2->NXM_NX_REG2[],goto_table:80
+ cookie=0x0, duration=1487.047s, table=60, n_packets=0, n_bytes=0, priority=100,tcp,nw_dst=172.30.231.228,tp_dst=80 actions=load:0->NXM_NX_REG1[],load:0x2->NXM_NX_REG2[],goto_table:80
+ cookie=0x0, duration=1487.039s, table=60, n_packets=0, n_bytes=0, priority=100,tcp,nw_dst=172.30.231.228,tp_dst=443 actions=load:0->NXM_NX_REG1[],load:0x2->NXM_NX_REG2[],goto_table:80
+ cookie=0x0, duration=1487.035s, table=60, n_packets=0, n_bytes=0, priority=100,tcp,nw_dst=172.30.231.228,tp_dst=1936 actions=load:0->NXM_NX_REG1[],load:0x2->NXM_NX_REG2[],goto_table:80
+ cookie=0x0, duration=1452.898s, table=60, n_packets=0, n_bytes=0, priority=100,tcp,nw_dst=172.30.160.54,tp_dst=5000 actions=load:0->NXM_NX_REG1[],load:0x2->NXM_NX_REG2[],goto_table:80
+ cookie=0x0, duration=1444.577s, table=60, n_packets=0, n_bytes=0, priority=100,tcp,nw_dst=172.30.14.71,tp_dst=9000 actions=load:0->NXM_NX_REG1[],load:0x2->NXM_NX_REG2[],goto_table:80
+ cookie=0x0, duration=1537.346s, table=60, n_packets=0, n_bytes=0, priority=0 actions=drop
+ cookie=0x0, duration=1445.207s, table=70, n_packets=4160, n_bytes=408392, priority=100,ip,nw_dst=10.131.0.13 actions=load:0->NXM_NX_REG1[],load:0x5->NXM_NX_REG2[],goto_table:80
+ cookie=0x0, duration=1537.342s, table=70, n_packets=0, n_bytes=0, priority=0 actions=drop
+ cookie=0x0, duration=1537.338s, table=80, n_packets=4160, n_bytes=408392, priority=300,ip,nw_src=10.131.0.1 actions=output:NXM_NX_REG2[]
+ cookie=0x0, duration=1537.276s, table=80, n_packets=106, n_bytes=145870, priority=200,reg0=0 actions=output:NXM_NX_REG2[]
+ cookie=0x0, duration=1537.271s, table=80, n_packets=0, n_bytes=0, priority=200,reg1=0 actions=output:NXM_NX_REG2[]
+ cookie=0x0, duration=1537.333s, table=80, n_packets=0, n_bytes=0, priority=0 actions=drop
+ cookie=0x0, duration=1537.263s, table=90, n_packets=0, n_bytes=0, priority=100,ip,nw_dst=10.128.0.0/23 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:10.0.1.21->tun_dst,output:1
+ cookie=0x0, duration=1537.243s, table=90, n_packets=801, n_bytes=51798, priority=100,ip,nw_dst=10.129.0.0/23 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:10.0.1.41->tun_dst,output:1
+ cookie=0x0, duration=1537.229s, table=90, n_packets=0, n_bytes=0, priority=100,ip,nw_dst=10.130.0.0/23 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:10.0.1.42->tun_dst,output:1
+ cookie=0x0, duration=1537.328s, table=90, n_packets=0, n_bytes=0, priority=0 actions=drop
+ cookie=0x0, duration=1537.323s, table=100, n_packets=0, n_bytes=0, priority=0 actions=output:2
+ cookie=0x0, duration=1537.317s, table=110, n_packets=0, n_bytes=0, priority=0 actions=drop
+ cookie=0x0, duration=1537.224s, table=111, n_packets=0, n_bytes=0, priority=100 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:10.0.1.21->tun_dst,output:1,set_field:10.0.1.41->tun_dst,output:1,set_field:10.0.1.42->tun_dst,output:1,goto_table:120
+ cookie=0x0, duration=1537.308s, table=120, n_packets=0, n_bytes=0, priority=0 actions=drop
+ cookie=0x0, duration=1537.288s, table=253, n_packets=0, n_bytes=0, actions=note:01.03.00.00.00.00
+=> ovs-dpctl show
+system@ovs-system:
+	lookups: hit:4987665 missed:63696 lost:93
+	flows: 4
+	masks: hit:15170920 total:3 hit/pkt:3.00
+	port 0: ovs-system (internal)
+	port 1: vxlan_sys_4789 (vxlan)
+	port 2: tun0 (internal)
+	port 3: br0 (internal)
+	port 5: vethd6e5bb5a
+=> ovs-dpctl dump-flows
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(dst=10.129.0.0/255.255.254.0,tos=0/0x3,frag=no), packets:800, bytes:51724, used:2.890s, flags:SR., actions:set(tunnel(tun_id=0x0,dst=10.0.1.41,ttl=64,flags(df|key))),1
+recirc_id(0),tunnel(tun_id=0x0,src=10.0.1.41,dst=10.0.1.31,flags(-df-csum+key)),in_port(1),skb_mark(0),eth_type(0x0800),ipv4(src=10.128.0.0/255.252.0.0,dst=10.131.0.1,frag=no), packets:533, bytes:39442, used:2.891s, flags:S., actions:2
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=10.131.0.1,dst=10.131.0.13,frag=no), packets:4160, bytes:408372, used:0.174s, flags:SFPR., actions:5
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.131.0.13,dst=10.131.0.1,frag=no), packets:2920, bytes:850250, used:0.174s, flags:SP., actions:2
+=> ovs-dpctl dump-flows -m
+ufid:8d98f630-7ed4-4779-ae10-62ee24147e6b, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(tun0),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=0.0.0.0/0.0.0.0,dst=10.129.0.0/255.255.254.0,proto=0/0,tos=0/0x3,ttl=0/0,frag=no), packets:800, bytes:51724, used:2.893s, flags:SR., actions:set(tunnel(tun_id=0x0,dst=10.0.1.41,ttl=64,flags(df|key))),1
+ufid:706ba7a4-0359-402f-90c4-d29ab3315512, recirc_id(0),dp_hash(0/0),skb_priority(0/0),tunnel(tun_id=0x0,src=10.0.1.41,dst=10.0.1.31,ttl=0/0,flags(-df-csum+key)),in_port(vxlan_sys_4789),skb_mark(0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.128.0.0/255.252.0.0,dst=10.131.0.1,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:533, bytes:39442, used:2.893s, flags:S., actions:2
+ufid:9d50c494-12f6-4947-94dc-a13edc66be87, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(tun0),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.131.0.1,dst=10.131.0.13,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:4160, bytes:408372, used:0.176s, flags:SFPR., actions:5
+ufid:89699649-9e36-42f8-bffd-46e156cd470b, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(vethd6e5bb5a),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.131.0.13,dst=10.131.0.1,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:2920, bytes:850250, used:0.176s, flags:SP., actions:2

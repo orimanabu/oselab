@@ -1,0 +1,667 @@
+=> node
+==> oc get node --show-labels
+NAME                    STATUS                     AGE       LABELS
+infra1.osetest.local    Ready                      1h        beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=infra1.osetest.local,region=infra
+master1.osetest.local   Ready,SchedulingDisabled   1h        beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=master1.osetest.local,region=infra
+node1.osetest.local     Ready                      1h        beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1.osetest.local,region=primary,zone=east
+node2.osetest.local     Ready                      1h        beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node2.osetest.local,region=primary,zone=west
+=> project: all_namespaces
+==> oc get all,pvc -o wide --all-namespaces
+NAMESPACE   NAME                                     DOCKER REPO                                                                    TAGS                            UPDATED
+default     is/registry-console                      172.30.160.54:5000/default/registry-console                                    3.5                             About an hour ago
+openshift   is/dotnet                                172.30.160.54:5000/openshift/dotnet                                            latest,1.1,1.0                  About an hour ago
+openshift   is/fis-java-openshift                    registry.access.redhat.com/jboss-fuse-6/fis-java-openshift                     2.0-5,latest,2.0 + 2 more...    About an hour ago
+openshift   is/fis-karaf-openshift                   registry.access.redhat.com/jboss-fuse-6/fis-karaf-openshift                    2.0-5,latest,2.0 + 2 more...    About an hour ago
+openshift   is/jboss-amq-62                          registry.access.redhat.com/jboss-amq-6/amq62-openshift                         latest,1.4,1.4-12 + 2 more...   About an hour ago
+openshift   is/jboss-datagrid65-openshift            registry.access.redhat.com/jboss-datagrid-6/datagrid65-openshift               latest,1.4,1.4-7 + 2 more...    About an hour ago
+openshift   is/jboss-datavirt63-openshift            registry.access.redhat.com/jboss-datavirt-6/datavirt63-openshift               latest,1.2,1.2-6 + 2 more...    About an hour ago
+openshift   is/jboss-decisionserver62-openshift      registry.access.redhat.com/jboss-decisionserver-6/decisionserver62-openshift   latest,1.2,1.2-23 + 2 more...   About an hour ago
+openshift   is/jboss-decisionserver63-openshift      registry.access.redhat.com/jboss-decisionserver-6/decisionserver63-openshift   1.4-10,1.3,1.3-32 + 2 more...   About an hour ago
+openshift   is/jboss-eap64-openshift                 registry.access.redhat.com/jboss-eap-6/eap64-openshift                         latest,1.5,1.5-12 + 2 more...   About an hour ago
+openshift   is/jboss-eap70-openshift                 registry.access.redhat.com/jboss-eap-7/eap70-openshift                         1.5-13,1.4,1.4-36 + 2 more...   About an hour ago
+openshift   is/jboss-processserver63-openshift       registry.access.redhat.com/jboss-processserver-6/processserver63-openshift     1.3,1.3-34,latest + 2 more...   About an hour ago
+openshift   is/jboss-webserver30-tomcat7-openshift   registry.access.redhat.com/jboss-webserver-3/webserver30-tomcat7-openshift     1.3,1.3-9,1.2 + 2 more...       About an hour ago
+openshift   is/jboss-webserver30-tomcat8-openshift   registry.access.redhat.com/jboss-webserver-3/webserver30-tomcat8-openshift     latest,1.3,1.3-9 + 2 more...    About an hour ago
+openshift   is/jenkins                               172.30.160.54:5000/openshift/jenkins                                           latest,1,2                      2 hours ago
+openshift   is/mariadb                               172.30.160.54:5000/openshift/mariadb                                           latest,10.1                     2 hours ago
+openshift   is/mongodb                               172.30.160.54:5000/openshift/mongodb                                           latest,3.2,2.6 + 1 more...      2 hours ago
+openshift   is/mysql                                 172.30.160.54:5000/openshift/mysql                                             latest,5.7,5.6 + 1 more...      2 hours ago
+openshift   is/nodejs                                172.30.160.54:5000/openshift/nodejs                                            latest,0.10,4                   2 hours ago
+openshift   is/perl                                  172.30.160.54:5000/openshift/perl                                              latest,5.24,5.20 + 1 more...    2 hours ago
+openshift   is/php                                   172.30.160.54:5000/openshift/php                                               latest,7.0,5.6 + 1 more...      2 hours ago
+openshift   is/postgresql                            172.30.160.54:5000/openshift/postgresql                                        latest,9.5,9.4 + 1 more...      2 hours ago
+openshift   is/python                                172.30.160.54:5000/openshift/python                                            3.4,3.3,2.7 + 2 more...         2 hours ago
+openshift   is/redhat-openjdk18-openshift            registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift               latest,1.1,1.1-8 + 2 more...    About an hour ago
+openshift   is/redhat-sso70-openshift                registry.access.redhat.com/redhat-sso-7/sso70-openshift                        latest,1.4,1.4-7 + 2 more...    About an hour ago
+openshift   is/redis                                 172.30.160.54:5000/openshift/redis                                             latest,3.2                      2 hours ago
+openshift   is/ruby                                  172.30.160.54:5000/openshift/ruby                                              latest,2.3,2.2 + 1 more...      2 hours ago
+NAMESPACE   NAME                  REVISION   DESIRED   CURRENT   TRIGGERED BY
+default     dc/docker-registry    1          1         1         config
+default     dc/registry-console   1          1         1         config
+default     dc/router             1          1         1         config
+proj1       dc/database           1          1         1         config,image(mysql:5.7)
+proj1       dc/database2          1          1         1         config,image(mysql:5.7)
+NAMESPACE   NAME                    DESIRED   CURRENT   READY     AGE       CONTAINER(S)       IMAGE(S)                                                                                                                  SELECTOR
+default     rc/docker-registry-1    1         1         1         1h        registry           openshift3/ose-docker-registry:v3.5.5.24                                                                                  deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default
+default     rc/registry-console-1   1         1         1         1h        registry-console   registry.access.redhat.com/openshift3/registry-console:3.5                                                                deployment=registry-console-1,deploymentconfig=registry-console,name=registry-console
+default     rc/router-1             1         1         1         1h        router             openshift3/ose-haproxy-router:v3.5.5.24                                                                                   deployment=router-1,deploymentconfig=router,router=router
+proj1       rc/database-1           1         1         1         1h        mysql              registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8   deployment=database-1,deploymentconfig=database,name=database
+proj1       rc/database2-1          1         1         1         9m        mysql              registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8   deployment=database2-1,deploymentconfig=database2,name=database2
+NAMESPACE   NAME                      HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION   WILDCARD
+default     routes/docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough   None
+default     routes/registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough   None
+NAMESPACE   NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE       SELECTOR
+default     svc/docker-registry    172.30.160.54    <none>        5000/TCP                  1h        docker-registry=default
+default     svc/kubernetes         172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     1h        <none>
+default     svc/registry-console   172.30.14.71     <none>        9000/TCP                  1h        name=registry-console
+default     svc/router             172.30.231.228   <none>        80/TCP,443/TCP,1936/TCP   1h        router=router
+proj1       svc/database           172.30.130.207   <none>        3306/TCP                  1h        name=database
+proj1       svc/database2          172.30.120.55    <none>        3306/TCP                  9m        name=database2
+proj2       svc/database           172.30.52.39     <none>        3306/TCP                  31m       name=database
+NAMESPACE   NAME                          READY     STATUS    RESTARTS   AGE       IP            NODE
+default     po/docker-registry-1-793jn    1/1       Running   0          1h        10.131.0.13   infra1.osetest.local
+default     po/registry-console-1-8bjk1   1/1       Running   0          1h        10.129.0.3    node1.osetest.local
+default     po/router-1-wtkgr             1/1       Running   0          1h        10.0.1.31     infra1.osetest.local
+proj1       po/database-1-szlpm           1/1       Running   0          1h        10.129.0.4    node1.osetest.local
+proj1       po/database2-1-r3k47          1/1       Running   0          9m        10.130.0.17   node2.osetest.local
+==> oc get pod -o wide --all-namespaces
+NAMESPACE   NAME                       READY     STATUS    RESTARTS   AGE       IP            NODE
+default     docker-registry-1-793jn    1/1       Running   0          1h        10.131.0.13   infra1.osetest.local
+default     registry-console-1-8bjk1   1/1       Running   0          1h        10.129.0.3    node1.osetest.local
+default     router-1-wtkgr             1/1       Running   0          1h        10.0.1.31     infra1.osetest.local
+proj1       database-1-szlpm           1/1       Running   0          1h        10.129.0.4    node1.osetest.local
+proj1       database2-1-r3k47          1/1       Running   0          9m        10.130.0.17   node2.osetest.local
+==> oc get svc --all-namespaces
+NAMESPACE   NAME               CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
+default     docker-registry    172.30.160.54    <none>        5000/TCP                  1h
+default     kubernetes         172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     1h
+default     registry-console   172.30.14.71     <none>        9000/TCP                  1h
+default     router             172.30.231.228   <none>        80/TCP,443/TCP,1936/TCP   1h
+proj1       database           172.30.130.207   <none>        3306/TCP                  1h
+proj1       database2          172.30.120.55    <none>        3306/TCP                  9m
+proj2       database           172.30.52.39     <none>        3306/TCP                  31m
+==> oc get route --all-namespaces
+NAMESPACE   NAME               HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION   WILDCARD
+default     docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough   None
+default     registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough   None
+
+=> project: default
+==> oc get all,pvc -o wide -n default
+NAME                  DOCKER REPO                                   TAGS      UPDATED
+is/registry-console   172.30.160.54:5000/default/registry-console   3.5       About an hour ago
+NAME                  REVISION   DESIRED   CURRENT   TRIGGERED BY
+dc/docker-registry    1          1         1         config
+dc/registry-console   1          1         1         config
+dc/router             1          1         1         config
+NAME                    DESIRED   CURRENT   READY     AGE       CONTAINER(S)       IMAGE(S)                                                     SELECTOR
+rc/docker-registry-1    1         1         1         1h        registry           openshift3/ose-docker-registry:v3.5.5.24                     deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default
+rc/registry-console-1   1         1         1         1h        registry-console   registry.access.redhat.com/openshift3/registry-console:3.5   deployment=registry-console-1,deploymentconfig=registry-console,name=registry-console
+rc/router-1             1         1         1         1h        router             openshift3/ose-haproxy-router:v3.5.5.24                      deployment=router-1,deploymentconfig=router,router=router
+NAME                      HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION   WILDCARD
+routes/docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough   None
+routes/registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough   None
+NAME                   CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE       SELECTOR
+svc/docker-registry    172.30.160.54    <none>        5000/TCP                  1h        docker-registry=default
+svc/kubernetes         172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     1h        <none>
+svc/registry-console   172.30.14.71     <none>        9000/TCP                  1h        name=registry-console
+svc/router             172.30.231.228   <none>        80/TCP,443/TCP,1936/TCP   1h        router=router
+NAME                          READY     STATUS    RESTARTS   AGE       IP            NODE
+po/docker-registry-1-793jn    1/1       Running   0          1h        10.131.0.13   infra1.osetest.local
+po/registry-console-1-8bjk1   1/1       Running   0          1h        10.129.0.3    node1.osetest.local
+po/router-1-wtkgr             1/1       Running   0          1h        10.0.1.31     infra1.osetest.local
+==> oc get pod -o wide -n default
+NAME                       READY     STATUS    RESTARTS   AGE       IP            NODE
+docker-registry-1-793jn    1/1       Running   0          1h        10.131.0.13   infra1.osetest.local
+registry-console-1-8bjk1   1/1       Running   0          1h        10.129.0.3    node1.osetest.local
+router-1-wtkgr             1/1       Running   0          1h        10.0.1.31     infra1.osetest.local
+==> oc get svc -n default
+NAME               CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
+docker-registry    172.30.160.54    <none>        5000/TCP                  1h
+kubernetes         172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     1h
+registry-console   172.30.14.71     <none>        9000/TCP                  1h
+router             172.30.231.228   <none>        80/TCP,443/TCP,1936/TCP   1h
+==> oc get route -n default
+NAME               HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION   WILDCARD
+docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough   None
+registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough   None
+
+
+==>
+===> oc describe pod/docker-registry-1-793jn -n default
+Name:			docker-registry-1-793jn
+Namespace:		default
+Security Policy:	hostnetwork
+Node:			infra1.osetest.local/10.0.1.31
+Start Time:		Tue, 18 Jul 2017 14:57:15 +0900
+Labels:			deployment=docker-registry-1
+			deploymentconfig=docker-registry
+			docker-registry=default
+Status:			Running
+IP:			10.131.0.13
+Controllers:		ReplicationController/docker-registry-1
+Containers:
+  registry:
+    Container ID:	docker://6fb26e0fb2fdb57b0eb06237fe7eec471a40e8fb75889709dc594a9712b65220
+    Image:		openshift3/ose-docker-registry:v3.5.5.24
+    Image ID:		docker-pullable://registry.access.redhat.com/openshift3/ose-docker-registry@sha256:9b1ef4abbce573c9a55e54dec24c87b798539c2f2bb5c39304aa80fda9e08f7d
+    Port:		5000/TCP
+    Requests:
+      cpu:		100m
+      memory:		256Mi
+    State:		Running
+      Started:		Tue, 18 Jul 2017 14:57:16 +0900
+    Ready:		True
+    Restart Count:	0
+    Liveness:		http-get https://:5000/healthz delay=10s timeout=5s period=10s #success=1 #failure=3
+    Readiness:		http-get https://:5000/healthz delay=0s timeout=5s period=10s #success=1 #failure=3
+    Volume Mounts:
+      /etc/secrets from registry-certificates (rw)
+      /registry from registry-storage (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from registry-token-7xns5 (ro)
+    Environment Variables:
+      REGISTRY_HTTP_ADDR:					:5000
+      REGISTRY_HTTP_NET:					tcp
+      REGISTRY_HTTP_SECRET:					mKHA8b5D0qtqOIlzxUfIFb+atfFh95YO3HcM+Q8ao88=
+      REGISTRY_MIDDLEWARE_REPOSITORY_OPENSHIFT_ENFORCEQUOTA:	false
+      REGISTRY_HTTP_TLS_KEY:					/etc/secrets/registry.key
+      REGISTRY_HTTP_TLS_CERTIFICATE:				/etc/secrets/registry.crt
+Conditions:
+  Type		Status
+  Initialized 	True 
+  Ready 	True 
+  PodScheduled 	True 
+Volumes:
+  registry-storage:
+    Type:	EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:	
+  registry-certificates:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	registry-certificates
+  registry-token-7xns5:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	registry-token-7xns5
+QoS Class:	Burstable
+Tolerations:	<none>
+Events:
+  FirstSeen	LastSeen	Count	From				SubObjectPath			Type		Reason		Message
+  ---------	--------	-----	----				-------------			--------	------		-------
+  1h		1h		1	{default-scheduler }						Normal		Scheduled	Successfully assigned docker-registry-1-793jn to infra1.osetest.local
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{registry}	Normal		Pulled		Container image "openshift3/ose-docker-registry:v3.5.5.24" already present on machine
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{registry}	Normal		Created		Created container with docker id 6fb26e0fb2fd; Security:[seccomp=unconfined]
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{registry}	Normal		Started		Started container with docker id 6fb26e0fb2fd
+  56m		56m		1	{kubelet infra1.osetest.local}	spec.containers{registry}	Warning		Unhealthy	Liveness probe failed: Get https://10.131.0.13:5000/healthz: http2: no cached connection was available
+===> oc describe pod/registry-console-1-8bjk1 -n default
+Name:			registry-console-1-8bjk1
+Namespace:		default
+Security Policy:	restricted
+Node:			node1.osetest.local/10.0.1.41
+Start Time:		Tue, 18 Jul 2017 14:58:04 +0900
+Labels:			app=registry-console
+			deployment=registry-console-1
+			deploymentconfig=registry-console
+			name=registry-console
+Status:			Running
+IP:			10.129.0.3
+Controllers:		ReplicationController/registry-console-1
+Containers:
+  registry-console:
+    Container ID:	docker://3422b6d04b4ca715b80f713b21021a449104592ff0287f47198b7cd4d1cdfb66
+    Image:		registry.access.redhat.com/openshift3/registry-console:3.5
+    Image ID:		docker-pullable://registry.access.redhat.com/openshift3/registry-console@sha256:d648fa2888fd3ba187bd48386e8026841431a643dd001d1cd236c4ccf92cec77
+    Port:		9090/TCP
+    State:		Running
+      Started:		Tue, 18 Jul 2017 14:58:58 +0900
+    Ready:		True
+    Restart Count:	0
+    Liveness:		http-get http://:9090/ping delay=10s timeout=5s period=10s #success=1 #failure=3
+    Readiness:		http-get http://:9090/ping delay=0s timeout=5s period=10s #success=1 #failure=3
+    Volume Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-81qg6 (ro)
+    Environment Variables:
+      OPENSHIFT_OAUTH_PROVIDER_URL:	https://master1.example.com:8443
+      OPENSHIFT_OAUTH_CLIENT_ID:	cockpit-oauth-client
+      KUBERNETES_INSECURE:		false
+      COCKPIT_KUBE_INSECURE:		false
+      REGISTRY_ONLY:			true
+      REGISTRY_HOST:			docker-registry-default.app.example.com
+Conditions:
+  Type		Status
+  Initialized 	True 
+  Ready 	True 
+  PodScheduled 	True 
+Volumes:
+  default-token-81qg6:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	default-token-81qg6
+QoS Class:	BestEffort
+Tolerations:	<none>
+Events:
+  FirstSeen	LastSeen	Count	From				SubObjectPath				Type		Reason		Message
+  ---------	--------	-----	----				-------------				--------	------		-------
+  1h		1h		1	{default-scheduler }							Normal		Scheduled	Successfully assigned registry-console-1-8bjk1 to node1.osetest.local
+  1h		1h		1	{kubelet node1.osetest.local}	spec.containers{registry-console}	Normal		Pulling		pulling image "registry.access.redhat.com/openshift3/registry-console:3.5"
+  1h		1h		1	{kubelet node1.osetest.local}	spec.containers{registry-console}	Normal		Pulled		Successfully pulled image "registry.access.redhat.com/openshift3/registry-console:3.5"
+  1h		1h		1	{kubelet node1.osetest.local}	spec.containers{registry-console}	Normal		Created		Created container with docker id 3422b6d04b4c; Security:[seccomp=unconfined]
+  1h		1h		1	{kubelet node1.osetest.local}	spec.containers{registry-console}	Normal		Started		Started container with docker id 3422b6d04b4c
+===> oc describe pod/router-1-wtkgr -n default
+Name:			router-1-wtkgr
+Namespace:		default
+Security Policy:	hostnetwork
+Node:			infra1.osetest.local/10.0.1.31
+Start Time:		Tue, 18 Jul 2017 14:56:40 +0900
+Labels:			deployment=router-1
+			deploymentconfig=router
+			router=router
+Status:			Running
+IP:			10.0.1.31
+Controllers:		ReplicationController/router-1
+Containers:
+  router:
+    Container ID:	docker://cb3235b84a2a1a419f675a02de5cdefa8f5847c3ac7905ea4a265143609c7e7f
+    Image:		openshift3/ose-haproxy-router:v3.5.5.24
+    Image ID:		docker-pullable://registry.access.redhat.com/openshift3/ose-haproxy-router@sha256:40e587a0369bf3ab612c31d40cddbed8318025724219d898d8471d515d5d98c2
+    Ports:		80/TCP, 443/TCP, 1936/TCP
+    Requests:
+      cpu:		100m
+      memory:		256Mi
+    State:		Running
+      Started:		Tue, 18 Jul 2017 14:56:41 +0900
+    Ready:		True
+    Restart Count:	0
+    Liveness:		http-get http://localhost:1936/healthz delay=10s timeout=1s period=10s #success=1 #failure=3
+    Readiness:		http-get http://localhost:1936/healthz delay=10s timeout=1s period=10s #success=1 #failure=3
+    Volume Mounts:
+      /etc/pki/tls/private from server-certificate (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from router-token-89h98 (ro)
+    Environment Variables:
+      DEFAULT_CERTIFICATE_DIR:			/etc/pki/tls/private
+      ROUTER_EXTERNAL_HOST_HOSTNAME:		
+      ROUTER_EXTERNAL_HOST_HTTPS_VSERVER:	
+      ROUTER_EXTERNAL_HOST_HTTP_VSERVER:	
+      ROUTER_EXTERNAL_HOST_INSECURE:		false
+      ROUTER_EXTERNAL_HOST_INTERNAL_ADDRESS:	
+      ROUTER_EXTERNAL_HOST_PARTITION_PATH:	
+      ROUTER_EXTERNAL_HOST_PASSWORD:		
+      ROUTER_EXTERNAL_HOST_PRIVKEY:		/etc/secret-volume/router.pem
+      ROUTER_EXTERNAL_HOST_USERNAME:		
+      ROUTER_EXTERNAL_HOST_VXLAN_GW_CIDR:	
+      ROUTER_SERVICE_HTTPS_PORT:		443
+      ROUTER_SERVICE_HTTP_PORT:			80
+      ROUTER_SERVICE_NAME:			router
+      ROUTER_SERVICE_NAMESPACE:			default
+      ROUTER_SUBDOMAIN:				
+      STATS_PASSWORD:				ylsRrPFLsj
+      STATS_PORT:				1936
+      STATS_USERNAME:				admin
+Conditions:
+  Type		Status
+  Initialized 	True 
+  Ready 	True 
+  PodScheduled 	True 
+Volumes:
+  server-certificate:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	router-certs
+  router-token-89h98:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	router-token-89h98
+QoS Class:	Burstable
+Tolerations:	<none>
+Events:
+  FirstSeen	LastSeen	Count	From				SubObjectPath		Type		Reason		Message
+  ---------	--------	-----	----				-------------		--------	------		-------
+  1h		1h		1	{default-scheduler }					Normal		Scheduled	Successfully assigned router-1-wtkgr to infra1.osetest.local
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{router}	Normal		Pulled		Container image "openshift3/ose-haproxy-router:v3.5.5.24" already present on machine
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{router}	Normal		Created		Created container with docker id cb3235b84a2a; Security:[seccomp=unconfined]
+  1h		1h		1	{kubelet infra1.osetest.local}	spec.containers{router}	Normal		Started		Started container with docker id cb3235b84a2a
+===> oc describe service/docker-registry -n default
+Name:			docker-registry
+Namespace:		default
+Labels:			<none>
+Selector:		docker-registry=default
+Type:			ClusterIP
+IP:			172.30.160.54
+Port:			5000-tcp	5000/TCP
+Endpoints:		10.131.0.13:5000
+Session Affinity:	ClientIP
+No events.
+===> oc describe service/kubernetes -n default
+Name:			kubernetes
+Namespace:		default
+Labels:			component=apiserver
+			provider=kubernetes
+Selector:		<none>
+Type:			ClusterIP
+IP:			172.30.0.1
+Port:			https	443/TCP
+Endpoints:		172.16.99.21:8443
+Port:			dns	53/UDP
+Endpoints:		172.16.99.21:8053
+Port:			dns-tcp	53/TCP
+Endpoints:		172.16.99.21:8053
+Session Affinity:	ClientIP
+No events.
+===> oc describe service/registry-console -n default
+Name:			registry-console
+Namespace:		default
+Labels:			app=registry-console
+			createdBy=registry-console-template
+			name=registry-console
+Selector:		name=registry-console
+Type:			ClusterIP
+IP:			172.30.14.71
+Port:			registry-console	9000/TCP
+Endpoints:		10.129.0.3:9090
+Session Affinity:	None
+No events.
+===> oc describe service/router -n default
+Name:			router
+Namespace:		default
+Labels:			router=router
+Selector:		router=router
+Type:			ClusterIP
+IP:			172.30.231.228
+Port:			80-tcp	80/TCP
+Endpoints:		10.0.1.31:80
+Port:			443-tcp	443/TCP
+Endpoints:		10.0.1.31:443
+Port:			1936-tcp	1936/TCP
+Endpoints:		10.0.1.31:1936
+Session Affinity:	None
+No events.
+===> oc describe route/docker-registry -n default
+Name:			docker-registry
+Namespace:		default
+Created:		About an hour ago
+Labels:			<none>
+Annotations:		<none>
+Requested Host:		docker-registry-default.app.example.com
+			  exposed on router router about an hour ago
+Path:			<none>
+TLS Termination:	passthrough
+Insecure Policy:	<none>
+Endpoint Port:		<all endpoint ports>
+
+Service:	docker-registry
+Weight:		100 (100%)
+Endpoints:	10.131.0.13:5000
+===> oc describe route/registry-console -n default
+Name:			registry-console
+Namespace:		default
+Created:		About an hour ago
+Labels:			<none>
+Annotations:		openshift.io/host.generated=true
+Requested Host:		registry-console-default.app.example.com
+			  exposed on router router about an hour ago
+Path:			<none>
+TLS Termination:	passthrough
+Insecure Policy:	<none>
+Endpoint Port:		<all endpoint ports>
+
+Service:	registry-console
+Weight:		100 (100%)
+Endpoints:	10.129.0.3:9090
+
+=> project: kube-system
+==> oc get all,pvc -o wide -n kube-system
+==> oc get pod -o wide -n kube-system
+==> oc get svc -n kube-system
+==> oc get route -n kube-system
+
+
+==>
+
+=> project: logging
+==> oc get all,pvc -o wide -n logging
+==> oc get pod -o wide -n logging
+==> oc get svc -n logging
+==> oc get route -n logging
+
+
+==>
+
+=> project: management-infra
+==> oc get all,pvc -o wide -n management-infra
+==> oc get pod -o wide -n management-infra
+==> oc get svc -n management-infra
+==> oc get route -n management-infra
+
+
+==>
+
+=> project: openshift
+==> oc get all,pvc -o wide -n openshift
+NAME                                  DOCKER REPO                                                                    TAGS                               UPDATED
+dotnet                                172.30.160.54:5000/openshift/dotnet                                            latest,1.1,1.0                     2 hours ago
+fis-java-openshift                    registry.access.redhat.com/jboss-fuse-6/fis-java-openshift                     2.0,2.0-7,2.0-6 + 2 more...        About an hour ago
+fis-karaf-openshift                   registry.access.redhat.com/jboss-fuse-6/fis-karaf-openshift                    latest,2.0,2.0-7 + 2 more...       About an hour ago
+jboss-amq-62                          registry.access.redhat.com/jboss-amq-6/amq62-openshift                         latest,1.4,1.4-12 + 2 more...      About an hour ago
+jboss-datagrid65-openshift            registry.access.redhat.com/jboss-datagrid-6/datagrid65-openshift               1.3,1.3-11,latest + 2 more...      About an hour ago
+jboss-datavirt63-openshift            registry.access.redhat.com/jboss-datavirt-6/datavirt63-openshift               latest,1.2,1.2-6 + 2 more...       About an hour ago
+jboss-decisionserver62-openshift      registry.access.redhat.com/jboss-decisionserver-6/decisionserver62-openshift   1.2-20,1.2-18,latest + 2 more...   About an hour ago
+jboss-decisionserver63-openshift      registry.access.redhat.com/jboss-decisionserver-6/decisionserver63-openshift   1.3,1.3-32,latest + 2 more...      About an hour ago
+jboss-eap64-openshift                 registry.access.redhat.com/jboss-eap-6/eap64-openshift                         latest,1.5,1.5-12 + 2 more...      About an hour ago
+jboss-eap70-openshift                 registry.access.redhat.com/jboss-eap-7/eap70-openshift                         latest,1.5,1.5-13 + 2 more...      About an hour ago
+jboss-processserver63-openshift       registry.access.redhat.com/jboss-processserver-6/processserver63-openshift     latest,1.4,1.4-10 + 2 more...      About an hour ago
+jboss-webserver30-tomcat7-openshift   registry.access.redhat.com/jboss-webserver-3/webserver30-tomcat7-openshift     latest,1.3,1.3-9 + 2 more...       About an hour ago
+jboss-webserver30-tomcat8-openshift   registry.access.redhat.com/jboss-webserver-3/webserver30-tomcat8-openshift     latest,1.3,1.3-9 + 2 more...       About an hour ago
+jenkins                               172.30.160.54:5000/openshift/jenkins                                           latest,1,2                         2 hours ago
+mariadb                               172.30.160.54:5000/openshift/mariadb                                           latest,10.1                        2 hours ago
+mongodb                               172.30.160.54:5000/openshift/mongodb                                           latest,3.2,2.6 + 1 more...         2 hours ago
+mysql                                 172.30.160.54:5000/openshift/mysql                                             latest,5.7,5.6 + 1 more...         2 hours ago
+nodejs                                172.30.160.54:5000/openshift/nodejs                                            4,latest,0.10                      2 hours ago
+perl                                  172.30.160.54:5000/openshift/perl                                              latest,5.24,5.20 + 1 more...       2 hours ago
+php                                   172.30.160.54:5000/openshift/php                                               latest,7.0,5.6 + 1 more...         2 hours ago
+postgresql                            172.30.160.54:5000/openshift/postgresql                                        9.4,9.2,latest + 1 more...         2 hours ago
+python                                172.30.160.54:5000/openshift/python                                            latest,3.5,3.4 + 2 more...         2 hours ago
+redhat-openjdk18-openshift            registry.access.redhat.com/redhat-openjdk-18/openjdk18-openshift               latest,1.1,1.1-8 + 2 more...       About an hour ago
+redhat-sso70-openshift                registry.access.redhat.com/redhat-sso-7/sso70-openshift                        latest,1.4,1.4-7 + 2 more...       About an hour ago
+redis                                 172.30.160.54:5000/openshift/redis                                             latest,3.2                         2 hours ago
+ruby                                  172.30.160.54:5000/openshift/ruby                                              latest,2.3,2.2 + 1 more...         2 hours ago
+==> oc get pod -o wide -n openshift
+==> oc get svc -n openshift
+==> oc get route -n openshift
+
+
+==>
+
+=> project: openshift-infra
+==> oc get all,pvc -o wide -n openshift-infra
+==> oc get pod -o wide -n openshift-infra
+==> oc get svc -n openshift-infra
+==> oc get route -n openshift-infra
+
+
+==>
+
+=> project: proj1
+==> oc get all,pvc -o wide -n proj1
+NAME           REVISION   DESIRED   CURRENT   TRIGGERED BY
+dc/database    1          1         1         config,image(mysql:5.7)
+dc/database2   1          1         1         config,image(mysql:5.7)
+NAME             DESIRED   CURRENT   READY     AGE       CONTAINER(S)   IMAGE(S)                                                                                                                  SELECTOR
+rc/database-1    1         1         1         1h        mysql          registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8   deployment=database-1,deploymentconfig=database,name=database
+rc/database2-1   1         1         1         9m        mysql          registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8   deployment=database2-1,deploymentconfig=database2,name=database2
+NAME            CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE       SELECTOR
+svc/database    172.30.130.207   <none>        3306/TCP   1h        name=database
+svc/database2   172.30.120.55    <none>        3306/TCP   9m        name=database2
+NAME                   READY     STATUS    RESTARTS   AGE       IP            NODE
+po/database-1-szlpm    1/1       Running   0          1h        10.129.0.4    node1.osetest.local
+po/database2-1-r3k47   1/1       Running   0          9m        10.130.0.17   node2.osetest.local
+==> oc get pod -o wide -n proj1
+NAME                READY     STATUS    RESTARTS   AGE       IP            NODE
+database-1-szlpm    1/1       Running   0          1h        10.129.0.4    node1.osetest.local
+database2-1-r3k47   1/1       Running   0          9m        10.130.0.17   node2.osetest.local
+==> oc get svc -n proj1
+NAME        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+database    172.30.130.207   <none>        3306/TCP   1h
+database2   172.30.120.55    <none>        3306/TCP   9m
+==> oc get route -n proj1
+
+
+==>
+===> oc describe pod/database-1-szlpm -n proj1
+Name:			database-1-szlpm
+Namespace:		proj1
+Security Policy:	restricted
+Node:			node1.osetest.local/10.0.1.41
+Start Time:		Tue, 18 Jul 2017 15:22:58 +0900
+Labels:			app=database
+			deployment=database-1
+			deploymentconfig=database
+			name=database
+Status:			Running
+IP:			10.129.0.4
+Controllers:		ReplicationController/database-1
+Containers:
+  mysql:
+    Container ID:	docker://0c566b56be33c119344a2691ee73583fd098fda52b22dc7c501b8def215e2444
+    Image:		registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8
+    Image ID:		docker-pullable://registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8
+    Port:		3306/TCP
+    Limits:
+      memory:	512Mi
+    Requests:
+      memory:		512Mi
+    State:		Running
+      Started:		Tue, 18 Jul 2017 15:22:59 +0900
+    Ready:		True
+    Restart Count:	0
+    Liveness:		tcp-socket :3306 delay=30s timeout=1s period=10s #success=1 #failure=3
+    Readiness:		exec [/bin/sh -i -c MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'] delay=5s timeout=1s period=10s #success=1 #failure=3
+    Volume Mounts:
+      /var/lib/mysql/data from database-data (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-pz12z (ro)
+    Environment Variables:
+      MYSQL_USER:		<set to the key 'database-user' in secret 'database'>
+      MYSQL_PASSWORD:		<set to the key 'database-password' in secret 'database'>
+      MYSQL_ROOT_PASSWORD:	<set to the key 'database-root-password' in secret 'database'>
+      MYSQL_DATABASE:		mydb
+Conditions:
+  Type		Status
+  Initialized 	True 
+  Ready 	True 
+  PodScheduled 	True 
+Volumes:
+  database-data:
+    Type:	EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:	
+  default-token-pz12z:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	default-token-pz12z
+QoS Class:	Burstable
+Tolerations:	<none>
+Events:
+  FirstSeen	LastSeen	Count	From				SubObjectPath		Type		Reason		Message
+  ---------	--------	-----	----				-------------		--------	------		-------
+  1h		1h		1	{default-scheduler }					Normal		Scheduled	Successfully assigned database-1-szlpm to node1.osetest.local
+  1h		1h		1	{kubelet node1.osetest.local}	spec.containers{mysql}	Normal		Pulled		Container image "registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8" already present on machine
+  1h		1h		1	{kubelet node1.osetest.local}	spec.containers{mysql}	Normal		Created		Created container with docker id 0c566b56be33; Security:[seccomp=unconfined]
+  1h		1h		1	{kubelet node1.osetest.local}	spec.containers{mysql}	Normal		Started		Started container with docker id 0c566b56be33
+===> oc describe pod/database2-1-r3k47 -n proj1
+Name:			database2-1-r3k47
+Namespace:		proj1
+Security Policy:	restricted
+Node:			node2.osetest.local/10.0.1.42
+Start Time:		Tue, 18 Jul 2017 16:15:29 +0900
+Labels:			app=database2
+			deployment=database2-1
+			deploymentconfig=database2
+			name=database2
+Status:			Running
+IP:			10.130.0.17
+Controllers:		ReplicationController/database2-1
+Containers:
+  mysql:
+    Container ID:	docker://49c2f317f3731a461bf2d8919e07ff64cded8b4f7207870a4dda802d1d9e6a4c
+    Image:		registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8
+    Image ID:		docker-pullable://registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8
+    Port:		3306/TCP
+    Limits:
+      memory:	512Mi
+    Requests:
+      memory:		512Mi
+    State:		Running
+      Started:		Tue, 18 Jul 2017 16:15:30 +0900
+    Ready:		True
+    Restart Count:	0
+    Liveness:		tcp-socket :3306 delay=30s timeout=1s period=10s #success=1 #failure=3
+    Readiness:		exec [/bin/sh -i -c MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'] delay=5s timeout=1s period=10s #success=1 #failure=3
+    Volume Mounts:
+      /var/lib/mysql/data from database2-data (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-pz12z (ro)
+    Environment Variables:
+      MYSQL_USER:		<set to the key 'database-user' in secret 'database2'>
+      MYSQL_PASSWORD:		<set to the key 'database-password' in secret 'database2'>
+      MYSQL_ROOT_PASSWORD:	<set to the key 'database-root-password' in secret 'database2'>
+      MYSQL_DATABASE:		mydb
+Conditions:
+  Type		Status
+  Initialized 	True 
+  Ready 	True 
+  PodScheduled 	True 
+Volumes:
+  database2-data:
+    Type:	EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:	
+  default-token-pz12z:
+    Type:	Secret (a volume populated by a Secret)
+    SecretName:	default-token-pz12z
+QoS Class:	Burstable
+Tolerations:	<none>
+Events:
+  FirstSeen	LastSeen	Count	From				SubObjectPath		Type		Reason		Message
+  ---------	--------	-----	----				-------------		--------	------		-------
+  9m		9m		1	{default-scheduler }					Normal		Scheduled	Successfully assigned database2-1-r3k47 to node2.osetest.local
+  9m		9m		1	{kubelet node2.osetest.local}	spec.containers{mysql}	Normal		Pulled		Container image "registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8" already present on machine
+  9m		9m		1	{kubelet node2.osetest.local}	spec.containers{mysql}	Normal		Created		Created container with docker id 49c2f317f373; Security:[seccomp=unconfined]
+  9m		9m		1	{kubelet node2.osetest.local}	spec.containers{mysql}	Normal		Started		Started container with docker id 49c2f317f373
+===> oc describe service/database -n proj1
+Name:			database
+Namespace:		proj1
+Labels:			app=database
+			template=mysql-ephemeral-template
+Selector:		name=database
+Type:			ClusterIP
+IP:			172.30.130.207
+Port:			mysql	3306/TCP
+Endpoints:		10.129.0.4:3306
+Session Affinity:	None
+No events.
+===> oc describe service/database2 -n proj1
+Name:			database2
+Namespace:		proj1
+Labels:			app=database2
+			template=mysql-ephemeral-template
+Selector:		name=database2
+Type:			ClusterIP
+IP:			172.30.120.55
+Port:			mysql	3306/TCP
+Endpoints:		10.130.0.17:3306
+Session Affinity:	None
+No events.
+
+=> project: proj2
+==> oc get all,pvc -o wide -n proj2
+NAME       CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE       SELECTOR
+database   172.30.52.39   <none>        3306/TCP   31m       name=database
+==> oc get pod -o wide -n proj2
+==> oc get svc -n proj2
+NAME       CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+database   172.30.52.39   <none>        3306/TCP   31m
+==> oc get route -n proj2
+
+
+==>
+===> oc describe service/database -n proj2
+Name:			database
+Namespace:		proj2
+Labels:			app=database
+			template=mysql-ephemeral-template
+Selector:		name=database
+Type:			ClusterIP
+IP:			172.30.52.39
+Port:			mysql	3306/TCP
+Endpoints:		<none>
+Session Affinity:	None
+No events.

@@ -1,0 +1,177 @@
+[devel@master1 work]$ oc delete dc/database2 svc/database2 secret/database2
+deploymentconfig "database2" deleted
+service "database2" deleted
+secret "database2" deleted
+[devel@master1 work]$
+[devel@master1 work]$ oc new-app --template=mysql-ephemeral --name=database2 --param MYSQL_USER=mysqluser --param MYSQL_PASSWORD=redhat --param MYSQL_DATABASE=mydb --param DATABASE_SERVICE_NAME=database2
+--> Deploying template "openshift/mysql-ephemeral" to project proj1
+
+     MySQL (Ephemeral)
+     ---------
+     MySQL database service, without persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/mysql-container/blob/master/5.7/README.md.
+
+     WARNING: Any data stored will be lost upon pod destruction. Only use this template for testing
+
+     The following service(s) have been created in your project: database2.
+
+            Username: mysqluser
+            Password: redhat
+       Database Name: mydb
+      Connection URL: mysql://database2:3306/
+
+     For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/mysql-container/blob/master/5.7/README.md.
+
+
+     * With parameters:
+        * Memory Limit=512Mi
+        * Namespace=openshift
+        * Database Service Name=database2
+        * MySQL Connection Username=mysqluser
+        * MySQL Connection Password=redhat
+        * MySQL root user Password=Scx7b6WuM61WSKFq # generated
+        * MySQL Database Name=mydb
+        * Version of MySQL Image=5.7
+
+--> Creating resources ...
+    secret "database2" created
+    service "database2" created
+    deploymentconfig "database2" created
+--> Success
+    Run 'oc status' to view your app.
+[devel@master1 work]$ oc get pod -w -o wide
+NAME                 READY     STATUS    RESTARTS   AGE       IP            NODE
+database-1-szlpm     1/1       Running   0          52m       10.129.0.4    node1.osetest.local
+database2-1-deploy   1/1       Running   0          4s        10.130.0.16   node2.osetest.local
+database2-1-r3k47    0/1       Running   0          2s        10.130.0.17   node2.osetest.local
+[devel@master1 work]$ oc get svc
+NAME        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+database    172.30.130.207   <none>        3306/TCP   52m
+database2   172.30.120.55    <none>        3306/TCP   22s
+[devel@master1 work]$ oc rsh database-1-szlpm
+sh-4.2$ mysql -umysqluser -predhat -h 172.30.120.55 -e 'show databases'
+mysql: [Warning] Using a password on the command line interface can be insecure.
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mydb               |
++--------------------+
+sh-4.2$ exit
+[devel@master1 work]$ oc describe pod database
+Name:                   database-1-szlpm
+Namespace:              proj1
+Security Policy:        restricted
+Node:                   node1.osetest.local/10.0.1.41
+Start Time:             Tue, 18 Jul 2017 15:22:58 +0900
+Labels:                 app=database
+                        deployment=database-1
+                        deploymentconfig=database
+                        name=database
+Status:                 Running
+IP:                     10.129.0.4
+Controllers:            ReplicationController/database-1
+Containers:
+  mysql:
+    Container ID:       docker://0c566b56be33c119344a2691ee73583fd098fda52b22dc7c501b8def215e2444
+    Image:              registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8
+    Image ID:           docker-pullable://registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8
+    Port:               3306/TCP
+    Limits:
+      memory:   512Mi
+    Requests:
+      memory:           512Mi
+    State:              Running
+      Started:          Tue, 18 Jul 2017 15:22:59 +0900
+    Ready:              True
+    Restart Count:      0
+    Liveness:           tcp-socket :3306 delay=30s timeout=1s period=10s #success=1 #failure=3
+    Readiness:          exec [/bin/sh -i -c MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'] delay=5s timeout=1s period=10s #success=1 #failure=3
+    Volume Mounts:
+      /var/lib/mysql/data from database-data (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-pz12z (ro)
+    Environment Variables:
+      MYSQL_USER:               <set to the key 'database-user' in secret 'database'>
+      MYSQL_PASSWORD:           <set to the key 'database-password' in secret 'database'>
+      MYSQL_ROOT_PASSWORD:      <set to the key 'database-root-password' in secret 'database'>
+      MYSQL_DATABASE:           mydb
+Conditions:
+  Type          Status
+  Initialized   True
+  Ready         True
+  PodScheduled  True
+Volumes:
+  database-data:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:
+  default-token-pz12z:
+    Type:       Secret (a volume populated by a Secret)
+    SecretName: default-token-pz12z
+QoS Class:      Burstable
+Tolerations:    <none>
+Events:
+  FirstSeen     LastSeen        Count   From                            SubObjectPath           Type            Reason          Message
+  ---------     --------        -----   ----                            -------------           --------        ------          -------
+  1h            1h              1       {default-scheduler }                                    Normal          Scheduled       Successfully assigned database-1-szlpm to node1.osetest.local
+  1h            1h              1       {kubelet node1.osetest.local}   spec.containers{mysql}  Normal          Pulled          Container image "registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8" already present on machine
+  1h            1h              1       {kubelet node1.osetest.local}   spec.containers{mysql}  Normal          Created         Created container with docker id 0c566b56be33; Security:[seccomp=unconfined]
+  1h            1h              1       {kubelet node1.osetest.local}   spec.containers{mysql}  Normal          Started         Started container with docker id 0c566b56be33
+
+Name:                   database2-1-r3k47
+Namespace:              proj1
+Security Policy:        restricted
+Node:                   node2.osetest.local/10.0.1.42
+Start Time:             Tue, 18 Jul 2017 16:15:29 +0900
+Labels:                 app=database2
+                        deployment=database2-1
+                        deploymentconfig=database2
+                        name=database2
+Status:                 Running
+IP:                     10.130.0.17
+Controllers:            ReplicationController/database2-1
+Containers:
+  mysql:
+    Container ID:       docker://49c2f317f3731a461bf2d8919e07ff64cded8b4f7207870a4dda802d1d9e6a4c
+    Image:              registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8
+    Image ID:           docker-pullable://registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8
+    Port:               3306/TCP
+    Limits:
+      memory:   512Mi
+    Requests:
+      memory:           512Mi
+    State:              Running
+      Started:          Tue, 18 Jul 2017 16:15:30 +0900
+    Ready:              True
+    Restart Count:      0
+    Liveness:           tcp-socket :3306 delay=30s timeout=1s period=10s #success=1 #failure=3
+    Readiness:          exec [/bin/sh -i -c MYSQL_PWD="$MYSQL_PASSWORD" mysql -h 127.0.0.1 -u $MYSQL_USER -D $MYSQL_DATABASE -e 'SELECT 1'] delay=5s timeout=1s period=10s #success=1 #failure=3
+    Volume Mounts:
+      /var/lib/mysql/data from database2-data (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-pz12z (ro)
+    Environment Variables:
+      MYSQL_USER:               <set to the key 'database-user' in secret 'database2'>
+      MYSQL_PASSWORD:           <set to the key 'database-password' in secret 'database2'>
+      MYSQL_ROOT_PASSWORD:      <set to the key 'database-root-password' in secret 'database2'>
+      MYSQL_DATABASE:           mydb
+Conditions:
+  Type          Status
+  Initialized   True
+  Ready         True
+  PodScheduled  True
+Volumes:
+  database2-data:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:
+  default-token-pz12z:
+    Type:       Secret (a volume populated by a Secret)
+    SecretName: default-token-pz12z
+QoS Class:      Burstable
+Tolerations:    <none>
+Events:
+  FirstSeen     LastSeen        Count   From                            SubObjectPath           Type            Reason          Message
+  ---------     --------        -----   ----                            -------------           --------        ------          -------
+  7m            7m              1       {default-scheduler }                                    Normal          Scheduled       Successfully assigned database2-1-r3k47 to node2.osetest.local
+  7m            7m              1       {kubelet node2.osetest.local}   spec.containers{mysql}  Normal          Pulled          Container image "registry.access.redhat.com/rhscl/mysql-57-rhel7@sha256:65b6211c88280c399ad9294168eb0923e0e69cd468758b0233d599972de1bbd8" already present on machine
+  7m            7m              1       {kubelet node2.osetest.local}   spec.containers{mysql}  Normal          Created         Created container with docker id 49c2f317f373; Security:[seccomp=unconfined]
+  7m            7m              1       {kubelet node2.osetest.local}   spec.containers{mysql}  Normal          Started         Started container with docker id 49c2f317f373
+
+[devel@master1 work]$

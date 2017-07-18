@@ -1,0 +1,248 @@
+=> haproxy.config
+global
+  maxconn 20000
+  daemon
+  ca-base /etc/ssl
+  crt-base /etc/ssl
+  stats socket /var/lib/haproxy/run/haproxy.sock mode 600 level admin
+  stats timeout 2m
+  # Increase the default request size to be comparable to modern cloud load balancers (ALB: 64kb), affects
+  # total memory use when large numbers of connections are open.
+  tune.maxrewrite 8192
+  tune.bufsize 32768
+  # Prevent vulnerability to POODLE attacks
+  # TODO: use when 1.5.14 is available
+  # ssl-default-bind-options no-sslv3
+  # Modern cipher suite (no legacy browser support) from https://wiki.mozilla.org/Security/Server_Side_TLS
+  # tune.ssl.default-dh-param 2048
+  # ssl-default-bind-ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK
+  # Intermediate cipher suite (default) from https://wiki.mozilla.org/Security/Server_Side_TLS
+  tune.ssl.default-dh-param 2048
+  ssl-default-bind-ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:ECDHE-RSA-DES-CBC3-SHA:ECDHE-ECDSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
+  # Old cipher suite (maximum compatibility but insecure) from https://wiki.mozilla.org/Security/Server_Side_TLS
+  # tune.ssl.default-dh-param 1024
+  # ssl-default-bind-ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:ECDHE-RSA-DES-CBC3-SHA:ECDHE-ECDSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
+defaults
+  maxconn 20000
+  # Add x-forwarded-for header.
+  # To configure custom default errors, you can either uncomment the
+  # line below (server ... 127.0.0.1:8080) and point it to your custom
+  # backend service or alternatively, you can send a custom 503 error.
+  #server openshift_backend 127.0.0.1:8080
+  errorfile 503 /var/lib/haproxy/conf/error-page-503.http
+  timeout connect 5s
+  timeout client 30s
+  timeout server 30s
+  timeout http-request 10s
+  # Long timeout for WebSocket connections.
+  timeout tunnel 1h
+listen stats :1936
+    mode http
+    # Health check monitoring uri.
+    monitor-uri /healthz
+    # Add your custom health check monitoring failure condition here.
+    # monitor fail if <condition>
+    stats enable
+    stats hide-version
+    stats realm Haproxy\ Statistics
+    stats uri /
+    stats auth admin:ylsRrPFLsj
+frontend public
+  bind :80
+  mode http
+  tcp-request inspect-delay 5s
+  tcp-request content accept if HTTP
+  # check if we need to redirect/force using https.
+  acl secure_redirect base,map_reg(/var/lib/haproxy/conf/os_route_http_redirect.map) -m found
+  redirect scheme https if secure_redirect
+  # Check if it is an edge or reencrypt route exposed insecurely.
+  acl route_http_expose base,map_reg(/var/lib/haproxy/conf/os_route_http_expose.map) -m found
+  use_backend %[base,map_reg(/var/lib/haproxy/conf/os_route_http_expose.map)] if route_http_expose
+  # map to http backend
+  # Search from most specific to general path (host case).
+  # Note: If no match, haproxy uses the default_backend, no other
+  #       use_backend directives below this will be processed.
+  use_backend be_http_%[base,map_reg(/var/lib/haproxy/conf/os_http_be.map)]
+  default_backend openshift_default
+# public ssl accepts all connections and isn't checking certificates yet certificates to use will be
+# determined by the next backend in the chain which may be an app backend (passthrough termination) or a backend
+# that terminates encryption in this router (edge)
+frontend public_ssl
+  bind :443
+  tcp-request  inspect-delay 5s
+  tcp-request content accept if { req_ssl_hello_type 1 }
+  # if the connection is SNI and the route is a passthrough don't use the termination backend, just use the tcp backend
+  acl sni req.ssl_sni -m found
+  acl sni_passthrough req.ssl_sni,map_reg(/var/lib/haproxy/conf/os_sni_passthrough.map) -m found
+  use_backend be_tcp_%[req.ssl_sni,map_reg(/var/lib/haproxy/conf/os_tcp_be.map)] if sni sni_passthrough
+  # if the route is SNI and NOT passthrough enter the termination flow
+  use_backend be_sni if sni
+  # non SNI requests should enter a default termination backend rather than the custom cert SNI backend since it
+  # will not be able to match a cert to an SNI host
+  default_backend be_no_sni
+##########################################################################
+# TLS SNI
+#
+# When using SNI we can terminate encryption with custom certificates.
+# Certs will be stored in a directory and will be matched with the SNI host header
+# which must exist in the CN of the certificate.  Certificates must be concatenated
+# as a single file (handled by the plugin writer) per the haproxy documentation.
+#
+# Finally, check re-encryption settings and re-encrypt or just pass along the unencrypted
+# traffic
+##########################################################################
+backend be_sni
+  server fe_sni 127.0.0.1:10444 weight 1 send-proxy
+frontend fe_sni
+  # terminate ssl on edge
+  bind 127.0.0.1:10444 ssl no-sslv3 crt /var/lib/haproxy/router/certs/default.pem crt-list /var/lib/haproxy/conf/cert_config.map accept-proxy
+  mode http
+  # check re-encrypt backends first - from most specific to general path.
+  acl reencrypt base,map_reg(/var/lib/haproxy/conf/os_reencrypt.map) -m found
+  # Search from most specific to general path (host case).
+  use_backend be_secure_%[base,map_reg(/var/lib/haproxy/conf/os_reencrypt.map)] if reencrypt
+  # map to http backend
+  # Search from most specific to general path (host case).
+  # Note: If no match, haproxy uses the default_backend, no other
+  #       use_backend directives below this will be processed.
+  use_backend be_edge_http_%[base,map_reg(/var/lib/haproxy/conf/os_edge_http_be.map)]
+  default_backend openshift_default
+##########################################################################
+# END TLS SNI
+##########################################################################
+##########################################################################
+# TLS NO SNI
+#
+# When we don't have SNI the only thing we can try to do is terminate the encryption
+# using our wild card certificate.  Once that is complete we can either re-encrypt
+# the traffic or pass it on to the backends
+##########################################################################
+# backend for when sni does not exist, or ssl term needs to happen on the edge
+backend be_no_sni
+  server fe_no_sni 127.0.0.1:10443 weight 1 send-proxy
+frontend fe_no_sni
+  # terminate ssl on edge
+  bind 127.0.0.1:10443 ssl no-sslv3 crt /var/lib/haproxy/router/certs/default.pem accept-proxy
+  mode http
+  # check re-encrypt backends first - path or host based.
+  acl reencrypt base,map_reg(/var/lib/haproxy/conf/os_reencrypt.map) -m found
+  # Search from most specific to general path (host case).
+  use_backend be_secure_%[base,map_reg(/var/lib/haproxy/conf/os_reencrypt.map)] if reencrypt
+  # map to http backend
+  # Search from most specific to general path (host case).
+  # Note: If no match, haproxy uses the default_backend, no other
+  #       use_backend directives below this will be processed.
+  use_backend be_edge_http_%[base,map_reg(/var/lib/haproxy/conf/os_edge_http_be.map)]
+  default_backend openshift_default
+##########################################################################
+# END TLS NO SNI
+##########################################################################
+backend openshift_default
+  mode http
+  option forwardfor
+  #option http-keep-alive
+  option http-pretend-keepalive
+##-------------- app level backends ----------------
+# Secure backend, pass through
+backend be_tcp_default_docker-registry
+  balance source
+  hash-type consistent
+  timeout check 5000ms
+  server b2a3576a28878ec75573db647b3dcc52 10.131.0.13:5000 check inter 5000ms weight 100
+# Secure backend, pass through
+backend be_tcp_default_registry-console
+  balance source
+  hash-type consistent
+  timeout check 5000ms
+  server 79bede1ab7b51e3672cc1bb1286895a1 10.129.0.3:9090 check inter 5000ms weight 100
+# Plain http backend
+backend be_http_proj1_ruby-hello-world
+  mode http
+  option redispatch
+  option forwardfor
+  balance leastconn
+  timeout check 5000ms
+  http-request set-header X-Forwarded-Host %[req.hdr(host)]
+  http-request set-header X-Forwarded-Port %[dst_port]
+  http-request set-header X-Forwarded-Proto http if !{ ssl_fc }
+  http-request set-header X-Forwarded-Proto https if { ssl_fc }
+  cookie a03758f24426feae6a8b945d7573c252 insert indirect nocache httponly
+  http-request set-header Forwarded for=%[src];host=%[req.hdr(host)];proto=%[req.hdr(X-Forwarded-Proto)]
+  server 50497307fb23fad8ce028977054cfae2 10.129.0.11:8080 check inter 5000ms cookie 50497307fb23fad8ce028977054cfae2 weight 100
+  server 49f84cfd5f07ba9b8f12be3a41aa7035 10.129.0.12:8080 check inter 5000ms cookie 49f84cfd5f07ba9b8f12be3a41aa7035 weight 100
+  server 4a80dd34185107ff93de91da7dacb36b 10.129.0.13:8080 check inter 5000ms cookie 4a80dd34185107ff93de91da7dacb36b weight 100
+  server 8f87b68607a42b242a8276c528c9dee1 10.130.0.20:8080 check inter 5000ms cookie 8f87b68607a42b242a8276c528c9dee1 weight 100
+=> *.map
+==> cert_config.map
+==> os_edge_http_be.map
+==> os_http_be.map
+^hello\.app\.example\.com(:[0-9]+)?(/.*)?$ proj1_ruby-hello-world
+==> os_reencrypt.map
+==> os_route_http_expose.map
+==> os_route_http_redirect.map
+==> os_sni_passthrough.map
+^registry-console-default\.app\.example\.com(:[0-9]+)?(/.*)?$ 1
+^docker-registry-default\.app\.example\.com(:[0-9]+)?(/.*)?$ 1
+==> os_tcp_be.map
+^registry-console-default\.app\.example\.com(:[0-9]+)?(/.*)?$ default_registry-console
+^docker-registry-default\.app\.example\.com(:[0-9]+)?(/.*)?$ default_docker-registry
+==> os_wildcard_domain.map
+=> routes.json
+{
+  "default_docker-registry": {
+    "Name": "docker-registry",
+    "Namespace": "default",
+    "Host": "docker-registry-default.app.example.com",
+    "Path": "",
+    "TLSTermination": "passthrough",
+    "Certificates": null,
+    "Status": "saved",
+    "PreferPort": "",
+    "InsecureEdgeTerminationPolicy": "",
+    "RoutingKeyName": "9490b2ade541f0db80f4061c983cef9c",
+    "IsWildcard": false,
+    "Annotations": null,
+    "ServiceUnitNames": {
+      "default/docker-registry": 100
+    },
+    "ActiveServiceUnits": 1
+  },
+  "default_registry-console": {
+    "Name": "registry-console",
+    "Namespace": "default",
+    "Host": "registry-console-default.app.example.com",
+    "Path": "",
+    "TLSTermination": "passthrough",
+    "Certificates": null,
+    "Status": "saved",
+    "PreferPort": "",
+    "InsecureEdgeTerminationPolicy": "",
+    "RoutingKeyName": "e518e38cca25c91e4598513574aaed17",
+    "IsWildcard": false,
+    "Annotations": {
+      "openshift.io/host.generated": "true"
+    },
+    "ServiceUnitNames": {
+      "default/registry-console": 100
+    },
+    "ActiveServiceUnits": 1
+  },
+  "proj1_ruby-hello-world": {
+    "Name": "ruby-hello-world",
+    "Namespace": "proj1",
+    "Host": "hello.app.example.com",
+    "Path": "",
+    "TLSTermination": "",
+    "Certificates": null,
+    "Status": "saved",
+    "PreferPort": "8080-tcp",
+    "InsecureEdgeTerminationPolicy": "",
+    "RoutingKeyName": "a03758f24426feae6a8b945d7573c252",
+    "IsWildcard": false,
+    "Annotations": null,
+    "ServiceUnitNames": {
+      "proj1/ruby-hello-world": 100
+    },
+    "ActiveServiceUnits": 1
+  }
+}
