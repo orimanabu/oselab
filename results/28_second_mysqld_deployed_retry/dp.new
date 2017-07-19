@@ -1,0 +1,56 @@
+[root@master1 results]# for host in node1 node2; do echo "=> $host"; ssh $host "ovs-dpctl show; echo; ovs-dpctl dump-flows; echo; ovs-dpctl dump-flows -m"; done
+=> node1
+system@ovs-system:
+        lookups: hit:1444221 missed:52833 lost:0
+        flows: 8
+        masks: hit:4727606 total:3 hit/pkt:3.16
+        port 0: ovs-system (internal)
+        port 1: vxlan_sys_4789 (vxlan)
+        port 2: tun0 (internal)
+        port 3: br0 (internal)
+        port 4: veth09bc3649
+        port 5: veth5d759105
+
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=10.129.0.1,dst=10.129.0.3,frag=no), packets:6170, bytes:520234, used:7.784s, flags:SFP., actions:4
+recirc_id(0),in_port(4),eth_type(0x0800),ipv4(src=10.129.0.3,dst=10.131.0.0/255.255.254.0,tos=0/0x3,frag=no), packets:43031, bytes:3184294, used:0.834s, flags:S., actions:set(tunnel(tun_id=0x0,dst=10.0.1.31,ttl=64,flags(df|key))),1
+recirc_id(0),in_port(4),eth_type(0x0800),ipv4(src=10.129.0.3,dst=10.129.0.1,frag=no), packets:4525, bytes:435694, used:7.784s, flags:SFP., actions:2
+recirc_id(0),tunnel(tun_id=0x0,src=10.0.1.31,dst=10.0.1.41,flags(-df-csum+key)),in_port(1),skb_mark(0),eth_type(0x0800),ipv4(src=10.130.0.0/255.254.0.0,dst=10.129.0.3,frag=no), packets:64547, bytes:4174030, used:0.834s, flags:SR., actions:4
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.129.0.4,dst=10.129.0.1,frag=no), packets:26236, bytes:2663934, used:4.265s, flags:SFPR., actions:2
+recirc_id(0),tunnel(tun_id=0x0,src=10.0.1.42,dst=10.0.1.41,flags(-df-csum+key)),in_port(1),skb_mark(0),eth_type(0x0800),ipv4(src=10.130.0.0/255.254.0.0,dst=10.129.0.4,frag=no), packets:12, bytes:1728, used:1.865s, flags:FP., actions:5
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.129.0.4,dst=10.130.0.0/255.255.254.0,tos=0/0x3,frag=no), packets:9, bytes:3645, used:1.865s, flags:FP., actions:set(tunnel(tun_id=0xb32a44,dst=10.0.1.42,ttl=64,flags(df|key))),1
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=10.129.0.1,dst=10.129.0.4,frag=no), packets:42993, bytes:2831477, used:4.265s, flags:SFPR., actions:5
+
+ufid:ef5aaf56-3756-4121-a9cc-381277218408, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(tun0),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.129.0.1,dst=10.129.0.3,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:6170, bytes:520234, used:7.786s, flags:SFP., actions:4
+ufid:35f09f91-045a-4194-a39f-dbde64091084, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(veth09bc3649),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.129.0.3,dst=10.131.0.0/255.255.254.0,proto=0/0,tos=0/0x3,ttl=0/0,frag=no), packets:43031, bytes:3184294, used:0.836s, flags:S., actions:set(tunnel(tun_id=0x0,dst=10.0.1.31,ttl=64,flags(df|key))),1
+ufid:77e2abac-121a-4af6-a812-b569382236d7, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(veth09bc3649),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.129.0.3,dst=10.129.0.1,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:4525, bytes:435694, used:7.786s, flags:SFP., actions:2
+ufid:cbaa3d79-f93c-4022-ac28-970e567dbc78, recirc_id(0),dp_hash(0/0),skb_priority(0/0),tunnel(tun_id=0x0,src=10.0.1.31,dst=10.0.1.41,ttl=0/0,flags(-df-csum+key)),in_port(vxlan_sys_4789),skb_mark(0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.130.0.0/255.254.0.0,dst=10.129.0.3,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:64547, bytes:4174030, used:0.836s, flags:SR., actions:4
+ufid:fa353c10-b13f-4533-8c89-366c3733fd37, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(veth5d759105),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.129.0.4,dst=10.129.0.1,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:26236, bytes:2663934, used:4.267s, flags:SFPR., actions:2
+ufid:fae88142-af09-4d18-bfdb-7edca509c8a0, recirc_id(0),dp_hash(0/0),skb_priority(0/0),tunnel(tun_id=0x0,src=10.0.1.42,dst=10.0.1.41,ttl=0/0,flags(-df-csum+key)),in_port(vxlan_sys_4789),skb_mark(0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.130.0.0/255.254.0.0,dst=10.129.0.4,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:12, bytes:1728, used:1.867s, flags:FP., actions:5
+ufid:3b184f0c-5de5-4863-8667-1d28ef244578, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(veth5d759105),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.129.0.4,dst=10.130.0.0/255.255.254.0,proto=0/0,tos=0/0x3,ttl=0/0,frag=no), packets:9, bytes:3645, used:1.867s, flags:FP., actions:set(tunnel(tun_id=0xb32a44,dst=10.0.1.42,ttl=64,flags(df|key))),1
+ufid:734edd89-603f-4bd5-a9d4-c8b054cb2a1f, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(tun0),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.129.0.1,dst=10.129.0.4,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:42993, bytes:2831477, used:4.267s, flags:SFPR., actions:5
+=> node2
+system@ovs-system:
+        lookups: hit:1124548 missed:48377 lost:0
+        flows: 6
+        masks: hit:3532872 total:5 hit/pkt:3.01
+        port 0: ovs-system (internal)
+        port 1: vxlan_sys_4789 (vxlan)
+        port 2: tun0 (internal)
+        port 3: br0 (internal)
+        port 5: veth5cf033ca
+
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=10.130.0.1,frag=no), packets:23062, bytes:2407826, used:3.460s, flags:SFPR., actions:2
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=10.130.0.1,dst=10.130.0.17,frag=no), packets:41410, bytes:2722088, used:3.460s, flags:SFR., actions:5
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(dst=10.129.0.0/255.255.254.0,tos=0/0x3,frag=no), packets:12, bytes:1728, used:1.954s, flags:FP., actions:set(tunnel(tun_id=0x0,dst=10.0.1.41,ttl=64,flags(df|key))),1
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=172.30.130.207,proto=6,frag=no),tcp(dst=3306), packets:12, bytes:1728, used:1.955s, flags:FP., actions:2
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=128.0.0.0/128.0.0.0,dst=10.130.0.17,frag=no), packets:9, bytes:3645, used:1.955s, flags:FP., actions:5
+recirc_id(0),tunnel(tun_id=0xb32a44,src=10.0.1.41,dst=10.0.1.42,flags(-df-csum+key)),in_port(1),skb_mark(0),eth_type(0x0800),ipv4(src=10.128.0.0/255.252.0.0,dst=10.130.0.1,frag=no), packets:9, bytes:3645, used:1.955s, flags:FP., actions:2
+
+ufid:9186720c-569a-4c73-9e27-d84a6da39381, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(veth5cf033ca),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.130.0.17,dst=10.130.0.1,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:23062, bytes:2407826, used:3.463s, flags:SFPR., actions:2
+ufid:ab46a3d6-36c4-482e-be91-00bf7631de3a, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(tun0),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.130.0.1,dst=10.130.0.17,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:41410, bytes:2722088, used:3.463s, flags:SFR., actions:5
+ufid:cbaa6abe-cd77-4dee-ad5f-f582d37571ff, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(tun0),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=0.0.0.0/0.0.0.0,dst=10.129.0.0/255.255.254.0,proto=0/0,tos=0/0x3,ttl=0/0,frag=no), packets:12, bytes:1728, used:1.957s, flags:FP., actions:set(tunnel(tun_id=0x0,dst=10.0.1.41,ttl=64,flags(df|key))),1
+ufid:caf14d6c-606a-4f45-a40f-3242ae54de86, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(veth5cf033ca),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.130.0.17,dst=172.30.130.207,proto=6,tos=0/0,ttl=0/0,frag=no),tcp(src=0/0,dst=3306),tcp_flags(0/0), packets:12, bytes:1728, used:1.957s, flags:FP., actions:2
+ufid:a9f41812-1217-4865-964b-a0f4bafd1f89, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(tun0),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=128.0.0.0/128.0.0.0,dst=10.130.0.17,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:9, bytes:3645, used:1.957s, flags:FP., actions:5
+ufid:fa745b64-e710-4cba-abfa-743f8fdd46d7, recirc_id(0),dp_hash(0/0),skb_priority(0/0),tunnel(tun_id=0xb32a44,src=10.0.1.41,dst=10.0.1.42,ttl=0/0,flags(-df-csum+key)),in_port(vxlan_sys_4789),skb_mark(0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.128.0.0/255.252.0.0,dst=10.130.0.1,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:9, bytes:3645, used:1.957s, flags:FP., actions:2
+[root@master1 results]#
+
