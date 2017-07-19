@@ -1,0 +1,2 @@
+[devel@master1 work]$ oc rsh database2-1-r3k47
+sh-4.2$ curl -L http://www.google.com/

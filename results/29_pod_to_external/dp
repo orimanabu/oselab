@@ -1,0 +1,32 @@
+[root@node2 work]# ovs-dpctl dump-flows
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=10.130.0.1,frag=no), packets:25201, bytes:2625196, used:4.991s, flags:SFPR., actions:2
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=10.130.0.1,dst=10.130.0.17,frag=no), packets:44970, bytes:2955400, used:4.991s, flags:SFR., actions:5
+[root@node2 work]# ovs-dpctl dump-flows
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=128.0.0.0/128.0.0.0,dst=10.130.0.17,frag=no), packets:28, bytes:15288, used:1.996s, flags:SFP., actions:5
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=172.16.0.0/255.248.0.0,frag=no), packets:18, bytes:1584, used:2.403s, actions:2
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=10.130.0.1,dst=10.130.0.17,frag=no), packets:44974, bytes:2955660, used:9.328s, flags:SFR., actions:5
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=10.130.0.1,frag=no), packets:25204, bytes:2625480, used:9.328s, flags:SFPR., actions:2
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=192.0.0.0/224.0.0.0,frag=no), packets:5, bytes:408, used:1.996s, flags:FP., actions:2
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=172.128.0.0/255.128.0.0,frag=no), packets:7, bytes:578, used:2.251s, flags:FP., actions:2
+[root@node2 work]#
+
+
+
+
+* recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=10.130.0.1,dst=10.130.0.17,frag=no), packets:44970, bytes:2955400, used:4.991s, flags:SFR., actions:5
+* recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=10.130.0.1,frag=no), packets:25201, bytes:2625196, used:4.991s, flags:SFPR., actions:2
+
+
+  recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=128.0.0.0/128.0.0.0,dst=10.130.0.17,frag=no), packets:28, bytes:15288, used:1.996s, flags:SFP., actions:5
+* recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=10.130.0.1,dst=10.130.0.17,frag=no), packets:44974, bytes:2955660, used:9.328s, flags:SFR., actions:5
+  recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=172.16.0.0/255.248.0.0,frag=no), packets:18, bytes:1584, used:2.403s, actions:2
+* recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=10.130.0.1,frag=no), packets:25204, bytes:2625480, used:9.328s, flags:SFPR., actions:2
+  recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=192.0.0.0/224.0.0.0,frag=no), packets:5, bytes:408, used:1.996s, flags:FP., actions:2
+  recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=172.128.0.0/255.128.0.0,frag=no), packets:7, bytes:578, used:2.251s, flags:FP., actions:2
+
+
+
+  recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=128.0.0.0/128.0.0.0,dst=10.130.0.17,frag=no), packets:28, bytes:15288, used:1.996s, flags:SFP., actions:5
+  recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=172.16.0.0/255.248.0.0,frag=no), packets:18, bytes:1584, used:2.403s, actions:2
+  recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=192.0.0.0/224.0.0.0,frag=no), packets:5, bytes:408, used:1.996s, flags:FP., actions:2
+  recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=172.128.0.0/255.128.0.0,frag=no), packets:7, bytes:578, used:2.251s, flags:FP., actions:2

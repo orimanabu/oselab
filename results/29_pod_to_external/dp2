@@ -1,0 +1,43 @@
+[root@node2 work]# ovs-dpctl dump-flows
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=10.130.0.1,dst=10.130.0.17,frag=no), packets:45679, bytes:3001846, used:3.000s, flags:SFR., actions:5
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=10.130.0.1,frag=no), packets:25629, bytes:2668654, used:3.000s, flags:SFPR., actions:2
+[root@node2 work]# ovs-dpctl dump-flows
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=172.16.0.0/255.248.0.0,frag=no), packets:18, bytes:1584, used:2.806s, actions:2
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=172.128.0.0/255.128.0.0,frag=no), packets:14, bytes:1126, used:2.706s, flags:SFP., actions:2
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=128.0.0.0/128.0.0.0,dst=10.130.0.17,frag=no), packets:29, bytes:15223, used:2.706s, flags:SFP., actions:5
+recirc_id(0),in_port(2),eth_type(0x0800),ipv4(src=10.130.0.1,dst=10.130.0.17,frag=no), packets:45683, bytes:3002106, used:3.552s, flags:SFR., actions:5
+recirc_id(0),in_port(5),eth_type(0x0800),ipv4(src=10.130.0.17,dst=10.130.0.1,frag=no), packets:25632, bytes:2668938, used:3.552s, flags:SFPR., actions:2
+[root@node2 work]# ovs-dpctl show
+system@ovs-system:
+        lookups: hit:1132064 missed:48433 lost:0
+        flows: 2
+        masks: hit:3541322 total:1 hit/pkt:3.00
+        port 0: ovs-system (internal)
+        port 1: vxlan_sys_4789 (vxlan)
+        port 2: tun0 (internal)
+        port 3: br0 (internal)
+        port 5: veth5cf033ca
+[root@node2 work]# ovs-ofctl -O OpenFlow13 show br0
+OFPT_FEATURES_REPLY (OF1.3) (xid=0x2): dpid:00006e4a6cd7bc46
+n_tables:254, n_buffers:256
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS GROUP_STATS QUEUE_STATS
+OFPST_PORT_DESC reply (OF1.3) (xid=0x3):
+ 1(vxlan0): addr:4a:f5:63:c1:6e:9f
+     config:     0
+     state:      0
+     speed: 0 Mbps now, 0 Mbps max
+ 2(tun0): addr:9a:0e:a1:7a:d1:ca
+     config:     0
+     state:      0
+     speed: 0 Mbps now, 0 Mbps max
+ 14(veth5cf033ca): addr:ba:87:8d:60:0c:79
+     config:     0
+     state:      0
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(br0): addr:6e:4a:6c:d7:bc:46
+     config:     PORT_DOWN
+     state:      LINK_DOWN
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (OF1.3) (xid=0x5): frags=normal miss_send_len=0
+[root@node2 work]#
