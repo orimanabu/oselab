@@ -31,7 +31,7 @@ master)
 	do_command oc get svc --all-namespaces
 	do_command oc get route --all-namespaces
 
-	for project in $(oc get project -o name | sed -e 's,^project/,,'); do
+	for project in $(oc get project --no-headers | awk '{print $1}'); do
 		if [ x"$?" = x"0" ]; then
 			echo
 			echo "=> project: ${project}"

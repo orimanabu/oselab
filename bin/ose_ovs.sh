@@ -28,3 +28,6 @@ ${ovsutil} ${host} ovs-dpctl dump-flows
 
 echo "=> ovs-dpctl dump-flows -m"
 ${ovsutil} ${host} ovs-dpctl dump-flows -m
+
+echo "=> ovs-appctl fdb/show br0"
+${ovsutil} ${host} ovs-appctl fdb/show br0
