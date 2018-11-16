@@ -1,0 +1,3303 @@
+=> node
+==> oc get node --show-labels
+NAME                         STATUS    ROLES     AGE       VERSION           LABELS
+ocp311-infra1.example.com    Ready     infra     1d        v1.11.0+d4cacc0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=ocp311-infra1.example.com,node-role.kubernetes.io/infra=true
+ocp311-master1.example.com   Ready     master    1d        v1.11.0+d4cacc0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=ocp311-master1.example.com,node-role.kubernetes.io/master=true
+ocp311-node1.example.com     Ready     compute   1d        v1.11.0+d4cacc0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=ocp311-node1.example.com,node-role.kubernetes.io/compute=true
+ocp311-node2.example.com     Ready     compute   1d        v1.11.0+d4cacc0   beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=ocp311-node2.example.com,node-role.kubernetes.io/compute=true
+=> project: all_namespaces
+==> oc get all,pvc -o wide --all-namespaces
+NAMESPACE               NAME                                                READY     STATUS    RESTARTS   AGE       IP             NODE                         NOMINATED NODE
+default                 pod/docker-registry-1-zl7ww                         1/1       Running   0          1d        10.130.0.5     ocp311-infra1.example.com    <none>
+default                 pod/registry-console-1-4x2hj                        1/1       Running   0          1d        10.128.0.20    ocp311-master1.example.com   <none>
+default                 pod/router-1-skzpn                                  1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+kube-system             pod/master-api-ocp311-master1.example.com           1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+kube-system             pod/master-controllers-ocp311-master1.example.com   1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+kube-system             pod/master-etcd-ocp311-master1.example.com          1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+openshift-console       pod/console-6585567fb7-vxphz                        1/1       Running   0          1d        10.128.0.22    ocp311-master1.example.com   <none>
+openshift-node          pod/sync-7578v                                      1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+openshift-node          pod/sync-dhpnw                                      1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+openshift-node          pod/sync-trsfk                                      1/1       Running   0          1d        172.16.99.42   ocp311-node2.example.com     <none>
+openshift-node          pod/sync-vpjv5                                      1/1       Running   0          1d        172.16.99.41   ocp311-node1.example.com     <none>
+openshift-sdn           pod/ovs-7m44w                                       1/1       Running   0          1d        172.16.99.41   ocp311-node1.example.com     <none>
+openshift-sdn           pod/ovs-b4dbv                                       1/1       Running   0          1d        172.16.99.42   ocp311-node2.example.com     <none>
+openshift-sdn           pod/ovs-hk6c9                                       1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+openshift-sdn           pod/ovs-hncsn                                       1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+openshift-sdn           pod/sdn-4pk9z                                       1/1       Running   0          1d        172.16.99.42   ocp311-node2.example.com     <none>
+openshift-sdn           pod/sdn-cr28m                                       1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+openshift-sdn           pod/sdn-mtpm6                                       1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+openshift-sdn           pod/sdn-z85rv                                       1/1       Running   0          1d        172.16.99.41   ocp311-node1.example.com     <none>
+openshift-web-console   pod/webconsole-7f7f679596-hlq4m                     1/1       Running   0          1d        10.128.0.21    ocp311-master1.example.com   <none>
+proj-dev                pod/client-dev-1-7n2gs                              1/1       Running   0          1d        10.131.0.24    ocp311-node2.example.com     <none>
+proj-dev                pod/hello-dev-1-gbcwm                               1/1       Running   0          1d        10.129.0.11    ocp311-node1.example.com     <none>
+proj-ops                pod/client-ops-1-56rg5                              1/1       Running   0          1d        10.129.0.16    ocp311-node1.example.com     <none>
+proj-ops                pod/hello-ops-1-lzhrr                               1/1       Running   0          1d        10.131.0.16    ocp311-node2.example.com     <none>
+NAMESPACE   NAME                                       DESIRED   CURRENT   READY     AGE       CONTAINERS         IMAGES                                                                                                                         SELECTOR
+default     replicationcontroller/docker-registry-1    1         1         1         1d        registry           registry.redhat.io/openshift3/ose-docker-registry:v3.11                                                                        deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default
+default     replicationcontroller/registry-console-1   1         1         1         1d        registry-console   registry.redhat.io/openshift3/registry-console:v3.11                                                                           deployment=registry-console-1,deploymentconfig=registry-console,name=registry-console
+default     replicationcontroller/router-1             1         1         1         1d        router             registry.redhat.io/openshift3/ose-haproxy-router:v3.11                                                                         deployment=router-1,deploymentconfig=router,router=router
+proj-dev    replicationcontroller/client-dev-1         1         1         1         1d        client-dev         docker-registry.default.svc:5000/proj-dev/client-dev@sha256:6e6548ff907584adb0c0fe321cfcf9ab01332db9ef61f78fe44b73031749456b   app=client-dev,deployment=client-dev-1,deploymentconfig=client-dev
+proj-dev    replicationcontroller/hello-dev-1          1         1         1         1d        hello-dev          docker-registry.default.svc:5000/proj-dev/hello-dev@sha256:51cff0cd60a40f612f5d4ab0046247337270769683ea4b65c3275153fd4e81c6    app=hello-dev,deployment=hello-dev-1,deploymentconfig=hello-dev
+proj-ops    replicationcontroller/client-ops-1         1         1         1         1d        client-ops         docker-registry.default.svc:5000/proj-ops/client-ops@sha256:67a08c1bde31359f2fb975600088a2e9b39f0466183b2c52b10f3f0583dd4438   app=client-ops,deployment=client-ops-1,deploymentconfig=client-ops
+proj-ops    replicationcontroller/hello-ops-1          1         1         1         1d        hello-ops          docker-registry.default.svc:5000/proj-ops/hello-ops@sha256:1cfc1bc2f42a8109d11d7cabd9a61e2d6825600c04ee72a481ac391e5c8e6a56    app=hello-ops,deployment=hello-ops-1,deploymentconfig=hello-ops
+NAMESPACE               NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE       SELECTOR
+default                 service/docker-registry    ClusterIP   172.30.195.220   <none>        5000/TCP                  1d        docker-registry=default
+default                 service/kubernetes         ClusterIP   172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     1d        <none>
+default                 service/registry-console   ClusterIP   172.30.241.46    <none>        9000/TCP                  1d        name=registry-console
+default                 service/router             ClusterIP   172.30.125.3     <none>        80/TCP,443/TCP,1936/TCP   1d        router=router
+openshift-console       service/console            ClusterIP   172.30.167.141   <none>        443/TCP                   1d        app=openshift-console,component=ui
+openshift-web-console   service/webconsole         ClusterIP   172.30.151.214   <none>        443/TCP                   1d        webconsole=true
+proj-dev                service/client-dev         ClusterIP   172.30.227.156   <none>        8080/TCP,8443/TCP         1d        app=client-dev,deploymentconfig=client-dev
+proj-dev                service/hello-dev          ClusterIP   172.30.36.145    <none>        8080/TCP,8443/TCP         1d        app=hello-dev,deploymentconfig=hello-dev
+proj-ops                service/client-ops         ClusterIP   172.30.178.162   <none>        8080/TCP,8443/TCP         1d        app=client-ops,deploymentconfig=client-ops
+proj-ops                service/hello-ops          ClusterIP   172.30.200.68    <none>        8080/TCP,8443/TCP         1d        app=hello-ops,deploymentconfig=hello-ops
+NAMESPACE        NAME                  DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE       CONTAINERS    IMAGES                                         SELECTOR
+openshift-node   daemonset.apps/sync   4         4         4         4            4           <none>          1d        sync          registry.redhat.io/openshift3/ose-node:v3.11   app=sync
+openshift-sdn    daemonset.apps/ovs    4         4         4         4            4           <none>          1d        openvswitch   registry.redhat.io/openshift3/ose-node:v3.11   app=ovs
+openshift-sdn    daemonset.apps/sdn    4         4         4         4            4           <none>          1d        sdn           registry.redhat.io/openshift3/ose-node:v3.11   app=sdn
+NAMESPACE               NAME                         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE       CONTAINERS   IMAGES                                                SELECTOR
+openshift-console       deployment.apps/console      1         1         1            1           1d        console      registry.redhat.io/openshift3/ose-console:v3.11       app=openshift-console,component=ui
+openshift-web-console   deployment.apps/webconsole   1         1         1            1           1d        webconsole   registry.redhat.io/openshift3/ose-web-console:v3.11   app=openshift-web-console,webconsole=true
+NAMESPACE               NAME                                    DESIRED   CURRENT   READY     AGE       CONTAINERS   IMAGES                                                SELECTOR
+openshift-console       replicaset.apps/console-6585567fb7      1         1         1         1d        console      registry.redhat.io/openshift3/ose-console:v3.11       app=openshift-console,component=ui,pod-template-hash=2141123963
+openshift-web-console   replicaset.apps/webconsole-7f7f679596   1         1         1         1d        webconsole   registry.redhat.io/openshift3/ose-web-console:v3.11   app=openshift-web-console,pod-template-hash=3939235152,webconsole=true
+NAMESPACE   NAME                                                  REVISION   DESIRED   CURRENT   TRIGGERED BY
+default     deploymentconfig.apps.openshift.io/docker-registry    1          1         1         config
+default     deploymentconfig.apps.openshift.io/registry-console   1          1         1         config
+default     deploymentconfig.apps.openshift.io/router             1          1         1         config
+proj-dev    deploymentconfig.apps.openshift.io/client-dev         1          1         1         config,image(client-dev:latest)
+proj-dev    deploymentconfig.apps.openshift.io/hello-dev          1          1         1         config,image(hello-dev:latest)
+proj-ops    deploymentconfig.apps.openshift.io/client-ops         1          1         1         config,image(client-ops:latest)
+proj-ops    deploymentconfig.apps.openshift.io/hello-ops          1          1         1         config,image(hello-ops:latest)
+NAMESPACE   NAME                                        TYPE      FROM      LATEST
+proj-dev    buildconfig.build.openshift.io/client-dev   Source    Git       1
+proj-dev    buildconfig.build.openshift.io/hello-dev    Source    Git       1
+proj-ops    buildconfig.build.openshift.io/client-ops   Source    Git       1
+proj-ops    buildconfig.build.openshift.io/hello-ops    Source    Git       1
+NAMESPACE   NAME                                    TYPE      FROM          STATUS     STARTED        DURATION
+proj-ops    build.build.openshift.io/hello-ops-1    Source    Git@b2a5ade   Complete   31 hours ago   8s
+proj-dev    build.build.openshift.io/hello-dev-1    Source    Git@b2a5ade   Complete   31 hours ago   9s
+proj-dev    build.build.openshift.io/client-dev-1   Source    Git@b2a5ade   Complete   31 hours ago   9s
+proj-ops    build.build.openshift.io/client-ops-1   Source    Git@b2a5ade   Complete   31 hours ago   9s
+NAMESPACE        NAME                                                                          DOCKER REPO                                                                               TAGS                           UPDATED
+openshift-node   imagestream.image.openshift.io/node                                           docker-registry.default.svc:5000/openshift-node/node                                      v3.11                          31 hours ago
+openshift-sdn    imagestream.image.openshift.io/node                                           docker-registry.default.svc:5000/openshift-sdn/node                                       v3.11                          31 hours ago
+openshift        imagestream.image.openshift.io/dotnet                                         docker-registry.default.svc:5000/openshift/dotnet                                         2.0,2.1,latest + 2 more...     31 hours ago
+openshift        imagestream.image.openshift.io/dotnet-runtime                                 docker-registry.default.svc:5000/openshift/dotnet-runtime                                 latest,2.0,2.1                 31 hours ago
+openshift        imagestream.image.openshift.io/eap-cd-openshift                               docker-registry.default.svc:5000/openshift/eap-cd-openshift                               12,12.0,13 + 2 more...         31 hours ago
+openshift        imagestream.image.openshift.io/fis-java-openshift                             docker-registry.default.svc:5000/openshift/fis-java-openshift                             1.0,2.0                        31 hours ago
+openshift        imagestream.image.openshift.io/fis-karaf-openshift                            docker-registry.default.svc:5000/openshift/fis-karaf-openshift                            1.0,2.0                        31 hours ago
+openshift        imagestream.image.openshift.io/httpd                                          docker-registry.default.svc:5000/openshift/httpd                                          2.4,latest                     31 hours ago
+openshift        imagestream.image.openshift.io/java                                           docker-registry.default.svc:5000/openshift/java                                           8,latest                       31 hours ago
+openshift        imagestream.image.openshift.io/jboss-amq-62                                   docker-registry.default.svc:5000/openshift/jboss-amq-62                                   1.1,1.2,1.3 + 4 more...        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-amq-63                                   docker-registry.default.svc:5000/openshift/jboss-amq-63                                   1.1,1.2,1.3 + 1 more...        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-datagrid65-client-openshift              docker-registry.default.svc:5000/openshift/jboss-datagrid65-client-openshift              1.0,1.1                        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-datagrid65-openshift                     docker-registry.default.svc:5000/openshift/jboss-datagrid65-openshift                     1.3,1.4,1.5 + 2 more...        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-datagrid71-client-openshift              docker-registry.default.svc:5000/openshift/jboss-datagrid71-client-openshift              1.0                            31 hours ago
+openshift        imagestream.image.openshift.io/jboss-datagrid71-openshift                     docker-registry.default.svc:5000/openshift/jboss-datagrid71-openshift                     1.0,1.1,1.2 + 1 more...        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-datavirt63-driver-openshift              docker-registry.default.svc:5000/openshift/jboss-datavirt63-driver-openshift              1.0,1.1                        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-datavirt63-openshift                     docker-registry.default.svc:5000/openshift/jboss-datavirt63-openshift                     1.0,1.1,1.2 + 2 more...        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-decisionserver62-openshift               docker-registry.default.svc:5000/openshift/jboss-decisionserver62-openshift               1.2                            31 hours ago
+openshift        imagestream.image.openshift.io/jboss-decisionserver63-openshift               docker-registry.default.svc:5000/openshift/jboss-decisionserver63-openshift               1.3,1.4                        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-decisionserver64-openshift               docker-registry.default.svc:5000/openshift/jboss-decisionserver64-openshift               1.1,1.2,1.3 + 1 more...        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-eap64-openshift                          docker-registry.default.svc:5000/openshift/jboss-eap64-openshift                          latest,1.4,1.5 + 6 more...     31 hours ago
+openshift        imagestream.image.openshift.io/jboss-eap70-openshift                          docker-registry.default.svc:5000/openshift/jboss-eap70-openshift                          1.6,1.7,1.3 + 2 more...        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-eap71-openshift                          docker-registry.default.svc:5000/openshift/jboss-eap71-openshift                          1.1,1.2,1.3 + 1 more...        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-processserver63-openshift                docker-registry.default.svc:5000/openshift/jboss-processserver63-openshift                1.3,1.4                        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-processserver64-openshift                docker-registry.default.svc:5000/openshift/jboss-processserver64-openshift                1.0,1.1,1.2 + 1 more...        31 hours ago
+openshift        imagestream.image.openshift.io/jboss-webserver30-tomcat7-openshift            docker-registry.default.svc:5000/openshift/jboss-webserver30-tomcat7-openshift            1.1,1.2,1.3                    31 hours ago
+openshift        imagestream.image.openshift.io/jboss-webserver30-tomcat8-openshift            docker-registry.default.svc:5000/openshift/jboss-webserver30-tomcat8-openshift            1.1,1.2,1.3                    31 hours ago
+openshift        imagestream.image.openshift.io/jboss-webserver31-tomcat7-openshift            docker-registry.default.svc:5000/openshift/jboss-webserver31-tomcat7-openshift            1.0,1.1,1.2                    31 hours ago
+openshift        imagestream.image.openshift.io/jboss-webserver31-tomcat8-openshift            docker-registry.default.svc:5000/openshift/jboss-webserver31-tomcat8-openshift            1.0,1.1,1.2                    31 hours ago
+openshift        imagestream.image.openshift.io/jenkins                                        docker-registry.default.svc:5000/openshift/jenkins                                        2,latest,1                     31 hours ago
+openshift        imagestream.image.openshift.io/mariadb                                        docker-registry.default.svc:5000/openshift/mariadb                                        10.1,10.2,latest               31 hours ago
+openshift        imagestream.image.openshift.io/mongodb                                        docker-registry.default.svc:5000/openshift/mongodb                                        2.6,3.2,3.4 + 3 more...        31 hours ago
+openshift        imagestream.image.openshift.io/mysql                                          docker-registry.default.svc:5000/openshift/mysql                                          5.5,5.6,5.7 + 1 more...        31 hours ago
+openshift        imagestream.image.openshift.io/nginx                                          docker-registry.default.svc:5000/openshift/nginx                                          1.8,latest,1.10 + 1 more...    31 hours ago
+openshift        imagestream.image.openshift.io/nodejs                                         docker-registry.default.svc:5000/openshift/nodejs                                         latest,0.10,10 + 4 more...     31 hours ago
+openshift        imagestream.image.openshift.io/perl                                           docker-registry.default.svc:5000/openshift/perl                                           latest,5.16,5.20 + 2 more...   31 hours ago
+openshift        imagestream.image.openshift.io/php                                            docker-registry.default.svc:5000/openshift/php                                            5.5,5.6,7.0 + 2 more...        31 hours ago
+openshift        imagestream.image.openshift.io/postgresql                                     docker-registry.default.svc:5000/openshift/postgresql                                     9.5,9.6,latest + 3 more...     31 hours ago
+openshift        imagestream.image.openshift.io/python                                         docker-registry.default.svc:5000/openshift/python                                         3.5,3.6,latest + 3 more...     31 hours ago
+openshift        imagestream.image.openshift.io/redhat-openjdk18-openshift                     docker-registry.default.svc:5000/openshift/redhat-openjdk18-openshift                     1.0,1.1,1.2 + 2 more...        31 hours ago
+openshift        imagestream.image.openshift.io/redhat-sso70-openshift                         docker-registry.default.svc:5000/openshift/redhat-sso70-openshift                         1.3,1.4                        31 hours ago
+openshift        imagestream.image.openshift.io/redhat-sso71-openshift                         docker-registry.default.svc:5000/openshift/redhat-sso71-openshift                         1.3,1.0,1.1 + 1 more...        31 hours ago
+openshift        imagestream.image.openshift.io/redhat-sso72-openshift                         docker-registry.default.svc:5000/openshift/redhat-sso72-openshift                         1.0,1.1,1.2                    31 hours ago
+openshift        imagestream.image.openshift.io/redis                                          docker-registry.default.svc:5000/openshift/redis                                          latest,3.2                     31 hours ago
+openshift        imagestream.image.openshift.io/rhdm70-decisioncentral-openshift               docker-registry.default.svc:5000/openshift/rhdm70-decisioncentral-openshift               1.0,1.1                        31 hours ago
+openshift        imagestream.image.openshift.io/rhdm70-kieserver-openshift                     docker-registry.default.svc:5000/openshift/rhdm70-kieserver-openshift                     1.0,1.1                        31 hours ago
+openshift        imagestream.image.openshift.io/rhpam70-businesscentral-indexing-openshift     docker-registry.default.svc:5000/openshift/rhpam70-businesscentral-indexing-openshift     1.0                            
+openshift        imagestream.image.openshift.io/rhpam70-businesscentral-monitoring-openshift   docker-registry.default.svc:5000/openshift/rhpam70-businesscentral-monitoring-openshift   1.0                            31 hours ago
+openshift        imagestream.image.openshift.io/rhpam70-businesscentral-openshift              docker-registry.default.svc:5000/openshift/rhpam70-businesscentral-openshift              1.0                            31 hours ago
+openshift        imagestream.image.openshift.io/rhpam70-controller-openshift                   docker-registry.default.svc:5000/openshift/rhpam70-controller-openshift                   1.0                            31 hours ago
+openshift        imagestream.image.openshift.io/rhpam70-kieserver-openshift                    docker-registry.default.svc:5000/openshift/rhpam70-kieserver-openshift                    1.0                            31 hours ago
+openshift        imagestream.image.openshift.io/rhpam70-smartrouter-openshift                  docker-registry.default.svc:5000/openshift/rhpam70-smartrouter-openshift                  1.0                            31 hours ago
+openshift        imagestream.image.openshift.io/ruby                                           docker-registry.default.svc:5000/openshift/ruby                                           2.5,latest,2.0 + 3 more...     31 hours ago
+proj-dev         imagestream.image.openshift.io/client-dev                                     docker-registry.default.svc:5000/proj-dev/client-dev                                      latest                         31 hours ago
+proj-dev         imagestream.image.openshift.io/hello-dev                                      docker-registry.default.svc:5000/proj-dev/hello-dev                                       latest                         31 hours ago
+proj-ops         imagestream.image.openshift.io/client-ops                                     docker-registry.default.svc:5000/proj-ops/client-ops                                      latest                         31 hours ago
+proj-ops         imagestream.image.openshift.io/hello-ops                                      docker-registry.default.svc:5000/proj-ops/hello-ops                                       latest                         31 hours ago
+NAMESPACE           NAME                                        HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION          WILDCARD
+default             route.route.openshift.io/docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough          None
+default             route.route.openshift.io/registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough          None
+openshift-console   route.route.openshift.io/console            console.app.example.com                              console            https     reencrypt/Redirect   None
+NAMESPACE   NAME                                   STATUS    VOLUME            CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+default     persistentvolumeclaim/registry-claim   Bound     registry-volume   10Gi       RWX                           1d
+==> oc get pod -o wide --all-namespaces
+NAMESPACE               NAME                                            READY     STATUS    RESTARTS   AGE       IP             NODE                         NOMINATED NODE
+default                 docker-registry-1-zl7ww                         1/1       Running   0          1d        10.130.0.5     ocp311-infra1.example.com    <none>
+default                 registry-console-1-4x2hj                        1/1       Running   0          1d        10.128.0.20    ocp311-master1.example.com   <none>
+default                 router-1-skzpn                                  1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+kube-system             master-api-ocp311-master1.example.com           1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+kube-system             master-controllers-ocp311-master1.example.com   1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+kube-system             master-etcd-ocp311-master1.example.com          1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+openshift-console       console-6585567fb7-vxphz                        1/1       Running   0          1d        10.128.0.22    ocp311-master1.example.com   <none>
+openshift-node          sync-7578v                                      1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+openshift-node          sync-dhpnw                                      1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+openshift-node          sync-trsfk                                      1/1       Running   0          1d        172.16.99.42   ocp311-node2.example.com     <none>
+openshift-node          sync-vpjv5                                      1/1       Running   0          1d        172.16.99.41   ocp311-node1.example.com     <none>
+openshift-sdn           ovs-7m44w                                       1/1       Running   0          1d        172.16.99.41   ocp311-node1.example.com     <none>
+openshift-sdn           ovs-b4dbv                                       1/1       Running   0          1d        172.16.99.42   ocp311-node2.example.com     <none>
+openshift-sdn           ovs-hk6c9                                       1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+openshift-sdn           ovs-hncsn                                       1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+openshift-sdn           sdn-4pk9z                                       1/1       Running   0          1d        172.16.99.42   ocp311-node2.example.com     <none>
+openshift-sdn           sdn-cr28m                                       1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+openshift-sdn           sdn-mtpm6                                       1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+openshift-sdn           sdn-z85rv                                       1/1       Running   0          1d        172.16.99.41   ocp311-node1.example.com     <none>
+openshift-web-console   webconsole-7f7f679596-hlq4m                     1/1       Running   0          1d        10.128.0.21    ocp311-master1.example.com   <none>
+proj-dev                client-dev-1-7n2gs                              1/1       Running   0          1d        10.131.0.24    ocp311-node2.example.com     <none>
+proj-dev                hello-dev-1-gbcwm                               1/1       Running   0          1d        10.129.0.11    ocp311-node1.example.com     <none>
+proj-ops                client-ops-1-56rg5                              1/1       Running   0          1d        10.129.0.16    ocp311-node1.example.com     <none>
+proj-ops                hello-ops-1-lzhrr                               1/1       Running   0          1d        10.131.0.16    ocp311-node2.example.com     <none>
+==> oc get svc --all-namespaces
+NAMESPACE               NAME               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
+default                 docker-registry    ClusterIP   172.30.195.220   <none>        5000/TCP                  1d
+default                 kubernetes         ClusterIP   172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     1d
+default                 registry-console   ClusterIP   172.30.241.46    <none>        9000/TCP                  1d
+default                 router             ClusterIP   172.30.125.3     <none>        80/TCP,443/TCP,1936/TCP   1d
+openshift-console       console            ClusterIP   172.30.167.141   <none>        443/TCP                   1d
+openshift-web-console   webconsole         ClusterIP   172.30.151.214   <none>        443/TCP                   1d
+proj-dev                client-dev         ClusterIP   172.30.227.156   <none>        8080/TCP,8443/TCP         1d
+proj-dev                hello-dev          ClusterIP   172.30.36.145    <none>        8080/TCP,8443/TCP         1d
+proj-ops                client-ops         ClusterIP   172.30.178.162   <none>        8080/TCP,8443/TCP         1d
+proj-ops                hello-ops          ClusterIP   172.30.200.68    <none>        8080/TCP,8443/TCP         1d
+==> oc get route --all-namespaces
+NAMESPACE           NAME               HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION          WILDCARD
+default             docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough          None
+default             registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough          None
+openshift-console   console            console.app.example.com                              console            https     reencrypt/Redirect   None
+==> oc get networkpolicy --all-namespaces
+NAMESPACE   NAME              POD-SELECTOR    AGE
+default     deny-by-default   <none>          8h
+proj-ops    deny-by-default   <none>          6h
+proj-ops    hello-ops         app=hello-ops   1m
+
+=> project: default
+==> oc get all,pvc -o wide -n default
+NAME                           READY     STATUS    RESTARTS   AGE       IP             NODE                         NOMINATED NODE
+pod/docker-registry-1-zl7ww    1/1       Running   0          1d        10.130.0.5     ocp311-infra1.example.com    <none>
+pod/registry-console-1-4x2hj   1/1       Running   0          1d        10.128.0.20    ocp311-master1.example.com   <none>
+pod/router-1-skzpn             1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+NAME                                       DESIRED   CURRENT   READY     AGE       CONTAINERS         IMAGES                                                    SELECTOR
+replicationcontroller/docker-registry-1    1         1         1         1d        registry           registry.redhat.io/openshift3/ose-docker-registry:v3.11   deployment=docker-registry-1,deploymentconfig=docker-registry,docker-registry=default
+replicationcontroller/registry-console-1   1         1         1         1d        registry-console   registry.redhat.io/openshift3/registry-console:v3.11      deployment=registry-console-1,deploymentconfig=registry-console,name=registry-console
+replicationcontroller/router-1             1         1         1         1d        router             registry.redhat.io/openshift3/ose-haproxy-router:v3.11    deployment=router-1,deploymentconfig=router,router=router
+NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE       SELECTOR
+service/docker-registry    ClusterIP   172.30.195.220   <none>        5000/TCP                  1d        docker-registry=default
+service/kubernetes         ClusterIP   172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     1d        <none>
+service/registry-console   ClusterIP   172.30.241.46    <none>        9000/TCP                  1d        name=registry-console
+service/router             ClusterIP   172.30.125.3     <none>        80/TCP,443/TCP,1936/TCP   1d        router=router
+NAME                                                  REVISION   DESIRED   CURRENT   TRIGGERED BY
+deploymentconfig.apps.openshift.io/docker-registry    1          1         1         config
+deploymentconfig.apps.openshift.io/registry-console   1          1         1         config
+deploymentconfig.apps.openshift.io/router             1          1         1         config
+NAME                                        HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION   WILDCARD
+route.route.openshift.io/docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough   None
+route.route.openshift.io/registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough   None
+NAME                                   STATUS    VOLUME            CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+persistentvolumeclaim/registry-claim   Bound     registry-volume   10Gi       RWX                           1d
+==> oc get pod -o wide -n default
+NAME                       READY     STATUS    RESTARTS   AGE       IP             NODE                         NOMINATED NODE
+docker-registry-1-zl7ww    1/1       Running   0          1d        10.130.0.5     ocp311-infra1.example.com    <none>
+registry-console-1-4x2hj   1/1       Running   0          1d        10.128.0.20    ocp311-master1.example.com   <none>
+router-1-skzpn             1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+==> oc get svc -n default
+NAME               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
+docker-registry    ClusterIP   172.30.195.220   <none>        5000/TCP                  1d
+kubernetes         ClusterIP   172.30.0.1       <none>        443/TCP,53/UDP,53/TCP     1d
+registry-console   ClusterIP   172.30.241.46    <none>        9000/TCP                  1d
+router             ClusterIP   172.30.125.3     <none>        80/TCP,443/TCP,1936/TCP   1d
+==> oc get route -n default
+NAME               HOST/PORT                                  PATH      SERVICES           PORT      TERMINATION   WILDCARD
+docker-registry    docker-registry-default.app.example.com              docker-registry    <all>     passthrough   None
+registry-console   registry-console-default.app.example.com             registry-console   <all>     passthrough   None
+
+
+==>
+===> oc describe pod/docker-registry-1-zl7ww -n default
+Name:               docker-registry-1-zl7ww
+Namespace:          default
+Priority:           0
+PriorityClassName:  <none>
+Node:               ocp311-infra1.example.com/172.16.99.31
+Start Time:         Mon, 12 Nov 2018 16:11:10 +0900
+Labels:             deployment=docker-registry-1
+                    deploymentconfig=docker-registry
+                    docker-registry=default
+Annotations:        openshift.io/deployment-config.latest-version=1
+                    openshift.io/deployment-config.name=docker-registry
+                    openshift.io/deployment.name=docker-registry-1
+                    openshift.io/scc=restricted
+Status:             Running
+IP:                 10.130.0.5
+Controlled By:      ReplicationController/docker-registry-1
+Containers:
+  registry:
+    Container ID:   docker://97878910966e392cbd8c880a5c44340e0768653f7a42a5700937387bd0ea8b4e
+    Image:          registry.redhat.io/openshift3/ose-docker-registry:v3.11
+    Image ID:       docker-pullable://registry.redhat.io/openshift3/ose-docker-registry@sha256:1628f1998a446b527c8d49a8114f9072a7c4cfe26ab199321d5d0a0dec6f97e3
+    Port:           5000/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:11:12 +0900
+    Ready:          True
+    Restart Count:  0
+    Requests:
+      cpu:      100m
+      memory:   256Mi
+    Liveness:   http-get https://:5000/healthz delay=10s timeout=5s period=10s #success=1 #failure=3
+    Readiness:  http-get https://:5000/healthz delay=0s timeout=5s period=10s #success=1 #failure=3
+    Environment:
+      REGISTRY_HTTP_ADDR:                                     :5000
+      REGISTRY_HTTP_NET:                                      tcp
+      REGISTRY_HTTP_SECRET:                                   QPOfL7vjo0/9zxeIHxzv07cz5PBsgSNsJ4ltqH85fsM=
+      REGISTRY_MIDDLEWARE_REPOSITORY_OPENSHIFT_ENFORCEQUOTA:  false
+      OPENSHIFT_DEFAULT_REGISTRY:                             docker-registry.default.svc:5000
+      REGISTRY_HTTP_TLS_CERTIFICATE:                          /etc/secrets/registry.crt
+      REGISTRY_OPENSHIFT_SERVER_ADDR:                         docker-registry.default.svc:5000
+      REGISTRY_HTTP_TLS_KEY:                                  /etc/secrets/registry.key
+    Mounts:
+      /etc/secrets from registry-certificates (rw)
+      /registry from registry-storage (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from registry-token-w9vx9 (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  registry-storage:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  registry-claim
+    ReadOnly:   false
+  registry-certificates:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  registry-certificates
+    Optional:    false
+  registry-token-w9vx9:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  registry-token-w9vx9
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  node-role.kubernetes.io/infra=true
+Tolerations:     node.kubernetes.io/memory-pressure:NoSchedule
+Events:          <none>
+===> oc describe pod/registry-console-1-4x2hj -n default
+Name:               registry-console-1-4x2hj
+Namespace:          default
+Priority:           0
+PriorityClassName:  <none>
+Node:               ocp311-master1.example.com/172.16.99.21
+Start Time:         Mon, 12 Nov 2018 16:11:18 +0900
+Labels:             app=registry-console
+                    deployment=registry-console-1
+                    deploymentconfig=registry-console
+                    name=registry-console
+Annotations:        openshift.io/deployment-config.latest-version=1
+                    openshift.io/deployment-config.name=registry-console
+                    openshift.io/deployment.name=registry-console-1
+                    openshift.io/generated-by=OpenShiftNewApp
+                    openshift.io/scc=restricted
+Status:             Running
+IP:                 10.128.0.20
+Controlled By:      ReplicationController/registry-console-1
+Containers:
+  registry-console:
+    Container ID:   docker://d929d9807a2acb79f0f30207cc841e2ff29285e14abd12336e718541fea2274d
+    Image:          registry.redhat.io/openshift3/registry-console:v3.11
+    Image ID:       docker-pullable://registry.redhat.io/openshift3/registry-console@sha256:79091744933621eaf1a355fdbf7277b3fd5d81794614a6b0fad2caa05c0ef545
+    Port:           9090/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:11:20 +0900
+    Ready:          True
+    Restart Count:  0
+    Liveness:       http-get http://:9090/ping delay=10s timeout=5s period=10s #success=1 #failure=3
+    Readiness:      http-get http://:9090/ping delay=0s timeout=5s period=10s #success=1 #failure=3
+    Environment:
+      OPENSHIFT_OAUTH_PROVIDER_URL:  https://ocp311-master1.example.com:8443
+      OPENSHIFT_OAUTH_CLIENT_ID:     cockpit-oauth-client
+      KUBERNETES_INSECURE:           false
+      COCKPIT_KUBE_INSECURE:         false
+      REGISTRY_ONLY:                 true
+      REGISTRY_HOST:                 docker-registry-default.app.example.com
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-9t8pj (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-9t8pj:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-9t8pj
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  node-role.kubernetes.io/master=true
+Tolerations:     <none>
+Events:          <none>
+===> oc describe pod/router-1-skzpn -n default
+Name:               router-1-skzpn
+Namespace:          default
+Priority:           0
+PriorityClassName:  <none>
+Node:               ocp311-infra1.example.com/172.16.99.31
+Start Time:         Mon, 12 Nov 2018 16:10:55 +0900
+Labels:             deployment=router-1
+                    deploymentconfig=router
+                    router=router
+Annotations:        openshift.io/deployment-config.latest-version=1
+                    openshift.io/deployment-config.name=router
+                    openshift.io/deployment.name=router-1
+                    openshift.io/scc=hostnetwork
+Status:             Running
+IP:                 172.16.99.31
+Controlled By:      ReplicationController/router-1
+Containers:
+  router:
+    Container ID:   docker://580980efbf42904c61723134b93f6a5fd3a9ac5ebc59c712eb599d9a3ad1e26c
+    Image:          registry.redhat.io/openshift3/ose-haproxy-router:v3.11
+    Image ID:       docker-pullable://registry.redhat.io/openshift3/ose-haproxy-router@sha256:61344ef5f25d383f48cc5fcf3de819c62ca3ac5fbe8eb5f6a7715d03485a5298
+    Ports:          80/TCP, 443/TCP, 1936/TCP
+    Host Ports:     80/TCP, 443/TCP, 1936/TCP
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:10:56 +0900
+    Ready:          True
+    Restart Count:  0
+    Requests:
+      cpu:      100m
+      memory:   256Mi
+    Liveness:   http-get http://localhost:1936/healthz delay=10s timeout=1s period=10s #success=1 #failure=3
+    Readiness:  http-get http://localhost:1936/healthz/ready delay=10s timeout=1s period=10s #success=1 #failure=3
+    Environment:
+      DEFAULT_CERTIFICATE_DIR:                /etc/pki/tls/private
+      DEFAULT_CERTIFICATE_PATH:               /etc/pki/tls/private/tls.crt
+      ROUTER_CIPHERS:                         
+      ROUTER_EXTERNAL_HOST_HOSTNAME:          
+      ROUTER_EXTERNAL_HOST_HTTPS_VSERVER:     
+      ROUTER_EXTERNAL_HOST_HTTP_VSERVER:      
+      ROUTER_EXTERNAL_HOST_INSECURE:          false
+      ROUTER_EXTERNAL_HOST_INTERNAL_ADDRESS:  
+      ROUTER_EXTERNAL_HOST_PARTITION_PATH:    
+      ROUTER_EXTERNAL_HOST_PASSWORD:          
+      ROUTER_EXTERNAL_HOST_PRIVKEY:           /etc/secret-volume/router.pem
+      ROUTER_EXTERNAL_HOST_USERNAME:          
+      ROUTER_EXTERNAL_HOST_VXLAN_GW_CIDR:     
+      ROUTER_LISTEN_ADDR:                     0.0.0.0:1936
+      ROUTER_METRICS_TLS_CERT_FILE:           /etc/pki/tls/metrics/tls.crt
+      ROUTER_METRICS_TLS_KEY_FILE:            /etc/pki/tls/metrics/tls.key
+      ROUTER_METRICS_TYPE:                    haproxy
+      ROUTER_SERVICE_HTTPS_PORT:              443
+      ROUTER_SERVICE_HTTP_PORT:               80
+      ROUTER_SERVICE_NAME:                    router
+      ROUTER_SERVICE_NAMESPACE:               default
+      ROUTER_SUBDOMAIN:                       
+      ROUTER_THREADS:                         0
+      STATS_PASSWORD:                         RMAPTYnzOi
+      STATS_PORT:                             1936
+      STATS_USERNAME:                         admin
+      EXTENDED_VALIDATION:                    true
+    Mounts:
+      /etc/pki/tls/metrics/ from metrics-server-certificate (ro)
+      /etc/pki/tls/private from server-certificate (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from router-token-kb5md (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  metrics-server-certificate:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  router-metrics-tls
+    Optional:    false
+  server-certificate:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  router-certs
+    Optional:    false
+  router-token-kb5md:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  router-token-kb5md
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  node-role.kubernetes.io/infra=true
+Tolerations:     node.kubernetes.io/memory-pressure:NoSchedule
+Events:          <none>
+===> oc describe service/docker-registry -n default
+Name:              docker-registry
+Namespace:         default
+Labels:            docker-registry=default
+Annotations:       <none>
+Selector:          docker-registry=default
+Type:              ClusterIP
+IP:                172.30.195.220
+Port:              5000-tcp  5000/TCP
+TargetPort:        5000/TCP
+Endpoints:         10.130.0.5:5000
+Session Affinity:  ClientIP
+Events:            <none>
+===> oc describe service/kubernetes -n default
+Name:              kubernetes
+Namespace:         default
+Labels:            component=apiserver
+                   provider=kubernetes
+Annotations:       <none>
+Selector:          <none>
+Type:              ClusterIP
+IP:                172.30.0.1
+Port:              https  443/TCP
+TargetPort:        8443/TCP
+Endpoints:         172.16.99.21:8443
+Port:              dns  53/UDP
+TargetPort:        8053/UDP
+Endpoints:         172.16.99.21:8053
+Port:              dns-tcp  53/TCP
+TargetPort:        8053/TCP
+Endpoints:         172.16.99.21:8053
+Session Affinity:  None
+Events:            <none>
+===> oc describe service/registry-console -n default
+Name:              registry-console
+Namespace:         default
+Labels:            app=registry-console
+                   createdBy=registry-console-template
+                   name=registry-console
+Annotations:       openshift.io/generated-by=OpenShiftNewApp
+Selector:          name=registry-console
+Type:              ClusterIP
+IP:                172.30.241.46
+Port:              registry-console  9000/TCP
+TargetPort:        9090/TCP
+Endpoints:         10.128.0.20:9090
+Session Affinity:  None
+Events:            <none>
+===> oc describe service/router -n default
+Name:              router
+Namespace:         default
+Labels:            router=router
+Annotations:       prometheus.openshift.io/password=RMAPTYnzOi
+                   prometheus.openshift.io/username=admin
+                   service.alpha.openshift.io/serving-cert-secret-name=router-metrics-tls
+                   service.alpha.openshift.io/serving-cert-signed-by=openshift-service-serving-signer@1542006304
+Selector:          router=router
+Type:              ClusterIP
+IP:                172.30.125.3
+Port:              80-tcp  80/TCP
+TargetPort:        80/TCP
+Endpoints:         172.16.99.31:80
+Port:              443-tcp  443/TCP
+TargetPort:        443/TCP
+Endpoints:         172.16.99.31:443
+Port:              1936-tcp  1936/TCP
+TargetPort:        1936/TCP
+Endpoints:         172.16.99.31:1936
+Session Affinity:  None
+Events:            <none>
+===> oc describe route.route.openshift.io/docker-registry -n default
+Name:			docker-registry
+Namespace:		default
+Created:		31 hours ago
+Labels:			<none>
+Annotations:		openshift.io/host.generated=true
+Requested Host:		docker-registry-default.app.example.com
+			  exposed on router router 31 hours ago
+Path:			<none>
+TLS Termination:	passthrough
+Insecure Policy:	<none>
+Endpoint Port:		<all endpoint ports>
+
+Service:	docker-registry
+Weight:		100 (100%)
+Endpoints:	10.130.0.5:5000
+===> oc describe route.route.openshift.io/registry-console -n default
+Name:			registry-console
+Namespace:		default
+Created:		31 hours ago
+Labels:			<none>
+Annotations:		openshift.io/host.generated=true
+Requested Host:		registry-console-default.app.example.com
+			  exposed on router router 31 hours ago
+Path:			<none>
+TLS Termination:	passthrough
+Insecure Policy:	<none>
+Endpoint Port:		<all endpoint ports>
+
+Service:	registry-console
+Weight:		100 (100%)
+Endpoints:	10.128.0.20:9090
+
+=> project: kube-public
+==> oc get all,pvc -o wide -n kube-public
+==> oc get pod -o wide -n kube-public
+==> oc get svc -n kube-public
+==> oc get route -n kube-public
+
+
+==>
+
+=> project: kube-system
+==> oc get all,pvc -o wide -n kube-system
+NAME                                                READY     STATUS    RESTARTS   AGE       IP             NODE                         NOMINATED NODE
+pod/master-api-ocp311-master1.example.com           1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+pod/master-controllers-ocp311-master1.example.com   1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+pod/master-etcd-ocp311-master1.example.com          1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+==> oc get pod -o wide -n kube-system
+NAME                                            READY     STATUS    RESTARTS   AGE       IP             NODE                         NOMINATED NODE
+master-api-ocp311-master1.example.com           1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+master-controllers-ocp311-master1.example.com   1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+master-etcd-ocp311-master1.example.com          1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+==> oc get svc -n kube-system
+==> oc get route -n kube-system
+
+
+==>
+===> oc describe pod/master-api-ocp311-master1.example.com -n kube-system
+Name:               master-api-ocp311-master1.example.com
+Namespace:          kube-system
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-master1.example.com/172.16.99.21
+Start Time:         Mon, 12 Nov 2018 16:06:08 +0900
+Labels:             openshift.io/component=api
+                    openshift.io/control-plane=true
+Annotations:        kubernetes.io/config.hash=d19f6d40a01e9476bd13cf725f0834fe
+                    kubernetes.io/config.mirror=d19f6d40a01e9476bd13cf725f0834fe
+                    kubernetes.io/config.seen=2018-11-12T16:06:08.547949489+09:00
+                    kubernetes.io/config.source=file
+                    scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.21
+Containers:
+  api:
+    Container ID:  docker://64868f977daa8b784c037c327824913fbbc8508ea0a3d65180aa3547fcc4ee4b
+    Image:         registry.redhat.io/openshift3/ose-control-plane:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-control-plane@sha256:d39bf85900581c168af5feb6954d20faf54ac6fbce76b33e3084fa8d08bb8c7b
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      #!/bin/bash
+set -euo pipefail
+if [[ -f /etc/origin/master/master.env ]]; then
+  set -o allexport
+  source /etc/origin/master/master.env
+fi
+exec openshift start master api --config=/etc/origin/master/master-config.yaml --loglevel=${DEBUG_LOGLEVEL:-2}
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:06:09 +0900
+    Ready:          True
+    Restart Count:  0
+    Liveness:       http-get https://:8443/healthz delay=45s timeout=10s period=10s #success=1 #failure=3
+    Readiness:      http-get https://:8443/healthz/ready delay=10s timeout=10s period=10s #success=1 #failure=3
+    Environment:    <none>
+    Mounts:
+      /etc/origin/cloudprovider/ from master-cloud-provider (rw)
+      /etc/origin/master/ from master-config (rw)
+      /var/lib/origin/ from master-data (rw)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  master-config:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/master/
+    HostPathType:  
+  master-cloud-provider:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/cloudprovider
+    HostPathType:  
+  master-data:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/lib/origin
+    HostPathType:  
+QoS Class:         BestEffort
+Node-Selectors:    <none>
+Tolerations:       :NoExecute
+Events:            <none>
+===> oc describe pod/master-controllers-ocp311-master1.example.com -n kube-system
+Name:               master-controllers-ocp311-master1.example.com
+Namespace:          kube-system
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-master1.example.com/172.16.99.21
+Start Time:         Mon, 12 Nov 2018 16:06:08 +0900
+Labels:             openshift.io/component=controllers
+                    openshift.io/control-plane=true
+Annotations:        kubernetes.io/config.hash=c23121641ef3ed445b290519fb0cc2c7
+                    kubernetes.io/config.mirror=c23121641ef3ed445b290519fb0cc2c7
+                    kubernetes.io/config.seen=2018-11-12T16:06:08.547956218+09:00
+                    kubernetes.io/config.source=file
+                    scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.21
+Containers:
+  controllers:
+    Container ID:  docker://36df92fc585da059739de838d9413e2e894cac79bbaf7d2138e34ac9b3410048
+    Image:         registry.redhat.io/openshift3/ose-control-plane:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-control-plane@sha256:d39bf85900581c168af5feb6954d20faf54ac6fbce76b33e3084fa8d08bb8c7b
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+    Args:
+      #!/bin/bash
+set -euo pipefail
+if [[ -f /etc/origin/master/master.env ]]; then
+  set -o allexport
+  source /etc/origin/master/master.env
+fi
+exec openshift start master controllers --config=/etc/origin/master/master-config.yaml --listen=https://0.0.0.0:8444 --loglevel=${DEBUG_LOGLEVEL:-2}
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:06:09 +0900
+    Ready:          True
+    Restart Count:  0
+    Liveness:       http-get https://:8444/healthz delay=0s timeout=1s period=10s #success=1 #failure=3
+    Environment:    <none>
+    Mounts:
+      /etc/containers/registries.d/ from signature-import (rw)
+      /etc/origin/cloudprovider/ from master-cloud-provider (rw)
+      /etc/origin/master/ from master-config (rw)
+      /usr/libexec/kubernetes/kubelet-plugins from kubelet-plugins (rw)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  master-config:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/master/
+    HostPathType:  
+  master-cloud-provider:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/cloudprovider
+    HostPathType:  
+  signature-import:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/containers/registries.d
+    HostPathType:  
+  kubelet-plugins:
+    Type:          HostPath (bare host directory volume)
+    Path:          /usr/libexec/kubernetes/kubelet-plugins
+    HostPathType:  
+QoS Class:         BestEffort
+Node-Selectors:    <none>
+Tolerations:       :NoExecute
+Events:            <none>
+===> oc describe pod/master-etcd-ocp311-master1.example.com -n kube-system
+Name:               master-etcd-ocp311-master1.example.com
+Namespace:          kube-system
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-master1.example.com/172.16.99.21
+Start Time:         Mon, 12 Nov 2018 16:06:08 +0900
+Labels:             openshift.io/component=etcd
+                    openshift.io/control-plane=true
+Annotations:        kubernetes.io/config.hash=d540f377d6e35819a0012d63bf8d63ef
+                    kubernetes.io/config.mirror=d540f377d6e35819a0012d63bf8d63ef
+                    kubernetes.io/config.seen=2018-11-12T16:06:08.54795952+09:00
+                    kubernetes.io/config.source=file
+                    scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.21
+Containers:
+  etcd:
+    Container ID:  docker://32d952212afa3e664eed0be23a3dfd158abca0e589df98492cac7507c6418ee8
+    Image:         registry.redhat.io/rhel7/etcd:3.2.22
+    Image ID:      docker-pullable://registry.redhat.io/rhel7/etcd@sha256:c67c6b125e47a68ad12c361f137f4c314a81d64ba64486f99e690d5022dde9b3
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/sh
+      -c
+    Args:
+      #!/bin/sh
+set -o allexport
+source /etc/etcd/etcd.conf
+exec etcd
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:06:09 +0900
+    Ready:          True
+    Restart Count:  0
+    Liveness:       exec [etcdctl --cert-file /etc/etcd/peer.crt --key-file /etc/etcd/peer.key --ca-file /etc/etcd/ca.crt -C https://172.16.99.21:2379 cluster-health] delay=45s timeout=1s period=10s #success=1 #failure=3
+    Environment:    <none>
+    Mounts:
+      /etc/etcd/ from master-config (ro)
+      /var/lib/etcd/ from master-data (rw)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  master-config:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/etcd/
+    HostPathType:  
+  master-data:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/lib/etcd
+    HostPathType:  
+QoS Class:         BestEffort
+Node-Selectors:    <none>
+Tolerations:       :NoExecute
+Events:            <none>
+
+=> project: management-infra
+==> oc get all,pvc -o wide -n management-infra
+==> oc get pod -o wide -n management-infra
+==> oc get svc -n management-infra
+==> oc get route -n management-infra
+
+
+==>
+
+=> project: openshift
+==> oc get all,pvc -o wide -n openshift
+NAME                                                                          DOCKER REPO                                                                               TAGS                           UPDATED
+imagestream.image.openshift.io/dotnet                                         docker-registry.default.svc:5000/openshift/dotnet                                         2.1,latest,1.0 + 2 more...     31 hours ago
+imagestream.image.openshift.io/dotnet-runtime                                 docker-registry.default.svc:5000/openshift/dotnet-runtime                                 2.0,2.1,latest                 31 hours ago
+imagestream.image.openshift.io/eap-cd-openshift                               docker-registry.default.svc:5000/openshift/eap-cd-openshift                               12,12.0,13 + 2 more...         31 hours ago
+imagestream.image.openshift.io/fis-java-openshift                             docker-registry.default.svc:5000/openshift/fis-java-openshift                             1.0,2.0                        31 hours ago
+imagestream.image.openshift.io/fis-karaf-openshift                            docker-registry.default.svc:5000/openshift/fis-karaf-openshift                            1.0,2.0                        31 hours ago
+imagestream.image.openshift.io/httpd                                          docker-registry.default.svc:5000/openshift/httpd                                          2.4,latest                     31 hours ago
+imagestream.image.openshift.io/java                                           docker-registry.default.svc:5000/openshift/java                                           8,latest                       31 hours ago
+imagestream.image.openshift.io/jboss-amq-62                                   docker-registry.default.svc:5000/openshift/jboss-amq-62                                   1.1,1.2,1.3 + 4 more...        31 hours ago
+imagestream.image.openshift.io/jboss-amq-63                                   docker-registry.default.svc:5000/openshift/jboss-amq-63                                   1.2,1.3,1.0 + 1 more...        31 hours ago
+imagestream.image.openshift.io/jboss-datagrid65-client-openshift              docker-registry.default.svc:5000/openshift/jboss-datagrid65-client-openshift              1.0,1.1                        31 hours ago
+imagestream.image.openshift.io/jboss-datagrid65-openshift                     docker-registry.default.svc:5000/openshift/jboss-datagrid65-openshift                     1.5,1.6,1.2 + 2 more...        31 hours ago
+imagestream.image.openshift.io/jboss-datagrid71-client-openshift              docker-registry.default.svc:5000/openshift/jboss-datagrid71-client-openshift              1.0                            31 hours ago
+imagestream.image.openshift.io/jboss-datagrid71-openshift                     docker-registry.default.svc:5000/openshift/jboss-datagrid71-openshift                     1.2,1.3,1.0 + 1 more...        31 hours ago
+imagestream.image.openshift.io/jboss-datavirt63-driver-openshift              docker-registry.default.svc:5000/openshift/jboss-datavirt63-driver-openshift              1.0,1.1                        31 hours ago
+imagestream.image.openshift.io/jboss-datavirt63-openshift                     docker-registry.default.svc:5000/openshift/jboss-datavirt63-openshift                     1.0,1.1,1.2 + 2 more...        31 hours ago
+imagestream.image.openshift.io/jboss-decisionserver62-openshift               docker-registry.default.svc:5000/openshift/jboss-decisionserver62-openshift               1.2                            31 hours ago
+imagestream.image.openshift.io/jboss-decisionserver63-openshift               docker-registry.default.svc:5000/openshift/jboss-decisionserver63-openshift               1.3,1.4                        31 hours ago
+imagestream.image.openshift.io/jboss-decisionserver64-openshift               docker-registry.default.svc:5000/openshift/jboss-decisionserver64-openshift               1.2,1.3,1.0 + 1 more...        31 hours ago
+imagestream.image.openshift.io/jboss-eap64-openshift                          docker-registry.default.svc:5000/openshift/jboss-eap64-openshift                          1.6,1.7,1.8 + 6 more...        31 hours ago
+imagestream.image.openshift.io/jboss-eap70-openshift                          docker-registry.default.svc:5000/openshift/jboss-eap70-openshift                          1.7,1.3,1.4 + 2 more...        31 hours ago
+imagestream.image.openshift.io/jboss-eap71-openshift                          docker-registry.default.svc:5000/openshift/jboss-eap71-openshift                          1.1,1.2,1.3 + 1 more...        31 hours ago
+imagestream.image.openshift.io/jboss-processserver63-openshift                docker-registry.default.svc:5000/openshift/jboss-processserver63-openshift                1.4,1.3                        31 hours ago
+imagestream.image.openshift.io/jboss-processserver64-openshift                docker-registry.default.svc:5000/openshift/jboss-processserver64-openshift                1.3,1.0,1.1 + 1 more...        31 hours ago
+imagestream.image.openshift.io/jboss-webserver30-tomcat7-openshift            docker-registry.default.svc:5000/openshift/jboss-webserver30-tomcat7-openshift            1.1,1.2,1.3                    31 hours ago
+imagestream.image.openshift.io/jboss-webserver30-tomcat8-openshift            docker-registry.default.svc:5000/openshift/jboss-webserver30-tomcat8-openshift            1.1,1.2,1.3                    31 hours ago
+imagestream.image.openshift.io/jboss-webserver31-tomcat7-openshift            docker-registry.default.svc:5000/openshift/jboss-webserver31-tomcat7-openshift            1.0,1.1,1.2                    31 hours ago
+imagestream.image.openshift.io/jboss-webserver31-tomcat8-openshift            docker-registry.default.svc:5000/openshift/jboss-webserver31-tomcat8-openshift            1.0,1.1,1.2                    31 hours ago
+imagestream.image.openshift.io/jenkins                                        docker-registry.default.svc:5000/openshift/jenkins                                        latest,1,2                     31 hours ago
+imagestream.image.openshift.io/mariadb                                        docker-registry.default.svc:5000/openshift/mariadb                                        10.1,10.2,latest               31 hours ago
+imagestream.image.openshift.io/mongodb                                        docker-registry.default.svc:5000/openshift/mongodb                                        2.4,2.6,3.2 + 3 more...        31 hours ago
+imagestream.image.openshift.io/mysql                                          docker-registry.default.svc:5000/openshift/mysql                                          5.7,latest,5.5 + 1 more...     31 hours ago
+imagestream.image.openshift.io/nginx                                          docker-registry.default.svc:5000/openshift/nginx                                          latest,1.10,1.12 + 1 more...   31 hours ago
+imagestream.image.openshift.io/nodejs                                         docker-registry.default.svc:5000/openshift/nodejs                                         10,4,6 + 4 more...             31 hours ago
+imagestream.image.openshift.io/perl                                           docker-registry.default.svc:5000/openshift/perl                                           5.16,5.20,5.24 + 2 more...     31 hours ago
+imagestream.image.openshift.io/php                                            docker-registry.default.svc:5000/openshift/php                                            7.0,7.1,latest + 2 more...     31 hours ago
+imagestream.image.openshift.io/postgresql                                     docker-registry.default.svc:5000/openshift/postgresql                                     10,9.2,9.4 + 3 more...         31 hours ago
+imagestream.image.openshift.io/python                                         docker-registry.default.svc:5000/openshift/python                                         3.6,latest,2.7 + 3 more...     31 hours ago
+imagestream.image.openshift.io/redhat-openjdk18-openshift                     docker-registry.default.svc:5000/openshift/redhat-openjdk18-openshift                     1.3,1.4,1.0 + 2 more...        31 hours ago
+imagestream.image.openshift.io/redhat-sso70-openshift                         docker-registry.default.svc:5000/openshift/redhat-sso70-openshift                         1.3,1.4                        31 hours ago
+imagestream.image.openshift.io/redhat-sso71-openshift                         docker-registry.default.svc:5000/openshift/redhat-sso71-openshift                         1.0,1.1,1.2 + 1 more...        31 hours ago
+imagestream.image.openshift.io/redhat-sso72-openshift                         docker-registry.default.svc:5000/openshift/redhat-sso72-openshift                         1.0,1.1,1.2                    31 hours ago
+imagestream.image.openshift.io/redis                                          docker-registry.default.svc:5000/openshift/redis                                          3.2,latest                     31 hours ago
+imagestream.image.openshift.io/rhdm70-decisioncentral-openshift               docker-registry.default.svc:5000/openshift/rhdm70-decisioncentral-openshift               1.0,1.1                        31 hours ago
+imagestream.image.openshift.io/rhdm70-kieserver-openshift                     docker-registry.default.svc:5000/openshift/rhdm70-kieserver-openshift                     1.1,1.0                        31 hours ago
+imagestream.image.openshift.io/rhpam70-businesscentral-indexing-openshift     docker-registry.default.svc:5000/openshift/rhpam70-businesscentral-indexing-openshift     1.0                            
+imagestream.image.openshift.io/rhpam70-businesscentral-monitoring-openshift   docker-registry.default.svc:5000/openshift/rhpam70-businesscentral-monitoring-openshift   1.0                            31 hours ago
+imagestream.image.openshift.io/rhpam70-businesscentral-openshift              docker-registry.default.svc:5000/openshift/rhpam70-businesscentral-openshift              1.0                            31 hours ago
+imagestream.image.openshift.io/rhpam70-controller-openshift                   docker-registry.default.svc:5000/openshift/rhpam70-controller-openshift                   1.0                            31 hours ago
+imagestream.image.openshift.io/rhpam70-kieserver-openshift                    docker-registry.default.svc:5000/openshift/rhpam70-kieserver-openshift                    1.0                            31 hours ago
+imagestream.image.openshift.io/rhpam70-smartrouter-openshift                  docker-registry.default.svc:5000/openshift/rhpam70-smartrouter-openshift                  1.0                            31 hours ago
+imagestream.image.openshift.io/ruby                                           docker-registry.default.svc:5000/openshift/ruby                                           2.0,2.2,2.3 + 3 more...        31 hours ago
+==> oc get pod -o wide -n openshift
+==> oc get svc -n openshift
+==> oc get route -n openshift
+
+
+==>
+
+=> project: openshift-console
+==> oc get all,pvc -o wide -n openshift-console
+NAME                           READY     STATUS    RESTARTS   AGE       IP            NODE                         NOMINATED NODE
+pod/console-6585567fb7-vxphz   1/1       Running   0          1d        10.128.0.22   ocp311-master1.example.com   <none>
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE       SELECTOR
+service/console   ClusterIP   172.30.167.141   <none>        443/TCP   1d        app=openshift-console,component=ui
+NAME                      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE       CONTAINERS   IMAGES                                            SELECTOR
+deployment.apps/console   1         1         1            1           1d        console      registry.redhat.io/openshift3/ose-console:v3.11   app=openshift-console,component=ui
+NAME                                 DESIRED   CURRENT   READY     AGE       CONTAINERS   IMAGES                                            SELECTOR
+replicaset.apps/console-6585567fb7   1         1         1         1d        console      registry.redhat.io/openshift3/ose-console:v3.11   app=openshift-console,component=ui,pod-template-hash=2141123963
+NAME                               HOST/PORT                 PATH      SERVICES   PORT      TERMINATION          WILDCARD
+route.route.openshift.io/console   console.app.example.com             console    https     reencrypt/Redirect   None
+==> oc get pod -o wide -n openshift-console
+NAME                       READY     STATUS    RESTARTS   AGE       IP            NODE                         NOMINATED NODE
+console-6585567fb7-vxphz   1/1       Running   0          1d        10.128.0.22   ocp311-master1.example.com   <none>
+==> oc get svc -n openshift-console
+NAME      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+console   ClusterIP   172.30.167.141   <none>        443/TCP   1d
+==> oc get route -n openshift-console
+NAME      HOST/PORT                 PATH      SERVICES   PORT      TERMINATION          WILDCARD
+console   console.app.example.com             console    https     reencrypt/Redirect   None
+
+
+==>
+===> oc describe pod/console-6585567fb7-vxphz -n openshift-console
+Name:               console-6585567fb7-vxphz
+Namespace:          openshift-console
+Priority:           0
+PriorityClassName:  <none>
+Node:               ocp311-master1.example.com/172.16.99.21
+Start Time:         Mon, 12 Nov 2018 16:11:44 +0900
+Labels:             app=openshift-console
+                    component=ui
+                    pod-template-hash=2141123963
+Annotations:        openshift.io/scc=restricted
+Status:             Running
+IP:                 10.128.0.22
+Controlled By:      ReplicaSet/console-6585567fb7
+Containers:
+  console:
+    Container ID:  docker://64c7d6cc3036554e0b471ac82bbd8176ba3f3bc76ee5951663ee32817b0bb11f
+    Image:         registry.redhat.io/openshift3/ose-console:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-console@sha256:eb5694f8206d86ecb29c826ea0e4d51666ce8e2fb1e4c121df2329273f6938e2
+    Port:          8443/TCP
+    Host Port:     0/TCP
+    Command:
+      /opt/bridge/bin/bridge
+      --public-dir=/opt/bridge/static
+      --config=/var/console-config/console-config.yaml
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:11:46 +0900
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     100m
+      memory:  100Mi
+    Requests:
+      cpu:        100m
+      memory:     100Mi
+    Liveness:     http-get https://:8443/health delay=30s timeout=1s period=10s #success=1 #failure=3
+    Readiness:    http-get https://:8443/health delay=0s timeout=1s period=10s #success=1 #failure=3
+    Environment:  <none>
+    Mounts:
+      /var/console-config from console-config (rw)
+      /var/oauth-config from oauth-config (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-sh5z8 (ro)
+      /var/serving-cert from serving-cert (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  serving-cert:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  console-serving-cert
+    Optional:    false
+  oauth-config:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  console-oauth-config
+    Optional:    false
+  console-config:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      console-config
+    Optional:  false
+  default-token-sh5z8:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-sh5z8
+    Optional:    false
+QoS Class:       Guaranteed
+Node-Selectors:  node-role.kubernetes.io/master=true
+Tolerations:     node.kubernetes.io/memory-pressure:NoSchedule
+Events:          <none>
+===> oc describe service/console -n openshift-console
+Name:              console
+Namespace:         openshift-console
+Labels:            app=openshift-console
+Annotations:       kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"service.alpha.openshift.io/serving-cert-secret-name":"console-serving-cert"},"labels":{...
+                   service.alpha.openshift.io/serving-cert-secret-name=console-serving-cert
+                   service.alpha.openshift.io/serving-cert-signed-by=openshift-service-serving-signer@1542006304
+Selector:          app=openshift-console,component=ui
+Type:              ClusterIP
+IP:                172.30.167.141
+Port:              https  443/TCP
+TargetPort:        8443/TCP
+Endpoints:         10.128.0.22:8443
+Session Affinity:  None
+Events:            <none>
+===> oc describe route.route.openshift.io/console -n openshift-console
+Name:			console
+Namespace:		openshift-console
+Created:		31 hours ago
+Labels:			app=openshift-console
+Annotations:		kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"route.openshift.io/v1","kind":"Route","metadata":{"annotations":{},"labels":{"app":"openshift-console"},"name":"console","namespace":"openshift-console"},"spec":{"host":"console.app.example.com","port":{"targetPort":"https"},"tls":{"caCertificate":"","certificate":"","insecureEdgeTerminationPolicy":"Redirect","key":"","termination":"reencrypt"},"to":{"kind":"Service","name":"console"}}}
+			
+Requested Host:		console.app.example.com
+			  exposed on router router 31 hours ago
+Path:			<none>
+TLS Termination:	reencrypt
+Insecure Policy:	Redirect
+Endpoint Port:		https
+
+Service:	console
+Weight:		100 (100%)
+Endpoints:	10.128.0.22:8443
+
+=> project: openshift-infra
+==> oc get all,pvc -o wide -n openshift-infra
+==> oc get pod -o wide -n openshift-infra
+==> oc get svc -n openshift-infra
+==> oc get route -n openshift-infra
+
+
+==>
+
+=> project: openshift-logging
+==> oc get all,pvc -o wide -n openshift-logging
+==> oc get pod -o wide -n openshift-logging
+==> oc get svc -n openshift-logging
+==> oc get route -n openshift-logging
+
+
+==>
+
+=> project: openshift-node
+==> oc get all,pvc -o wide -n openshift-node
+NAME             READY     STATUS    RESTARTS   AGE       IP             NODE                         NOMINATED NODE
+pod/sync-7578v   1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+pod/sync-dhpnw   1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+pod/sync-trsfk   1/1       Running   0          1d        172.16.99.42   ocp311-node2.example.com     <none>
+pod/sync-vpjv5   1/1       Running   0          1d        172.16.99.41   ocp311-node1.example.com     <none>
+NAME                  DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE       CONTAINERS   IMAGES                                         SELECTOR
+daemonset.apps/sync   4         4         4         4            4           <none>          1d        sync         registry.redhat.io/openshift3/ose-node:v3.11   app=sync
+NAME                                  DOCKER REPO                                            TAGS      UPDATED
+imagestream.image.openshift.io/node   docker-registry.default.svc:5000/openshift-node/node   v3.11     31 hours ago
+==> oc get pod -o wide -n openshift-node
+NAME         READY     STATUS    RESTARTS   AGE       IP             NODE                         NOMINATED NODE
+sync-7578v   1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+sync-dhpnw   1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+sync-trsfk   1/1       Running   0          1d        172.16.99.42   ocp311-node2.example.com     <none>
+sync-vpjv5   1/1       Running   0          1d        172.16.99.41   ocp311-node1.example.com     <none>
+==> oc get svc -n openshift-node
+==> oc get route -n openshift-node
+
+
+==>
+===> oc describe pod/sync-7578v -n openshift-node
+Name:               sync-7578v
+Namespace:          openshift-node
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-infra1.example.com/172.16.99.31
+Start Time:         Mon, 12 Nov 2018 16:09:49 +0900
+Labels:             app=sync
+                    component=network
+                    controller-revision-hash=4090623868
+                    openshift.io/component=sync
+                    pod-template-generation=2
+                    type=infra
+Annotations:        scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.31
+Controlled By:      DaemonSet/sync
+Containers:
+  sync:
+    Container ID:  docker://6aae07354dd7cf5298b11f660d8c0e583a8c63de21a9002459c388e14f476347
+    Image:         registry.redhat.io/openshift3/ose-node:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-node@sha256:6fbb37c0993bdc6160beeea3c2e15d180eba415a0e2ade3c57d23833a14f659c
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+      #!/bin/bash
+set -euo pipefail
+
+# set by the node image
+unset KUBECONFIG
+
+trap 'kill $(jobs -p); exit 0' TERM
+
+# track the current state of the config
+if [[ -f /etc/origin/node/node-config.yaml ]]; then
+  md5sum /etc/origin/node/node-config.yaml > /tmp/.old
+else
+  touch /tmp/.old
+fi
+
+# loop until BOOTSTRAP_CONFIG_NAME is set
+while true; do
+  file=/etc/sysconfig/origin-node
+  if [[ -f /etc/sysconfig/atomic-openshift-node ]]; then
+    file=/etc/sysconfig/atomic-openshift-node
+  elif [[ -f /etc/sysconfig/origin-node ]]; then
+    file=/etc/sysconfig/origin-node
+  else
+    echo "info: Waiting for the node sysconfig file to be created" 2>&1
+    sleep 15 & wait
+    continue
+  fi
+  name="$(sed -nE 's|^BOOTSTRAP_CONFIG_NAME=([^#].+)|\1|p' "${file}" | head -1)"
+  if [[ -z "${name}" ]]; then
+    echo "info: Waiting for BOOTSTRAP_CONFIG_NAME to be set" 2>&1
+    sleep 15 & wait
+    continue
+  fi
+  # in the background check to see if the value changes and exit if so
+  pid=$BASHPID
+  (
+    while true; do
+      if ! updated="$(sed -nE 's|^BOOTSTRAP_CONFIG_NAME=([^#].+)|\1|p' "${file}" | head -1)"; then
+        echo "error: Unable to check for bootstrap config, exiting" 2>&1
+        kill $pid
+        exit 1
+      fi
+      if [[ "${updated}" != "${name}" ]]; then
+        echo "info: Bootstrap configuration profile name changed, exiting" 2>&1
+        kill $pid
+        exit 0
+      fi
+      sleep 15
+    done
+  ) &
+  break
+done
+
+# periodically refresh both node-config.yaml and relabel the node
+while true; do
+  if ! oc extract "configmaps/${name}" -n openshift-node --to=/etc/origin/node --confirm --request-timeout=10s --config /etc/origin/node/node.kubeconfig "--token=$( cat /var/run/secrets/kubernetes.io/serviceaccount/token )"  > /dev/null; then
+    echo "error: Unable to retrieve latest config for node" 2>&1
+    sleep 15 &
+    wait $!
+    continue
+  fi
+  # detect whether the node-config.yaml has changed, and if so trigger a restart of the kubelet.
+  md5sum /etc/origin/node/node-config.yaml > /tmp/.new
+  if [[ "$( cat /tmp/.old )" != "$( cat /tmp/.new )" ]]; then
+    echo "info: Configuration changed, restarting kubelet" 2>&1
+    # TODO: kubelet doesn't relabel nodes, best effort for now
+    # https://github.com/kubernetes/kubernetes/issues/59314
+    if args="$(openshift-node-config --config /etc/origin/node/node-config.yaml)"; then
+      labels=$(tr ' ' '\n' <<<$args | sed -ne '/^--node-labels=/ { s/^--node-labels=//; p; }' | tr ',\n' ' ')
+      if [[ -n "${labels}" ]]; then
+        echo "info: Applying node labels $labels" 2>&1
+        if ! oc label --config=/etc/origin/node/node.kubeconfig "node/${NODE_NAME}" ${labels} --overwrite; then
+          echo "error: Unable to apply labels, will retry in 10" 2>&1
+          sleep 10 &
+          wait $!
+          continue
+        fi
+      fi
+    else
+      echo "error: The downloaded node configuration is invalid, retrying later" 2>&1
+      sleep 10 &
+      wait $!
+      continue
+    fi
+    if ! pkill -U 0 -f '(^|/)hyperkube kubelet '; then
+      echo "error: Unable to restart Kubelet" 2>&1
+      sleep 10 &
+      wait $!
+      continue
+    fi
+  fi
+  # annotate node with md5sum of the config
+  oc annotate --config=/etc/origin/node/node.kubeconfig "node/${NODE_NAME}" \
+    node.openshift.io/md5sum="$( cat /tmp/.new | cut -d' ' -f1 )" --overwrite
+  cp -f /tmp/.new /tmp/.old
+  sleep 180 &
+  wait $!
+done
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:09:51 +0900
+    Ready:          True
+    Restart Count:  0
+    Environment:
+      NODE_NAME:   (v1:spec.nodeName)
+    Mounts:
+      /etc/origin/node/ from host-config (rw)
+      /etc/sysconfig from host-sysconfig-node (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from sync-token-dvv7d (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  host-config:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/node
+    HostPathType:  
+  host-sysconfig-node:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/sysconfig
+    HostPathType:  
+  sync-token-dvv7d:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  sync-token-dvv7d
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/disk-pressure:NoSchedule
+                 node.kubernetes.io/memory-pressure:NoSchedule
+                 node.kubernetes.io/not-ready:NoExecute
+                 node.kubernetes.io/unreachable:NoExecute
+Events:          <none>
+===> oc describe pod/sync-dhpnw -n openshift-node
+Name:               sync-dhpnw
+Namespace:          openshift-node
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-master1.example.com/172.16.99.21
+Start Time:         Mon, 12 Nov 2018 16:08:49 +0900
+Labels:             app=sync
+                    component=network
+                    controller-revision-hash=4090623868
+                    openshift.io/component=sync
+                    pod-template-generation=2
+                    type=infra
+Annotations:        scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.21
+Controlled By:      DaemonSet/sync
+Containers:
+  sync:
+    Container ID:  docker://81078fda7153857633ceef2a99801920224c05e87bc3e4755cba23bd6789bd5d
+    Image:         registry.redhat.io/openshift3/ose-node:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-node@sha256:6fbb37c0993bdc6160beeea3c2e15d180eba415a0e2ade3c57d23833a14f659c
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+      #!/bin/bash
+set -euo pipefail
+
+# set by the node image
+unset KUBECONFIG
+
+trap 'kill $(jobs -p); exit 0' TERM
+
+# track the current state of the config
+if [[ -f /etc/origin/node/node-config.yaml ]]; then
+  md5sum /etc/origin/node/node-config.yaml > /tmp/.old
+else
+  touch /tmp/.old
+fi
+
+# loop until BOOTSTRAP_CONFIG_NAME is set
+while true; do
+  file=/etc/sysconfig/origin-node
+  if [[ -f /etc/sysconfig/atomic-openshift-node ]]; then
+    file=/etc/sysconfig/atomic-openshift-node
+  elif [[ -f /etc/sysconfig/origin-node ]]; then
+    file=/etc/sysconfig/origin-node
+  else
+    echo "info: Waiting for the node sysconfig file to be created" 2>&1
+    sleep 15 & wait
+    continue
+  fi
+  name="$(sed -nE 's|^BOOTSTRAP_CONFIG_NAME=([^#].+)|\1|p' "${file}" | head -1)"
+  if [[ -z "${name}" ]]; then
+    echo "info: Waiting for BOOTSTRAP_CONFIG_NAME to be set" 2>&1
+    sleep 15 & wait
+    continue
+  fi
+  # in the background check to see if the value changes and exit if so
+  pid=$BASHPID
+  (
+    while true; do
+      if ! updated="$(sed -nE 's|^BOOTSTRAP_CONFIG_NAME=([^#].+)|\1|p' "${file}" | head -1)"; then
+        echo "error: Unable to check for bootstrap config, exiting" 2>&1
+        kill $pid
+        exit 1
+      fi
+      if [[ "${updated}" != "${name}" ]]; then
+        echo "info: Bootstrap configuration profile name changed, exiting" 2>&1
+        kill $pid
+        exit 0
+      fi
+      sleep 15
+    done
+  ) &
+  break
+done
+
+# periodically refresh both node-config.yaml and relabel the node
+while true; do
+  if ! oc extract "configmaps/${name}" -n openshift-node --to=/etc/origin/node --confirm --request-timeout=10s --config /etc/origin/node/node.kubeconfig "--token=$( cat /var/run/secrets/kubernetes.io/serviceaccount/token )"  > /dev/null; then
+    echo "error: Unable to retrieve latest config for node" 2>&1
+    sleep 15 &
+    wait $!
+    continue
+  fi
+  # detect whether the node-config.yaml has changed, and if so trigger a restart of the kubelet.
+  md5sum /etc/origin/node/node-config.yaml > /tmp/.new
+  if [[ "$( cat /tmp/.old )" != "$( cat /tmp/.new )" ]]; then
+    echo "info: Configuration changed, restarting kubelet" 2>&1
+    # TODO: kubelet doesn't relabel nodes, best effort for now
+    # https://github.com/kubernetes/kubernetes/issues/59314
+    if args="$(openshift-node-config --config /etc/origin/node/node-config.yaml)"; then
+      labels=$(tr ' ' '\n' <<<$args | sed -ne '/^--node-labels=/ { s/^--node-labels=//; p; }' | tr ',\n' ' ')
+      if [[ -n "${labels}" ]]; then
+        echo "info: Applying node labels $labels" 2>&1
+        if ! oc label --config=/etc/origin/node/node.kubeconfig "node/${NODE_NAME}" ${labels} --overwrite; then
+          echo "error: Unable to apply labels, will retry in 10" 2>&1
+          sleep 10 &
+          wait $!
+          continue
+        fi
+      fi
+    else
+      echo "error: The downloaded node configuration is invalid, retrying later" 2>&1
+      sleep 10 &
+      wait $!
+      continue
+    fi
+    if ! pkill -U 0 -f '(^|/)hyperkube kubelet '; then
+      echo "error: Unable to restart Kubelet" 2>&1
+      sleep 10 &
+      wait $!
+      continue
+    fi
+  fi
+  # annotate node with md5sum of the config
+  oc annotate --config=/etc/origin/node/node.kubeconfig "node/${NODE_NAME}" \
+    node.openshift.io/md5sum="$( cat /tmp/.new | cut -d' ' -f1 )" --overwrite
+  cp -f /tmp/.new /tmp/.old
+  sleep 180 &
+  wait $!
+done
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:08:49 +0900
+    Ready:          True
+    Restart Count:  0
+    Environment:
+      NODE_NAME:   (v1:spec.nodeName)
+    Mounts:
+      /etc/origin/node/ from host-config (rw)
+      /etc/sysconfig from host-sysconfig-node (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from sync-token-dvv7d (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  host-config:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/node
+    HostPathType:  
+  host-sysconfig-node:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/sysconfig
+    HostPathType:  
+  sync-token-dvv7d:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  sync-token-dvv7d
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/disk-pressure:NoSchedule
+                 node.kubernetes.io/memory-pressure:NoSchedule
+                 node.kubernetes.io/not-ready:NoExecute
+                 node.kubernetes.io/unreachable:NoExecute
+Events:          <none>
+===> oc describe pod/sync-trsfk -n openshift-node
+Name:               sync-trsfk
+Namespace:          openshift-node
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-node2.example.com/172.16.99.42
+Start Time:         Mon, 12 Nov 2018 16:09:50 +0900
+Labels:             app=sync
+                    component=network
+                    controller-revision-hash=4090623868
+                    openshift.io/component=sync
+                    pod-template-generation=2
+                    type=infra
+Annotations:        scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.42
+Controlled By:      DaemonSet/sync
+Containers:
+  sync:
+    Container ID:  docker://41514a5049e8600fe9a59c6af136bb489bfabf4317b91a03fc60655948b30930
+    Image:         registry.redhat.io/openshift3/ose-node:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-node@sha256:6fbb37c0993bdc6160beeea3c2e15d180eba415a0e2ade3c57d23833a14f659c
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+      #!/bin/bash
+set -euo pipefail
+
+# set by the node image
+unset KUBECONFIG
+
+trap 'kill $(jobs -p); exit 0' TERM
+
+# track the current state of the config
+if [[ -f /etc/origin/node/node-config.yaml ]]; then
+  md5sum /etc/origin/node/node-config.yaml > /tmp/.old
+else
+  touch /tmp/.old
+fi
+
+# loop until BOOTSTRAP_CONFIG_NAME is set
+while true; do
+  file=/etc/sysconfig/origin-node
+  if [[ -f /etc/sysconfig/atomic-openshift-node ]]; then
+    file=/etc/sysconfig/atomic-openshift-node
+  elif [[ -f /etc/sysconfig/origin-node ]]; then
+    file=/etc/sysconfig/origin-node
+  else
+    echo "info: Waiting for the node sysconfig file to be created" 2>&1
+    sleep 15 & wait
+    continue
+  fi
+  name="$(sed -nE 's|^BOOTSTRAP_CONFIG_NAME=([^#].+)|\1|p' "${file}" | head -1)"
+  if [[ -z "${name}" ]]; then
+    echo "info: Waiting for BOOTSTRAP_CONFIG_NAME to be set" 2>&1
+    sleep 15 & wait
+    continue
+  fi
+  # in the background check to see if the value changes and exit if so
+  pid=$BASHPID
+  (
+    while true; do
+      if ! updated="$(sed -nE 's|^BOOTSTRAP_CONFIG_NAME=([^#].+)|\1|p' "${file}" | head -1)"; then
+        echo "error: Unable to check for bootstrap config, exiting" 2>&1
+        kill $pid
+        exit 1
+      fi
+      if [[ "${updated}" != "${name}" ]]; then
+        echo "info: Bootstrap configuration profile name changed, exiting" 2>&1
+        kill $pid
+        exit 0
+      fi
+      sleep 15
+    done
+  ) &
+  break
+done
+
+# periodically refresh both node-config.yaml and relabel the node
+while true; do
+  if ! oc extract "configmaps/${name}" -n openshift-node --to=/etc/origin/node --confirm --request-timeout=10s --config /etc/origin/node/node.kubeconfig "--token=$( cat /var/run/secrets/kubernetes.io/serviceaccount/token )"  > /dev/null; then
+    echo "error: Unable to retrieve latest config for node" 2>&1
+    sleep 15 &
+    wait $!
+    continue
+  fi
+  # detect whether the node-config.yaml has changed, and if so trigger a restart of the kubelet.
+  md5sum /etc/origin/node/node-config.yaml > /tmp/.new
+  if [[ "$( cat /tmp/.old )" != "$( cat /tmp/.new )" ]]; then
+    echo "info: Configuration changed, restarting kubelet" 2>&1
+    # TODO: kubelet doesn't relabel nodes, best effort for now
+    # https://github.com/kubernetes/kubernetes/issues/59314
+    if args="$(openshift-node-config --config /etc/origin/node/node-config.yaml)"; then
+      labels=$(tr ' ' '\n' <<<$args | sed -ne '/^--node-labels=/ { s/^--node-labels=//; p; }' | tr ',\n' ' ')
+      if [[ -n "${labels}" ]]; then
+        echo "info: Applying node labels $labels" 2>&1
+        if ! oc label --config=/etc/origin/node/node.kubeconfig "node/${NODE_NAME}" ${labels} --overwrite; then
+          echo "error: Unable to apply labels, will retry in 10" 2>&1
+          sleep 10 &
+          wait $!
+          continue
+        fi
+      fi
+    else
+      echo "error: The downloaded node configuration is invalid, retrying later" 2>&1
+      sleep 10 &
+      wait $!
+      continue
+    fi
+    if ! pkill -U 0 -f '(^|/)hyperkube kubelet '; then
+      echo "error: Unable to restart Kubelet" 2>&1
+      sleep 10 &
+      wait $!
+      continue
+    fi
+  fi
+  # annotate node with md5sum of the config
+  oc annotate --config=/etc/origin/node/node.kubeconfig "node/${NODE_NAME}" \
+    node.openshift.io/md5sum="$( cat /tmp/.new | cut -d' ' -f1 )" --overwrite
+  cp -f /tmp/.new /tmp/.old
+  sleep 180 &
+  wait $!
+done
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:09:51 +0900
+    Ready:          True
+    Restart Count:  0
+    Environment:
+      NODE_NAME:   (v1:spec.nodeName)
+    Mounts:
+      /etc/origin/node/ from host-config (rw)
+      /etc/sysconfig from host-sysconfig-node (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from sync-token-dvv7d (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  host-config:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/node
+    HostPathType:  
+  host-sysconfig-node:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/sysconfig
+    HostPathType:  
+  sync-token-dvv7d:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  sync-token-dvv7d
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/disk-pressure:NoSchedule
+                 node.kubernetes.io/memory-pressure:NoSchedule
+                 node.kubernetes.io/not-ready:NoExecute
+                 node.kubernetes.io/unreachable:NoExecute
+Events:          <none>
+===> oc describe pod/sync-vpjv5 -n openshift-node
+Name:               sync-vpjv5
+Namespace:          openshift-node
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-node1.example.com/172.16.99.41
+Start Time:         Mon, 12 Nov 2018 16:09:49 +0900
+Labels:             app=sync
+                    component=network
+                    controller-revision-hash=4090623868
+                    openshift.io/component=sync
+                    pod-template-generation=2
+                    type=infra
+Annotations:        scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.41
+Controlled By:      DaemonSet/sync
+Containers:
+  sync:
+    Container ID:  docker://296b936cefa7c872005b0335d588bd4878c2a2104955f170b17a6d3a535e0e40
+    Image:         registry.redhat.io/openshift3/ose-node:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-node@sha256:6fbb37c0993bdc6160beeea3c2e15d180eba415a0e2ade3c57d23833a14f659c
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+      #!/bin/bash
+set -euo pipefail
+
+# set by the node image
+unset KUBECONFIG
+
+trap 'kill $(jobs -p); exit 0' TERM
+
+# track the current state of the config
+if [[ -f /etc/origin/node/node-config.yaml ]]; then
+  md5sum /etc/origin/node/node-config.yaml > /tmp/.old
+else
+  touch /tmp/.old
+fi
+
+# loop until BOOTSTRAP_CONFIG_NAME is set
+while true; do
+  file=/etc/sysconfig/origin-node
+  if [[ -f /etc/sysconfig/atomic-openshift-node ]]; then
+    file=/etc/sysconfig/atomic-openshift-node
+  elif [[ -f /etc/sysconfig/origin-node ]]; then
+    file=/etc/sysconfig/origin-node
+  else
+    echo "info: Waiting for the node sysconfig file to be created" 2>&1
+    sleep 15 & wait
+    continue
+  fi
+  name="$(sed -nE 's|^BOOTSTRAP_CONFIG_NAME=([^#].+)|\1|p' "${file}" | head -1)"
+  if [[ -z "${name}" ]]; then
+    echo "info: Waiting for BOOTSTRAP_CONFIG_NAME to be set" 2>&1
+    sleep 15 & wait
+    continue
+  fi
+  # in the background check to see if the value changes and exit if so
+  pid=$BASHPID
+  (
+    while true; do
+      if ! updated="$(sed -nE 's|^BOOTSTRAP_CONFIG_NAME=([^#].+)|\1|p' "${file}" | head -1)"; then
+        echo "error: Unable to check for bootstrap config, exiting" 2>&1
+        kill $pid
+        exit 1
+      fi
+      if [[ "${updated}" != "${name}" ]]; then
+        echo "info: Bootstrap configuration profile name changed, exiting" 2>&1
+        kill $pid
+        exit 0
+      fi
+      sleep 15
+    done
+  ) &
+  break
+done
+
+# periodically refresh both node-config.yaml and relabel the node
+while true; do
+  if ! oc extract "configmaps/${name}" -n openshift-node --to=/etc/origin/node --confirm --request-timeout=10s --config /etc/origin/node/node.kubeconfig "--token=$( cat /var/run/secrets/kubernetes.io/serviceaccount/token )"  > /dev/null; then
+    echo "error: Unable to retrieve latest config for node" 2>&1
+    sleep 15 &
+    wait $!
+    continue
+  fi
+  # detect whether the node-config.yaml has changed, and if so trigger a restart of the kubelet.
+  md5sum /etc/origin/node/node-config.yaml > /tmp/.new
+  if [[ "$( cat /tmp/.old )" != "$( cat /tmp/.new )" ]]; then
+    echo "info: Configuration changed, restarting kubelet" 2>&1
+    # TODO: kubelet doesn't relabel nodes, best effort for now
+    # https://github.com/kubernetes/kubernetes/issues/59314
+    if args="$(openshift-node-config --config /etc/origin/node/node-config.yaml)"; then
+      labels=$(tr ' ' '\n' <<<$args | sed -ne '/^--node-labels=/ { s/^--node-labels=//; p; }' | tr ',\n' ' ')
+      if [[ -n "${labels}" ]]; then
+        echo "info: Applying node labels $labels" 2>&1
+        if ! oc label --config=/etc/origin/node/node.kubeconfig "node/${NODE_NAME}" ${labels} --overwrite; then
+          echo "error: Unable to apply labels, will retry in 10" 2>&1
+          sleep 10 &
+          wait $!
+          continue
+        fi
+      fi
+    else
+      echo "error: The downloaded node configuration is invalid, retrying later" 2>&1
+      sleep 10 &
+      wait $!
+      continue
+    fi
+    if ! pkill -U 0 -f '(^|/)hyperkube kubelet '; then
+      echo "error: Unable to restart Kubelet" 2>&1
+      sleep 10 &
+      wait $!
+      continue
+    fi
+  fi
+  # annotate node with md5sum of the config
+  oc annotate --config=/etc/origin/node/node.kubeconfig "node/${NODE_NAME}" \
+    node.openshift.io/md5sum="$( cat /tmp/.new | cut -d' ' -f1 )" --overwrite
+  cp -f /tmp/.new /tmp/.old
+  sleep 180 &
+  wait $!
+done
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:09:50 +0900
+    Ready:          True
+    Restart Count:  0
+    Environment:
+      NODE_NAME:   (v1:spec.nodeName)
+    Mounts:
+      /etc/origin/node/ from host-config (rw)
+      /etc/sysconfig from host-sysconfig-node (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from sync-token-dvv7d (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  host-config:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/node
+    HostPathType:  
+  host-sysconfig-node:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/sysconfig
+    HostPathType:  
+  sync-token-dvv7d:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  sync-token-dvv7d
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/disk-pressure:NoSchedule
+                 node.kubernetes.io/memory-pressure:NoSchedule
+                 node.kubernetes.io/not-ready:NoExecute
+                 node.kubernetes.io/unreachable:NoExecute
+Events:          <none>
+
+=> project: openshift-sdn
+==> oc get all,pvc -o wide -n openshift-sdn
+NAME            READY     STATUS    RESTARTS   AGE       IP             NODE                         NOMINATED NODE
+pod/ovs-7m44w   1/1       Running   0          1d        172.16.99.41   ocp311-node1.example.com     <none>
+pod/ovs-b4dbv   1/1       Running   0          1d        172.16.99.42   ocp311-node2.example.com     <none>
+pod/ovs-hk6c9   1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+pod/ovs-hncsn   1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+pod/sdn-4pk9z   1/1       Running   0          1d        172.16.99.42   ocp311-node2.example.com     <none>
+pod/sdn-cr28m   1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+pod/sdn-mtpm6   1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+pod/sdn-z85rv   1/1       Running   0          1d        172.16.99.41   ocp311-node1.example.com     <none>
+NAME                 DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE       CONTAINERS    IMAGES                                         SELECTOR
+daemonset.apps/ovs   4         4         4         4            4           <none>          1d        openvswitch   registry.redhat.io/openshift3/ose-node:v3.11   app=ovs
+daemonset.apps/sdn   4         4         4         4            4           <none>          1d        sdn           registry.redhat.io/openshift3/ose-node:v3.11   app=sdn
+NAME                                  DOCKER REPO                                           TAGS      UPDATED
+imagestream.image.openshift.io/node   docker-registry.default.svc:5000/openshift-sdn/node   v3.11     31 hours ago
+==> oc get pod -o wide -n openshift-sdn
+NAME        READY     STATUS    RESTARTS   AGE       IP             NODE                         NOMINATED NODE
+ovs-7m44w   1/1       Running   0          1d        172.16.99.41   ocp311-node1.example.com     <none>
+ovs-b4dbv   1/1       Running   0          1d        172.16.99.42   ocp311-node2.example.com     <none>
+ovs-hk6c9   1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+ovs-hncsn   1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+sdn-4pk9z   1/1       Running   0          1d        172.16.99.42   ocp311-node2.example.com     <none>
+sdn-cr28m   1/1       Running   0          1d        172.16.99.31   ocp311-infra1.example.com    <none>
+sdn-mtpm6   1/1       Running   0          1d        172.16.99.21   ocp311-master1.example.com   <none>
+sdn-z85rv   1/1       Running   0          1d        172.16.99.41   ocp311-node1.example.com     <none>
+==> oc get svc -n openshift-sdn
+==> oc get route -n openshift-sdn
+
+
+==>
+===> oc describe pod/ovs-7m44w -n openshift-sdn
+Name:               ovs-7m44w
+Namespace:          openshift-sdn
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-node1.example.com/172.16.99.41
+Start Time:         Mon, 12 Nov 2018 16:09:49 +0900
+Labels:             app=ovs
+                    component=network
+                    controller-revision-hash=3184150305
+                    openshift.io/component=network
+                    pod-template-generation=2
+                    type=infra
+Annotations:        openshift.io/scc=privileged
+                    scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.41
+Controlled By:      DaemonSet/ovs
+Containers:
+  openvswitch:
+    Container ID:  docker://2b5c3a1ee9f77324589bdbc535b6037abd6fc421b53a9a2e1ea5b3f2ea4cab0a
+    Image:         registry.redhat.io/openshift3/ose-node:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-node@sha256:6fbb37c0993bdc6160beeea3c2e15d180eba415a0e2ade3c57d23833a14f659c
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+      #!/bin/bash
+set -euo pipefail
+
+# if another process is listening on the cni-server socket, wait until it exits
+trap 'kill $(jobs -p); exit 0' TERM
+retries=0
+while true; do
+  if /usr/share/openvswitch/scripts/ovs-ctl status &>/dev/null; then
+    echo "warning: Another process is currently managing OVS, waiting 15s ..." 2>&1
+    sleep 15 & wait
+    (( retries += 1 ))
+  else
+    break
+  fi
+  if [[ "${retries}" -gt 40 ]]; then
+    echo "error: Another process is currently managing OVS, exiting" 2>&1
+    exit 1
+  fi
+done
+
+# launch OVS
+function quit {
+    /usr/share/openvswitch/scripts/ovs-ctl stop
+    exit 0
+}
+trap quit SIGTERM
+/usr/share/openvswitch/scripts/ovs-ctl start --system-id=random
+
+# Restrict the number of pthreads ovs-vswitchd creates to reduce the
+# amount of RSS it uses on hosts with many cores
+# https://bugzilla.redhat.com/show_bug.cgi?id=1571379
+# https://bugzilla.redhat.com/show_bug.cgi?id=1572797
+if [[ `nproc` -gt 12 ]]; then
+    ovs-vsctl set Open_vSwitch . other_config:n-revalidator-threads=4
+    ovs-vsctl set Open_vSwitch . other_config:n-handler-threads=10
+fi
+while true; do sleep 5; done
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:09:51 +0900
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     200m
+      memory:  400Mi
+    Requests:
+      cpu:        100m
+      memory:     300Mi
+    Environment:  <none>
+    Mounts:
+      /etc/openvswitch from host-config-openvswitch (rw)
+      /lib/modules from host-modules (ro)
+      /run/openvswitch from host-run-ovs (rw)
+      /sys from host-sys (ro)
+      /var/run/openvswitch from host-run-ovs (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from sdn-token-wk7dz (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  host-modules:
+    Type:          HostPath (bare host directory volume)
+    Path:          /lib/modules
+    HostPathType:  
+  host-run-ovs:
+    Type:          HostPath (bare host directory volume)
+    Path:          /run/openvswitch
+    HostPathType:  
+  host-sys:
+    Type:          HostPath (bare host directory volume)
+    Path:          /sys
+    HostPathType:  
+  host-config-openvswitch:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/openvswitch
+    HostPathType:  
+  sdn-token-wk7dz:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  sdn-token-wk7dz
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/disk-pressure:NoSchedule
+                 node.kubernetes.io/memory-pressure:NoSchedule
+                 node.kubernetes.io/not-ready:NoExecute
+                 node.kubernetes.io/unreachable:NoExecute
+Events:          <none>
+===> oc describe pod/ovs-b4dbv -n openshift-sdn
+Name:               ovs-b4dbv
+Namespace:          openshift-sdn
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-node2.example.com/172.16.99.42
+Start Time:         Mon, 12 Nov 2018 16:09:50 +0900
+Labels:             app=ovs
+                    component=network
+                    controller-revision-hash=3184150305
+                    openshift.io/component=network
+                    pod-template-generation=2
+                    type=infra
+Annotations:        openshift.io/scc=privileged
+                    scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.42
+Controlled By:      DaemonSet/ovs
+Containers:
+  openvswitch:
+    Container ID:  docker://87611ddccd1bd776bdab542302df4502afb3f4d6e7542357b2b9e5b0d3e9330c
+    Image:         registry.redhat.io/openshift3/ose-node:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-node@sha256:6fbb37c0993bdc6160beeea3c2e15d180eba415a0e2ade3c57d23833a14f659c
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+      #!/bin/bash
+set -euo pipefail
+
+# if another process is listening on the cni-server socket, wait until it exits
+trap 'kill $(jobs -p); exit 0' TERM
+retries=0
+while true; do
+  if /usr/share/openvswitch/scripts/ovs-ctl status &>/dev/null; then
+    echo "warning: Another process is currently managing OVS, waiting 15s ..." 2>&1
+    sleep 15 & wait
+    (( retries += 1 ))
+  else
+    break
+  fi
+  if [[ "${retries}" -gt 40 ]]; then
+    echo "error: Another process is currently managing OVS, exiting" 2>&1
+    exit 1
+  fi
+done
+
+# launch OVS
+function quit {
+    /usr/share/openvswitch/scripts/ovs-ctl stop
+    exit 0
+}
+trap quit SIGTERM
+/usr/share/openvswitch/scripts/ovs-ctl start --system-id=random
+
+# Restrict the number of pthreads ovs-vswitchd creates to reduce the
+# amount of RSS it uses on hosts with many cores
+# https://bugzilla.redhat.com/show_bug.cgi?id=1571379
+# https://bugzilla.redhat.com/show_bug.cgi?id=1572797
+if [[ `nproc` -gt 12 ]]; then
+    ovs-vsctl set Open_vSwitch . other_config:n-revalidator-threads=4
+    ovs-vsctl set Open_vSwitch . other_config:n-handler-threads=10
+fi
+while true; do sleep 5; done
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:09:51 +0900
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     200m
+      memory:  400Mi
+    Requests:
+      cpu:        100m
+      memory:     300Mi
+    Environment:  <none>
+    Mounts:
+      /etc/openvswitch from host-config-openvswitch (rw)
+      /lib/modules from host-modules (ro)
+      /run/openvswitch from host-run-ovs (rw)
+      /sys from host-sys (ro)
+      /var/run/openvswitch from host-run-ovs (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from sdn-token-wk7dz (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  host-modules:
+    Type:          HostPath (bare host directory volume)
+    Path:          /lib/modules
+    HostPathType:  
+  host-run-ovs:
+    Type:          HostPath (bare host directory volume)
+    Path:          /run/openvswitch
+    HostPathType:  
+  host-sys:
+    Type:          HostPath (bare host directory volume)
+    Path:          /sys
+    HostPathType:  
+  host-config-openvswitch:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/openvswitch
+    HostPathType:  
+  sdn-token-wk7dz:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  sdn-token-wk7dz
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/disk-pressure:NoSchedule
+                 node.kubernetes.io/memory-pressure:NoSchedule
+                 node.kubernetes.io/not-ready:NoExecute
+                 node.kubernetes.io/unreachable:NoExecute
+Events:          <none>
+===> oc describe pod/ovs-hk6c9 -n openshift-sdn
+Name:               ovs-hk6c9
+Namespace:          openshift-sdn
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-master1.example.com/172.16.99.21
+Start Time:         Mon, 12 Nov 2018 16:09:11 +0900
+Labels:             app=ovs
+                    component=network
+                    controller-revision-hash=3184150305
+                    openshift.io/component=network
+                    pod-template-generation=2
+                    type=infra
+Annotations:        openshift.io/scc=privileged
+                    scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.21
+Controlled By:      DaemonSet/ovs
+Containers:
+  openvswitch:
+    Container ID:  docker://8ec54905d615423d6b1ee2a06724487953600a0bd5fab10f2c0b282b00f5ad5b
+    Image:         registry.redhat.io/openshift3/ose-node:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-node@sha256:6fbb37c0993bdc6160beeea3c2e15d180eba415a0e2ade3c57d23833a14f659c
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+      #!/bin/bash
+set -euo pipefail
+
+# if another process is listening on the cni-server socket, wait until it exits
+trap 'kill $(jobs -p); exit 0' TERM
+retries=0
+while true; do
+  if /usr/share/openvswitch/scripts/ovs-ctl status &>/dev/null; then
+    echo "warning: Another process is currently managing OVS, waiting 15s ..." 2>&1
+    sleep 15 & wait
+    (( retries += 1 ))
+  else
+    break
+  fi
+  if [[ "${retries}" -gt 40 ]]; then
+    echo "error: Another process is currently managing OVS, exiting" 2>&1
+    exit 1
+  fi
+done
+
+# launch OVS
+function quit {
+    /usr/share/openvswitch/scripts/ovs-ctl stop
+    exit 0
+}
+trap quit SIGTERM
+/usr/share/openvswitch/scripts/ovs-ctl start --system-id=random
+
+# Restrict the number of pthreads ovs-vswitchd creates to reduce the
+# amount of RSS it uses on hosts with many cores
+# https://bugzilla.redhat.com/show_bug.cgi?id=1571379
+# https://bugzilla.redhat.com/show_bug.cgi?id=1572797
+if [[ `nproc` -gt 12 ]]; then
+    ovs-vsctl set Open_vSwitch . other_config:n-revalidator-threads=4
+    ovs-vsctl set Open_vSwitch . other_config:n-handler-threads=10
+fi
+while true; do sleep 5; done
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:09:12 +0900
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     200m
+      memory:  400Mi
+    Requests:
+      cpu:        100m
+      memory:     300Mi
+    Environment:  <none>
+    Mounts:
+      /etc/openvswitch from host-config-openvswitch (rw)
+      /lib/modules from host-modules (ro)
+      /run/openvswitch from host-run-ovs (rw)
+      /sys from host-sys (ro)
+      /var/run/openvswitch from host-run-ovs (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from sdn-token-wk7dz (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  host-modules:
+    Type:          HostPath (bare host directory volume)
+    Path:          /lib/modules
+    HostPathType:  
+  host-run-ovs:
+    Type:          HostPath (bare host directory volume)
+    Path:          /run/openvswitch
+    HostPathType:  
+  host-sys:
+    Type:          HostPath (bare host directory volume)
+    Path:          /sys
+    HostPathType:  
+  host-config-openvswitch:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/openvswitch
+    HostPathType:  
+  sdn-token-wk7dz:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  sdn-token-wk7dz
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/disk-pressure:NoSchedule
+                 node.kubernetes.io/memory-pressure:NoSchedule
+                 node.kubernetes.io/not-ready:NoExecute
+                 node.kubernetes.io/unreachable:NoExecute
+Events:          <none>
+===> oc describe pod/ovs-hncsn -n openshift-sdn
+Name:               ovs-hncsn
+Namespace:          openshift-sdn
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-infra1.example.com/172.16.99.31
+Start Time:         Mon, 12 Nov 2018 16:09:49 +0900
+Labels:             app=ovs
+                    component=network
+                    controller-revision-hash=3184150305
+                    openshift.io/component=network
+                    pod-template-generation=2
+                    type=infra
+Annotations:        openshift.io/scc=privileged
+                    scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.31
+Controlled By:      DaemonSet/ovs
+Containers:
+  openvswitch:
+    Container ID:  docker://df53a4237b19a9117395a5a67a64b6600cd0802711d8d51bc7a7d3feb17a5c4f
+    Image:         registry.redhat.io/openshift3/ose-node:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-node@sha256:6fbb37c0993bdc6160beeea3c2e15d180eba415a0e2ade3c57d23833a14f659c
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      -c
+      #!/bin/bash
+set -euo pipefail
+
+# if another process is listening on the cni-server socket, wait until it exits
+trap 'kill $(jobs -p); exit 0' TERM
+retries=0
+while true; do
+  if /usr/share/openvswitch/scripts/ovs-ctl status &>/dev/null; then
+    echo "warning: Another process is currently managing OVS, waiting 15s ..." 2>&1
+    sleep 15 & wait
+    (( retries += 1 ))
+  else
+    break
+  fi
+  if [[ "${retries}" -gt 40 ]]; then
+    echo "error: Another process is currently managing OVS, exiting" 2>&1
+    exit 1
+  fi
+done
+
+# launch OVS
+function quit {
+    /usr/share/openvswitch/scripts/ovs-ctl stop
+    exit 0
+}
+trap quit SIGTERM
+/usr/share/openvswitch/scripts/ovs-ctl start --system-id=random
+
+# Restrict the number of pthreads ovs-vswitchd creates to reduce the
+# amount of RSS it uses on hosts with many cores
+# https://bugzilla.redhat.com/show_bug.cgi?id=1571379
+# https://bugzilla.redhat.com/show_bug.cgi?id=1572797
+if [[ `nproc` -gt 12 ]]; then
+    ovs-vsctl set Open_vSwitch . other_config:n-revalidator-threads=4
+    ovs-vsctl set Open_vSwitch . other_config:n-handler-threads=10
+fi
+while true; do sleep 5; done
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:09:51 +0900
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     200m
+      memory:  400Mi
+    Requests:
+      cpu:        100m
+      memory:     300Mi
+    Environment:  <none>
+    Mounts:
+      /etc/openvswitch from host-config-openvswitch (rw)
+      /lib/modules from host-modules (ro)
+      /run/openvswitch from host-run-ovs (rw)
+      /sys from host-sys (ro)
+      /var/run/openvswitch from host-run-ovs (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from sdn-token-wk7dz (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  host-modules:
+    Type:          HostPath (bare host directory volume)
+    Path:          /lib/modules
+    HostPathType:  
+  host-run-ovs:
+    Type:          HostPath (bare host directory volume)
+    Path:          /run/openvswitch
+    HostPathType:  
+  host-sys:
+    Type:          HostPath (bare host directory volume)
+    Path:          /sys
+    HostPathType:  
+  host-config-openvswitch:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/openvswitch
+    HostPathType:  
+  sdn-token-wk7dz:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  sdn-token-wk7dz
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/disk-pressure:NoSchedule
+                 node.kubernetes.io/memory-pressure:NoSchedule
+                 node.kubernetes.io/not-ready:NoExecute
+                 node.kubernetes.io/unreachable:NoExecute
+Events:          <none>
+===> oc describe pod/sdn-4pk9z -n openshift-sdn
+Name:               sdn-4pk9z
+Namespace:          openshift-sdn
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-node2.example.com/172.16.99.42
+Start Time:         Mon, 12 Nov 2018 16:09:50 +0900
+Labels:             app=sdn
+                    component=network
+                    controller-revision-hash=1327710919
+                    openshift.io/component=network
+                    pod-template-generation=2
+                    type=infra
+Annotations:        openshift.io/scc=privileged
+                    scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.42
+Controlled By:      DaemonSet/sdn
+Containers:
+  sdn:
+    Container ID:  docker://4c6f1eb54326a5604dcbf3af5cde0318878a4a3a60c2d03493bd978a277e7b27
+    Image:         registry.redhat.io/openshift3/ose-node:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-node@sha256:6fbb37c0993bdc6160beeea3c2e15d180eba415a0e2ade3c57d23833a14f659c
+    Port:          10256/TCP
+    Host Port:     10256/TCP
+    Command:
+      /bin/bash
+      -c
+      #!/bin/bash
+set -euo pipefail
+
+# if another process is listening on the cni-server socket, wait until it exits
+trap 'kill $(jobs -p); exit 0' TERM
+retries=0
+while true; do
+  if echo 'test' | socat - UNIX-CONNECT:/var/run/openshift-sdn/cni-server.sock >/dev/null; then
+    echo "warning: Another process is currently listening on the CNI socket, waiting 15s ..." 2>&1
+    sleep 15 & wait
+    (( retries += 1 ))
+  else
+    break
+  fi
+  if [[ "${retries}" -gt 40 ]]; then
+    echo "error: Another process is currently listening on the CNI socket, exiting" 2>&1
+    exit 1
+  fi
+done
+# if the node config doesn't exist yet, wait until it does
+retries=0
+while true; do
+  if [[ ! -f /etc/origin/node/node-config.yaml ]]; then
+    echo "warning: Cannot find existing node-config.yaml, waiting 15s ..." 2>&1
+    sleep 15 & wait
+    (( retries += 1 ))
+  else
+    break
+  fi
+  if [[ "${retries}" -gt 40 ]]; then
+    echo "error: No existing node-config.yaml, exiting" 2>&1
+    exit 1
+  fi
+done
+
+# Take over network functions on the node
+rm -Rf /etc/cni/net.d/80-openshift-network.conf
+cp -Rf /opt/cni/bin/* /host/opt/cni/bin/
+
+if [[ -f /etc/sysconfig/origin-node ]]; then
+  set -o allexport
+  source /etc/sysconfig/origin-node
+fi
+
+# use either the bootstrapped node kubeconfig or the static configuration
+file=/etc/origin/node/node.kubeconfig
+if [[ ! -f "${file}" ]]; then
+  # use the static node config if it exists
+  # TODO: remove when static node configuration is no longer supported
+  for f in /etc/origin/node/system*.kubeconfig; do
+    echo "info: Using ${f} for node configuration" 1>&2
+    file="${f}"
+    break
+  done
+fi
+# Use the same config as the node, but with the service account token
+oc config "--config=${file}" view --flatten > /tmp/kubeconfig
+oc config --config=/tmp/kubeconfig set-credentials sa "--token=$( cat /var/run/secrets/kubernetes.io/serviceaccount/token )"
+oc config --config=/tmp/kubeconfig set-context "$( oc config --config=/tmp/kubeconfig current-context )" --user=sa
+# Launch the network process
+if which openshift-sdn; then
+  exec openshift-sdn --config=/etc/origin/node/node-config.yaml --kubeconfig=/tmp/kubeconfig --loglevel=${DEBUG_LOGLEVEL:-2}
+fi
+exec openshift start network --config=/etc/origin/node/node-config.yaml --kubeconfig=/tmp/kubeconfig --loglevel=${DEBUG_LOGLEVEL:-2}
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:09:52 +0900
+    Ready:          True
+    Restart Count:  0
+    Requests:
+      cpu:     100m
+      memory:  200Mi
+    Environment:
+      OPENSHIFT_DNS_DOMAIN:  cluster.local
+    Mounts:
+      /etc/cni/net.d from host-etc-cni-netd (rw)
+      /etc/origin/node/ from host-config (ro)
+      /etc/sysconfig/origin-node from host-sysconfig-node (ro)
+      /host/opt/cni/bin from host-opt-cni-bin (rw)
+      /var/lib/cni/networks/openshift-sdn from host-var-lib-cni-networks-openshift-sdn (rw)
+      /var/run from host-var-run (rw)
+      /var/run/dbus/ from host-var-run-dbus (ro)
+      /var/run/kubernetes/ from host-var-run-kubernetes (ro)
+      /var/run/openshift-sdn from host-var-run-openshift-sdn (rw)
+      /var/run/openvswitch/ from host-var-run-ovs (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from sdn-token-wk7dz (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  host-config:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/node
+    HostPathType:  
+  host-sysconfig-node:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/sysconfig/origin-node
+    HostPathType:  
+  host-modules:
+    Type:          HostPath (bare host directory volume)
+    Path:          /lib/modules
+    HostPathType:  
+  host-var-run:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run
+    HostPathType:  
+  host-var-run-dbus:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/dbus
+    HostPathType:  
+  host-var-run-ovs:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/openvswitch
+    HostPathType:  
+  host-var-run-kubernetes:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/kubernetes
+    HostPathType:  
+  host-var-run-openshift-sdn:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/openshift-sdn
+    HostPathType:  
+  host-opt-cni-bin:
+    Type:          HostPath (bare host directory volume)
+    Path:          /opt/cni/bin
+    HostPathType:  
+  host-etc-cni-netd:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/cni/net.d
+    HostPathType:  
+  host-var-lib-cni-networks-openshift-sdn:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/lib/cni/networks/openshift-sdn
+    HostPathType:  
+  sdn-token-wk7dz:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  sdn-token-wk7dz
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/disk-pressure:NoSchedule
+                 node.kubernetes.io/memory-pressure:NoSchedule
+                 node.kubernetes.io/not-ready:NoExecute
+                 node.kubernetes.io/unreachable:NoExecute
+Events:          <none>
+===> oc describe pod/sdn-cr28m -n openshift-sdn
+Name:               sdn-cr28m
+Namespace:          openshift-sdn
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-infra1.example.com/172.16.99.31
+Start Time:         Mon, 12 Nov 2018 16:09:49 +0900
+Labels:             app=sdn
+                    component=network
+                    controller-revision-hash=1327710919
+                    openshift.io/component=network
+                    pod-template-generation=2
+                    type=infra
+Annotations:        openshift.io/scc=privileged
+                    scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.31
+Controlled By:      DaemonSet/sdn
+Containers:
+  sdn:
+    Container ID:  docker://1ad7e1be5df2c85c46b68c103f8b3f17715a3eb76f38846589478f196bf4d078
+    Image:         registry.redhat.io/openshift3/ose-node:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-node@sha256:6fbb37c0993bdc6160beeea3c2e15d180eba415a0e2ade3c57d23833a14f659c
+    Port:          10256/TCP
+    Host Port:     10256/TCP
+    Command:
+      /bin/bash
+      -c
+      #!/bin/bash
+set -euo pipefail
+
+# if another process is listening on the cni-server socket, wait until it exits
+trap 'kill $(jobs -p); exit 0' TERM
+retries=0
+while true; do
+  if echo 'test' | socat - UNIX-CONNECT:/var/run/openshift-sdn/cni-server.sock >/dev/null; then
+    echo "warning: Another process is currently listening on the CNI socket, waiting 15s ..." 2>&1
+    sleep 15 & wait
+    (( retries += 1 ))
+  else
+    break
+  fi
+  if [[ "${retries}" -gt 40 ]]; then
+    echo "error: Another process is currently listening on the CNI socket, exiting" 2>&1
+    exit 1
+  fi
+done
+# if the node config doesn't exist yet, wait until it does
+retries=0
+while true; do
+  if [[ ! -f /etc/origin/node/node-config.yaml ]]; then
+    echo "warning: Cannot find existing node-config.yaml, waiting 15s ..." 2>&1
+    sleep 15 & wait
+    (( retries += 1 ))
+  else
+    break
+  fi
+  if [[ "${retries}" -gt 40 ]]; then
+    echo "error: No existing node-config.yaml, exiting" 2>&1
+    exit 1
+  fi
+done
+
+# Take over network functions on the node
+rm -Rf /etc/cni/net.d/80-openshift-network.conf
+cp -Rf /opt/cni/bin/* /host/opt/cni/bin/
+
+if [[ -f /etc/sysconfig/origin-node ]]; then
+  set -o allexport
+  source /etc/sysconfig/origin-node
+fi
+
+# use either the bootstrapped node kubeconfig or the static configuration
+file=/etc/origin/node/node.kubeconfig
+if [[ ! -f "${file}" ]]; then
+  # use the static node config if it exists
+  # TODO: remove when static node configuration is no longer supported
+  for f in /etc/origin/node/system*.kubeconfig; do
+    echo "info: Using ${f} for node configuration" 1>&2
+    file="${f}"
+    break
+  done
+fi
+# Use the same config as the node, but with the service account token
+oc config "--config=${file}" view --flatten > /tmp/kubeconfig
+oc config --config=/tmp/kubeconfig set-credentials sa "--token=$( cat /var/run/secrets/kubernetes.io/serviceaccount/token )"
+oc config --config=/tmp/kubeconfig set-context "$( oc config --config=/tmp/kubeconfig current-context )" --user=sa
+# Launch the network process
+if which openshift-sdn; then
+  exec openshift-sdn --config=/etc/origin/node/node-config.yaml --kubeconfig=/tmp/kubeconfig --loglevel=${DEBUG_LOGLEVEL:-2}
+fi
+exec openshift start network --config=/etc/origin/node/node-config.yaml --kubeconfig=/tmp/kubeconfig --loglevel=${DEBUG_LOGLEVEL:-2}
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:09:51 +0900
+    Ready:          True
+    Restart Count:  0
+    Requests:
+      cpu:     100m
+      memory:  200Mi
+    Environment:
+      OPENSHIFT_DNS_DOMAIN:  cluster.local
+    Mounts:
+      /etc/cni/net.d from host-etc-cni-netd (rw)
+      /etc/origin/node/ from host-config (ro)
+      /etc/sysconfig/origin-node from host-sysconfig-node (ro)
+      /host/opt/cni/bin from host-opt-cni-bin (rw)
+      /var/lib/cni/networks/openshift-sdn from host-var-lib-cni-networks-openshift-sdn (rw)
+      /var/run from host-var-run (rw)
+      /var/run/dbus/ from host-var-run-dbus (ro)
+      /var/run/kubernetes/ from host-var-run-kubernetes (ro)
+      /var/run/openshift-sdn from host-var-run-openshift-sdn (rw)
+      /var/run/openvswitch/ from host-var-run-ovs (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from sdn-token-wk7dz (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  host-config:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/node
+    HostPathType:  
+  host-sysconfig-node:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/sysconfig/origin-node
+    HostPathType:  
+  host-modules:
+    Type:          HostPath (bare host directory volume)
+    Path:          /lib/modules
+    HostPathType:  
+  host-var-run:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run
+    HostPathType:  
+  host-var-run-dbus:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/dbus
+    HostPathType:  
+  host-var-run-ovs:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/openvswitch
+    HostPathType:  
+  host-var-run-kubernetes:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/kubernetes
+    HostPathType:  
+  host-var-run-openshift-sdn:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/openshift-sdn
+    HostPathType:  
+  host-opt-cni-bin:
+    Type:          HostPath (bare host directory volume)
+    Path:          /opt/cni/bin
+    HostPathType:  
+  host-etc-cni-netd:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/cni/net.d
+    HostPathType:  
+  host-var-lib-cni-networks-openshift-sdn:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/lib/cni/networks/openshift-sdn
+    HostPathType:  
+  sdn-token-wk7dz:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  sdn-token-wk7dz
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/disk-pressure:NoSchedule
+                 node.kubernetes.io/memory-pressure:NoSchedule
+                 node.kubernetes.io/not-ready:NoExecute
+                 node.kubernetes.io/unreachable:NoExecute
+Events:          <none>
+===> oc describe pod/sdn-mtpm6 -n openshift-sdn
+Name:               sdn-mtpm6
+Namespace:          openshift-sdn
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-master1.example.com/172.16.99.21
+Start Time:         Mon, 12 Nov 2018 16:09:11 +0900
+Labels:             app=sdn
+                    component=network
+                    controller-revision-hash=1327710919
+                    openshift.io/component=network
+                    pod-template-generation=2
+                    type=infra
+Annotations:        openshift.io/scc=privileged
+                    scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.21
+Controlled By:      DaemonSet/sdn
+Containers:
+  sdn:
+    Container ID:  docker://ee7aa9392b253f44dca61ce946fc216ae8b27e7089fd507e982a4011ea789b5c
+    Image:         registry.redhat.io/openshift3/ose-node:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-node@sha256:6fbb37c0993bdc6160beeea3c2e15d180eba415a0e2ade3c57d23833a14f659c
+    Port:          10256/TCP
+    Host Port:     10256/TCP
+    Command:
+      /bin/bash
+      -c
+      #!/bin/bash
+set -euo pipefail
+
+# if another process is listening on the cni-server socket, wait until it exits
+trap 'kill $(jobs -p); exit 0' TERM
+retries=0
+while true; do
+  if echo 'test' | socat - UNIX-CONNECT:/var/run/openshift-sdn/cni-server.sock >/dev/null; then
+    echo "warning: Another process is currently listening on the CNI socket, waiting 15s ..." 2>&1
+    sleep 15 & wait
+    (( retries += 1 ))
+  else
+    break
+  fi
+  if [[ "${retries}" -gt 40 ]]; then
+    echo "error: Another process is currently listening on the CNI socket, exiting" 2>&1
+    exit 1
+  fi
+done
+# if the node config doesn't exist yet, wait until it does
+retries=0
+while true; do
+  if [[ ! -f /etc/origin/node/node-config.yaml ]]; then
+    echo "warning: Cannot find existing node-config.yaml, waiting 15s ..." 2>&1
+    sleep 15 & wait
+    (( retries += 1 ))
+  else
+    break
+  fi
+  if [[ "${retries}" -gt 40 ]]; then
+    echo "error: No existing node-config.yaml, exiting" 2>&1
+    exit 1
+  fi
+done
+
+# Take over network functions on the node
+rm -Rf /etc/cni/net.d/80-openshift-network.conf
+cp -Rf /opt/cni/bin/* /host/opt/cni/bin/
+
+if [[ -f /etc/sysconfig/origin-node ]]; then
+  set -o allexport
+  source /etc/sysconfig/origin-node
+fi
+
+# use either the bootstrapped node kubeconfig or the static configuration
+file=/etc/origin/node/node.kubeconfig
+if [[ ! -f "${file}" ]]; then
+  # use the static node config if it exists
+  # TODO: remove when static node configuration is no longer supported
+  for f in /etc/origin/node/system*.kubeconfig; do
+    echo "info: Using ${f} for node configuration" 1>&2
+    file="${f}"
+    break
+  done
+fi
+# Use the same config as the node, but with the service account token
+oc config "--config=${file}" view --flatten > /tmp/kubeconfig
+oc config --config=/tmp/kubeconfig set-credentials sa "--token=$( cat /var/run/secrets/kubernetes.io/serviceaccount/token )"
+oc config --config=/tmp/kubeconfig set-context "$( oc config --config=/tmp/kubeconfig current-context )" --user=sa
+# Launch the network process
+if which openshift-sdn; then
+  exec openshift-sdn --config=/etc/origin/node/node-config.yaml --kubeconfig=/tmp/kubeconfig --loglevel=${DEBUG_LOGLEVEL:-2}
+fi
+exec openshift start network --config=/etc/origin/node/node-config.yaml --kubeconfig=/tmp/kubeconfig --loglevel=${DEBUG_LOGLEVEL:-2}
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:09:12 +0900
+    Ready:          True
+    Restart Count:  0
+    Requests:
+      cpu:     100m
+      memory:  200Mi
+    Environment:
+      OPENSHIFT_DNS_DOMAIN:  cluster.local
+    Mounts:
+      /etc/cni/net.d from host-etc-cni-netd (rw)
+      /etc/origin/node/ from host-config (ro)
+      /etc/sysconfig/origin-node from host-sysconfig-node (ro)
+      /host/opt/cni/bin from host-opt-cni-bin (rw)
+      /var/lib/cni/networks/openshift-sdn from host-var-lib-cni-networks-openshift-sdn (rw)
+      /var/run from host-var-run (rw)
+      /var/run/dbus/ from host-var-run-dbus (ro)
+      /var/run/kubernetes/ from host-var-run-kubernetes (ro)
+      /var/run/openshift-sdn from host-var-run-openshift-sdn (rw)
+      /var/run/openvswitch/ from host-var-run-ovs (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from sdn-token-wk7dz (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  host-config:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/node
+    HostPathType:  
+  host-sysconfig-node:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/sysconfig/origin-node
+    HostPathType:  
+  host-modules:
+    Type:          HostPath (bare host directory volume)
+    Path:          /lib/modules
+    HostPathType:  
+  host-var-run:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run
+    HostPathType:  
+  host-var-run-dbus:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/dbus
+    HostPathType:  
+  host-var-run-ovs:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/openvswitch
+    HostPathType:  
+  host-var-run-kubernetes:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/kubernetes
+    HostPathType:  
+  host-var-run-openshift-sdn:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/openshift-sdn
+    HostPathType:  
+  host-opt-cni-bin:
+    Type:          HostPath (bare host directory volume)
+    Path:          /opt/cni/bin
+    HostPathType:  
+  host-etc-cni-netd:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/cni/net.d
+    HostPathType:  
+  host-var-lib-cni-networks-openshift-sdn:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/lib/cni/networks/openshift-sdn
+    HostPathType:  
+  sdn-token-wk7dz:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  sdn-token-wk7dz
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/disk-pressure:NoSchedule
+                 node.kubernetes.io/memory-pressure:NoSchedule
+                 node.kubernetes.io/not-ready:NoExecute
+                 node.kubernetes.io/unreachable:NoExecute
+Events:          <none>
+===> oc describe pod/sdn-z85rv -n openshift-sdn
+Name:               sdn-z85rv
+Namespace:          openshift-sdn
+Priority:           2000001000
+PriorityClassName:  system-node-critical
+Node:               ocp311-node1.example.com/172.16.99.41
+Start Time:         Mon, 12 Nov 2018 16:09:49 +0900
+Labels:             app=sdn
+                    component=network
+                    controller-revision-hash=1327710919
+                    openshift.io/component=network
+                    pod-template-generation=2
+                    type=infra
+Annotations:        openshift.io/scc=privileged
+                    scheduler.alpha.kubernetes.io/critical-pod=
+Status:             Running
+IP:                 172.16.99.41
+Controlled By:      DaemonSet/sdn
+Containers:
+  sdn:
+    Container ID:  docker://035939cb1d7ee30b488d06c5b8cdfe5ce2e3da8dc6723f1f0fe8edbee0f78c1c
+    Image:         registry.redhat.io/openshift3/ose-node:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-node@sha256:6fbb37c0993bdc6160beeea3c2e15d180eba415a0e2ade3c57d23833a14f659c
+    Port:          10256/TCP
+    Host Port:     10256/TCP
+    Command:
+      /bin/bash
+      -c
+      #!/bin/bash
+set -euo pipefail
+
+# if another process is listening on the cni-server socket, wait until it exits
+trap 'kill $(jobs -p); exit 0' TERM
+retries=0
+while true; do
+  if echo 'test' | socat - UNIX-CONNECT:/var/run/openshift-sdn/cni-server.sock >/dev/null; then
+    echo "warning: Another process is currently listening on the CNI socket, waiting 15s ..." 2>&1
+    sleep 15 & wait
+    (( retries += 1 ))
+  else
+    break
+  fi
+  if [[ "${retries}" -gt 40 ]]; then
+    echo "error: Another process is currently listening on the CNI socket, exiting" 2>&1
+    exit 1
+  fi
+done
+# if the node config doesn't exist yet, wait until it does
+retries=0
+while true; do
+  if [[ ! -f /etc/origin/node/node-config.yaml ]]; then
+    echo "warning: Cannot find existing node-config.yaml, waiting 15s ..." 2>&1
+    sleep 15 & wait
+    (( retries += 1 ))
+  else
+    break
+  fi
+  if [[ "${retries}" -gt 40 ]]; then
+    echo "error: No existing node-config.yaml, exiting" 2>&1
+    exit 1
+  fi
+done
+
+# Take over network functions on the node
+rm -Rf /etc/cni/net.d/80-openshift-network.conf
+cp -Rf /opt/cni/bin/* /host/opt/cni/bin/
+
+if [[ -f /etc/sysconfig/origin-node ]]; then
+  set -o allexport
+  source /etc/sysconfig/origin-node
+fi
+
+# use either the bootstrapped node kubeconfig or the static configuration
+file=/etc/origin/node/node.kubeconfig
+if [[ ! -f "${file}" ]]; then
+  # use the static node config if it exists
+  # TODO: remove when static node configuration is no longer supported
+  for f in /etc/origin/node/system*.kubeconfig; do
+    echo "info: Using ${f} for node configuration" 1>&2
+    file="${f}"
+    break
+  done
+fi
+# Use the same config as the node, but with the service account token
+oc config "--config=${file}" view --flatten > /tmp/kubeconfig
+oc config --config=/tmp/kubeconfig set-credentials sa "--token=$( cat /var/run/secrets/kubernetes.io/serviceaccount/token )"
+oc config --config=/tmp/kubeconfig set-context "$( oc config --config=/tmp/kubeconfig current-context )" --user=sa
+# Launch the network process
+if which openshift-sdn; then
+  exec openshift-sdn --config=/etc/origin/node/node-config.yaml --kubeconfig=/tmp/kubeconfig --loglevel=${DEBUG_LOGLEVEL:-2}
+fi
+exec openshift start network --config=/etc/origin/node/node-config.yaml --kubeconfig=/tmp/kubeconfig --loglevel=${DEBUG_LOGLEVEL:-2}
+
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:09:51 +0900
+    Ready:          True
+    Restart Count:  0
+    Requests:
+      cpu:     100m
+      memory:  200Mi
+    Environment:
+      OPENSHIFT_DNS_DOMAIN:  cluster.local
+    Mounts:
+      /etc/cni/net.d from host-etc-cni-netd (rw)
+      /etc/origin/node/ from host-config (ro)
+      /etc/sysconfig/origin-node from host-sysconfig-node (ro)
+      /host/opt/cni/bin from host-opt-cni-bin (rw)
+      /var/lib/cni/networks/openshift-sdn from host-var-lib-cni-networks-openshift-sdn (rw)
+      /var/run from host-var-run (rw)
+      /var/run/dbus/ from host-var-run-dbus (ro)
+      /var/run/kubernetes/ from host-var-run-kubernetes (ro)
+      /var/run/openshift-sdn from host-var-run-openshift-sdn (rw)
+      /var/run/openvswitch/ from host-var-run-ovs (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from sdn-token-wk7dz (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  host-config:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/origin/node
+    HostPathType:  
+  host-sysconfig-node:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/sysconfig/origin-node
+    HostPathType:  
+  host-modules:
+    Type:          HostPath (bare host directory volume)
+    Path:          /lib/modules
+    HostPathType:  
+  host-var-run:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run
+    HostPathType:  
+  host-var-run-dbus:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/dbus
+    HostPathType:  
+  host-var-run-ovs:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/openvswitch
+    HostPathType:  
+  host-var-run-kubernetes:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/kubernetes
+    HostPathType:  
+  host-var-run-openshift-sdn:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/run/openshift-sdn
+    HostPathType:  
+  host-opt-cni-bin:
+    Type:          HostPath (bare host directory volume)
+    Path:          /opt/cni/bin
+    HostPathType:  
+  host-etc-cni-netd:
+    Type:          HostPath (bare host directory volume)
+    Path:          /etc/cni/net.d
+    HostPathType:  
+  host-var-lib-cni-networks-openshift-sdn:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/lib/cni/networks/openshift-sdn
+    HostPathType:  
+  sdn-token-wk7dz:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  sdn-token-wk7dz
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/disk-pressure:NoSchedule
+                 node.kubernetes.io/memory-pressure:NoSchedule
+                 node.kubernetes.io/not-ready:NoExecute
+                 node.kubernetes.io/unreachable:NoExecute
+Events:          <none>
+
+=> project: openshift-web-console
+==> oc get all,pvc -o wide -n openshift-web-console
+NAME                              READY     STATUS    RESTARTS   AGE       IP            NODE                         NOMINATED NODE
+pod/webconsole-7f7f679596-hlq4m   1/1       Running   0          1d        10.128.0.21   ocp311-master1.example.com   <none>
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE       SELECTOR
+service/webconsole   ClusterIP   172.30.151.214   <none>        443/TCP   1d        webconsole=true
+NAME                         DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE       CONTAINERS   IMAGES                                                SELECTOR
+deployment.apps/webconsole   1         1         1            1           1d        webconsole   registry.redhat.io/openshift3/ose-web-console:v3.11   app=openshift-web-console,webconsole=true
+NAME                                    DESIRED   CURRENT   READY     AGE       CONTAINERS   IMAGES                                                SELECTOR
+replicaset.apps/webconsole-7f7f679596   1         1         1         1d        webconsole   registry.redhat.io/openshift3/ose-web-console:v3.11   app=openshift-web-console,pod-template-hash=3939235152,webconsole=true
+==> oc get pod -o wide -n openshift-web-console
+NAME                          READY     STATUS    RESTARTS   AGE       IP            NODE                         NOMINATED NODE
+webconsole-7f7f679596-hlq4m   1/1       Running   0          1d        10.128.0.21   ocp311-master1.example.com   <none>
+==> oc get svc -n openshift-web-console
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+webconsole   ClusterIP   172.30.151.214   <none>        443/TCP   1d
+==> oc get route -n openshift-web-console
+
+
+==>
+===> oc describe pod/webconsole-7f7f679596-hlq4m -n openshift-web-console
+Name:               webconsole-7f7f679596-hlq4m
+Namespace:          openshift-web-console
+Priority:           0
+PriorityClassName:  <none>
+Node:               ocp311-master1.example.com/172.16.99.21
+Start Time:         Mon, 12 Nov 2018 16:11:25 +0900
+Labels:             app=openshift-web-console
+                    pod-template-hash=3939235152
+                    webconsole=true
+Annotations:        openshift.io/scc=restricted
+Status:             Running
+IP:                 10.128.0.21
+Controlled By:      ReplicaSet/webconsole-7f7f679596
+Containers:
+  webconsole:
+    Container ID:  docker://020923fc419bb96283cfa23a41d3804ff8d9cf7d6ff28941541c770b983e1242
+    Image:         registry.redhat.io/openshift3/ose-web-console:v3.11
+    Image ID:      docker-pullable://registry.redhat.io/openshift3/ose-web-console@sha256:892f022496508714a0392ac34c60ddab1d794f66d1db99a50c6b59c16f3f5ca4
+    Port:          8443/TCP
+    Host Port:     0/TCP
+    Command:
+      /usr/bin/origin-web-console
+      --audit-log-path=-
+      -v=0
+      --config=/var/webconsole-config/webconsole-config.yaml
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:11:28 +0900
+    Ready:          True
+    Restart Count:  0
+    Requests:
+      cpu:     100m
+      memory:  100Mi
+    Liveness:  exec [/bin/sh -c if [[ ! -f /tmp/webconsole-config.hash ]]; then \
+  md5sum /var/webconsole-config/webconsole-config.yaml > /tmp/webconsole-config.hash; \
+elif [[ $(md5sum /var/webconsole-config/webconsole-config.yaml) != $(cat /tmp/webconsole-config.hash) ]]; then \
+  echo 'webconsole-config.yaml has changed.'; \
+  exit 1; \
+fi && curl -k -f https://0.0.0.0:8443/console/] delay=0s timeout=1s period=10s #success=1 #failure=3
+    Readiness:    http-get https://:8443/healthz delay=0s timeout=1s period=10s #success=1 #failure=3
+    Environment:  <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from webconsole-token-rhl4j (ro)
+      /var/serving-cert from serving-cert (rw)
+      /var/webconsole-config from webconsole-config (rw)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  serving-cert:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  webconsole-serving-cert
+    Optional:    false
+  webconsole-config:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      webconsole-config
+    Optional:  false
+  webconsole-token-rhl4j:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  webconsole-token-rhl4j
+    Optional:    false
+QoS Class:       Burstable
+Node-Selectors:  node-role.kubernetes.io/master=true
+Tolerations:     node.kubernetes.io/memory-pressure:NoSchedule
+Events:          <none>
+===> oc describe service/webconsole -n openshift-web-console
+Name:              webconsole
+Namespace:         openshift-web-console
+Labels:            app=openshift-web-console
+Annotations:       kubectl.kubernetes.io/last-applied-configuration={"apiVersion":"v1","kind":"Service","metadata":{"annotations":{"prometheus.io/scheme":"https","prometheus.io/scrape":"true","service.alpha.openshift.io...
+                   prometheus.io/scheme=https
+                   prometheus.io/scrape=true
+                   service.alpha.openshift.io/serving-cert-secret-name=webconsole-serving-cert
+                   service.alpha.openshift.io/serving-cert-signed-by=openshift-service-serving-signer@1542006304
+Selector:          webconsole=true
+Type:              ClusterIP
+IP:                172.30.151.214
+Port:              https  443/TCP
+TargetPort:        8443/TCP
+Endpoints:         10.128.0.21:8443
+Session Affinity:  None
+Events:            <none>
+
+=> project: proj-dev
+==> oc get all,pvc -o wide -n proj-dev
+NAME                     READY     STATUS    RESTARTS   AGE       IP            NODE                       NOMINATED NODE
+pod/client-dev-1-7n2gs   1/1       Running   0          1d        10.131.0.24   ocp311-node2.example.com   <none>
+pod/hello-dev-1-gbcwm    1/1       Running   0          1d        10.129.0.11   ocp311-node1.example.com   <none>
+NAME                                 DESIRED   CURRENT   READY     AGE       CONTAINERS   IMAGES                                                                                                                         SELECTOR
+replicationcontroller/client-dev-1   1         1         1         1d        client-dev   docker-registry.default.svc:5000/proj-dev/client-dev@sha256:6e6548ff907584adb0c0fe321cfcf9ab01332db9ef61f78fe44b73031749456b   app=client-dev,deployment=client-dev-1,deploymentconfig=client-dev
+replicationcontroller/hello-dev-1    1         1         1         1d        hello-dev    docker-registry.default.svc:5000/proj-dev/hello-dev@sha256:51cff0cd60a40f612f5d4ab0046247337270769683ea4b65c3275153fd4e81c6    app=hello-dev,deployment=hello-dev-1,deploymentconfig=hello-dev
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE       SELECTOR
+service/client-dev   ClusterIP   172.30.227.156   <none>        8080/TCP,8443/TCP   1d        app=client-dev,deploymentconfig=client-dev
+service/hello-dev    ClusterIP   172.30.36.145    <none>        8080/TCP,8443/TCP   1d        app=hello-dev,deploymentconfig=hello-dev
+NAME                                            REVISION   DESIRED   CURRENT   TRIGGERED BY
+deploymentconfig.apps.openshift.io/client-dev   1          1         1         config,image(client-dev:latest)
+deploymentconfig.apps.openshift.io/hello-dev    1          1         1         config,image(hello-dev:latest)
+NAME                                        TYPE      FROM      LATEST
+buildconfig.build.openshift.io/client-dev   Source    Git       1
+buildconfig.build.openshift.io/hello-dev    Source    Git       1
+NAME                                    TYPE      FROM          STATUS     STARTED        DURATION
+build.build.openshift.io/hello-dev-1    Source    Git@b2a5ade   Complete   31 hours ago   9s
+build.build.openshift.io/client-dev-1   Source    Git@b2a5ade   Complete   31 hours ago   9s
+NAME                                        DOCKER REPO                                            TAGS      UPDATED
+imagestream.image.openshift.io/client-dev   docker-registry.default.svc:5000/proj-dev/client-dev   latest    31 hours ago
+imagestream.image.openshift.io/hello-dev    docker-registry.default.svc:5000/proj-dev/hello-dev    latest    31 hours ago
+==> oc get pod -o wide -n proj-dev
+NAME                 READY     STATUS    RESTARTS   AGE       IP            NODE                       NOMINATED NODE
+client-dev-1-7n2gs   1/1       Running   0          1d        10.131.0.24   ocp311-node2.example.com   <none>
+hello-dev-1-gbcwm    1/1       Running   0          1d        10.129.0.11   ocp311-node1.example.com   <none>
+==> oc get svc -n proj-dev
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+client-dev   ClusterIP   172.30.227.156   <none>        8080/TCP,8443/TCP   1d
+hello-dev    ClusterIP   172.30.36.145    <none>        8080/TCP,8443/TCP   1d
+==> oc get route -n proj-dev
+
+
+==>
+===> oc describe pod/client-dev-1-7n2gs -n proj-dev
+Name:               client-dev-1-7n2gs
+Namespace:          proj-dev
+Priority:           0
+PriorityClassName:  <none>
+Node:               ocp311-node2.example.com/172.16.99.42
+Start Time:         Mon, 12 Nov 2018 16:35:23 +0900
+Labels:             app=client-dev
+                    deployment=client-dev-1
+                    deploymentconfig=client-dev
+Annotations:        openshift.io/deployment-config.latest-version=1
+                    openshift.io/deployment-config.name=client-dev
+                    openshift.io/deployment.name=client-dev-1
+                    openshift.io/generated-by=OpenShiftNewApp
+                    openshift.io/scc=restricted
+Status:             Running
+IP:                 10.131.0.24
+Controlled By:      ReplicationController/client-dev-1
+Containers:
+  client-dev:
+    Container ID:   docker://247a77d6ef77df03c236c5c00a91107b4e7b009fa524665ce80cf581ebce6d50
+    Image:          docker-registry.default.svc:5000/proj-dev/client-dev@sha256:6e6548ff907584adb0c0fe321cfcf9ab01332db9ef61f78fe44b73031749456b
+    Image ID:       docker-pullable://docker-registry.default.svc:5000/proj-dev/client-dev@sha256:6e6548ff907584adb0c0fe321cfcf9ab01332db9ef61f78fe44b73031749456b
+    Ports:          8080/TCP, 8443/TCP
+    Host Ports:     0/TCP, 0/TCP
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:35:25 +0900
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-hqfzw (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-hqfzw:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-hqfzw
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  node-role.kubernetes.io/compute=true
+Tolerations:     <none>
+Events:          <none>
+===> oc describe pod/hello-dev-1-gbcwm -n proj-dev
+Name:               hello-dev-1-gbcwm
+Namespace:          proj-dev
+Priority:           0
+PriorityClassName:  <none>
+Node:               ocp311-node1.example.com/172.16.99.41
+Start Time:         Mon, 12 Nov 2018 16:34:39 +0900
+Labels:             app=hello-dev
+                    deployment=hello-dev-1
+                    deploymentconfig=hello-dev
+Annotations:        openshift.io/deployment-config.latest-version=1
+                    openshift.io/deployment-config.name=hello-dev
+                    openshift.io/deployment.name=hello-dev-1
+                    openshift.io/generated-by=OpenShiftNewApp
+                    openshift.io/scc=restricted
+Status:             Running
+IP:                 10.129.0.11
+Controlled By:      ReplicationController/hello-dev-1
+Containers:
+  hello-dev:
+    Container ID:   docker://2cd70d2fdd05d641eb7473fe32a31534c00f7a85732df54a5b0cac92bfde2b11
+    Image:          docker-registry.default.svc:5000/proj-dev/hello-dev@sha256:51cff0cd60a40f612f5d4ab0046247337270769683ea4b65c3275153fd4e81c6
+    Image ID:       docker-pullable://docker-registry.default.svc:5000/proj-dev/hello-dev@sha256:51cff0cd60a40f612f5d4ab0046247337270769683ea4b65c3275153fd4e81c6
+    Ports:          8080/TCP, 8443/TCP
+    Host Ports:     0/TCP, 0/TCP
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:34:41 +0900
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-hqfzw (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-hqfzw:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-hqfzw
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  node-role.kubernetes.io/compute=true
+Tolerations:     <none>
+Events:          <none>
+===> oc describe service/client-dev -n proj-dev
+Name:              client-dev
+Namespace:         proj-dev
+Labels:            app=client-dev
+Annotations:       openshift.io/generated-by=OpenShiftNewApp
+Selector:          app=client-dev,deploymentconfig=client-dev
+Type:              ClusterIP
+IP:                172.30.227.156
+Port:              8080-tcp  8080/TCP
+TargetPort:        8080/TCP
+Endpoints:         10.131.0.24:8080
+Port:              8443-tcp  8443/TCP
+TargetPort:        8443/TCP
+Endpoints:         10.131.0.24:8443
+Session Affinity:  None
+Events:            <none>
+===> oc describe service/hello-dev -n proj-dev
+Name:              hello-dev
+Namespace:         proj-dev
+Labels:            app=hello-dev
+Annotations:       openshift.io/generated-by=OpenShiftNewApp
+Selector:          app=hello-dev,deploymentconfig=hello-dev
+Type:              ClusterIP
+IP:                172.30.36.145
+Port:              8080-tcp  8080/TCP
+TargetPort:        8080/TCP
+Endpoints:         10.129.0.11:8080
+Port:              8443-tcp  8443/TCP
+TargetPort:        8443/TCP
+Endpoints:         10.129.0.11:8443
+Session Affinity:  None
+Events:            <none>
+
+=> project: proj-ops
+==> oc get all,pvc -o wide -n proj-ops
+NAME                     READY     STATUS    RESTARTS   AGE       IP            NODE                       NOMINATED NODE
+pod/client-ops-1-56rg5   1/1       Running   0          1d        10.129.0.16   ocp311-node1.example.com   <none>
+pod/hello-ops-1-lzhrr    1/1       Running   0          1d        10.131.0.16   ocp311-node2.example.com   <none>
+NAME                                 DESIRED   CURRENT   READY     AGE       CONTAINERS   IMAGES                                                                                                                         SELECTOR
+replicationcontroller/client-ops-1   1         1         1         1d        client-ops   docker-registry.default.svc:5000/proj-ops/client-ops@sha256:67a08c1bde31359f2fb975600088a2e9b39f0466183b2c52b10f3f0583dd4438   app=client-ops,deployment=client-ops-1,deploymentconfig=client-ops
+replicationcontroller/hello-ops-1    1         1         1         1d        hello-ops    docker-registry.default.svc:5000/proj-ops/hello-ops@sha256:1cfc1bc2f42a8109d11d7cabd9a61e2d6825600c04ee72a481ac391e5c8e6a56    app=hello-ops,deployment=hello-ops-1,deploymentconfig=hello-ops
+NAME                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE       SELECTOR
+service/client-ops   ClusterIP   172.30.178.162   <none>        8080/TCP,8443/TCP   1d        app=client-ops,deploymentconfig=client-ops
+service/hello-ops    ClusterIP   172.30.200.68    <none>        8080/TCP,8443/TCP   1d        app=hello-ops,deploymentconfig=hello-ops
+NAME                                            REVISION   DESIRED   CURRENT   TRIGGERED BY
+deploymentconfig.apps.openshift.io/client-ops   1          1         1         config,image(client-ops:latest)
+deploymentconfig.apps.openshift.io/hello-ops    1          1         1         config,image(hello-ops:latest)
+NAME                                        TYPE      FROM      LATEST
+buildconfig.build.openshift.io/client-ops   Source    Git       1
+buildconfig.build.openshift.io/hello-ops    Source    Git       1
+NAME                                    TYPE      FROM          STATUS     STARTED        DURATION
+build.build.openshift.io/hello-ops-1    Source    Git@b2a5ade   Complete   31 hours ago   8s
+build.build.openshift.io/client-ops-1   Source    Git@b2a5ade   Complete   31 hours ago   9s
+NAME                                        DOCKER REPO                                            TAGS      UPDATED
+imagestream.image.openshift.io/client-ops   docker-registry.default.svc:5000/proj-ops/client-ops   latest    31 hours ago
+imagestream.image.openshift.io/hello-ops    docker-registry.default.svc:5000/proj-ops/hello-ops    latest    31 hours ago
+==> oc get pod -o wide -n proj-ops
+NAME                 READY     STATUS    RESTARTS   AGE       IP            NODE                       NOMINATED NODE
+client-ops-1-56rg5   1/1       Running   0          1d        10.129.0.16   ocp311-node1.example.com   <none>
+hello-ops-1-lzhrr    1/1       Running   0          1d        10.131.0.16   ocp311-node2.example.com   <none>
+==> oc get svc -n proj-ops
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+client-ops   ClusterIP   172.30.178.162   <none>        8080/TCP,8443/TCP   1d
+hello-ops    ClusterIP   172.30.200.68    <none>        8080/TCP,8443/TCP   1d
+==> oc get route -n proj-ops
+
+
+==>
+===> oc describe pod/client-ops-1-56rg5 -n proj-ops
+Name:               client-ops-1-56rg5
+Namespace:          proj-ops
+Priority:           0
+PriorityClassName:  <none>
+Node:               ocp311-node1.example.com/172.16.99.41
+Start Time:         Mon, 12 Nov 2018 16:39:35 +0900
+Labels:             app=client-ops
+                    deployment=client-ops-1
+                    deploymentconfig=client-ops
+Annotations:        openshift.io/deployment-config.latest-version=1
+                    openshift.io/deployment-config.name=client-ops
+                    openshift.io/deployment.name=client-ops-1
+                    openshift.io/generated-by=OpenShiftNewApp
+                    openshift.io/scc=restricted
+Status:             Running
+IP:                 10.129.0.16
+Controlled By:      ReplicationController/client-ops-1
+Containers:
+  client-ops:
+    Container ID:   docker://6a5710632334d73752c0a85cd0660f3905640557719661430c9700d580b50f02
+    Image:          docker-registry.default.svc:5000/proj-ops/client-ops@sha256:67a08c1bde31359f2fb975600088a2e9b39f0466183b2c52b10f3f0583dd4438
+    Image ID:       docker-pullable://docker-registry.default.svc:5000/proj-ops/client-ops@sha256:67a08c1bde31359f2fb975600088a2e9b39f0466183b2c52b10f3f0583dd4438
+    Ports:          8080/TCP, 8443/TCP
+    Host Ports:     0/TCP, 0/TCP
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:39:37 +0900
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-hppwr (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-hppwr:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-hppwr
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  node-role.kubernetes.io/compute=true
+Tolerations:     <none>
+Events:          <none>
+===> oc describe pod/hello-ops-1-lzhrr -n proj-ops
+Name:               hello-ops-1-lzhrr
+Namespace:          proj-ops
+Priority:           0
+PriorityClassName:  <none>
+Node:               ocp311-node2.example.com/172.16.99.42
+Start Time:         Mon, 12 Nov 2018 16:31:00 +0900
+Labels:             app=hello-ops
+                    deployment=hello-ops-1
+                    deploymentconfig=hello-ops
+Annotations:        openshift.io/deployment-config.latest-version=1
+                    openshift.io/deployment-config.name=hello-ops
+                    openshift.io/deployment.name=hello-ops-1
+                    openshift.io/generated-by=OpenShiftNewApp
+                    openshift.io/scc=restricted
+Status:             Running
+IP:                 10.131.0.16
+Controlled By:      ReplicationController/hello-ops-1
+Containers:
+  hello-ops:
+    Container ID:   docker://c6c5acdaa22757376634fd3cc788d339737ce239fcc1286aa97c60b5b3081141
+    Image:          docker-registry.default.svc:5000/proj-ops/hello-ops@sha256:1cfc1bc2f42a8109d11d7cabd9a61e2d6825600c04ee72a481ac391e5c8e6a56
+    Image ID:       docker-pullable://docker-registry.default.svc:5000/proj-ops/hello-ops@sha256:1cfc1bc2f42a8109d11d7cabd9a61e2d6825600c04ee72a481ac391e5c8e6a56
+    Ports:          8080/TCP, 8443/TCP
+    Host Ports:     0/TCP, 0/TCP
+    State:          Running
+      Started:      Mon, 12 Nov 2018 16:31:02 +0900
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-hppwr (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-hppwr:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-hppwr
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  node-role.kubernetes.io/compute=true
+Tolerations:     <none>
+Events:          <none>
+===> oc describe service/client-ops -n proj-ops
+Name:              client-ops
+Namespace:         proj-ops
+Labels:            app=client-ops
+Annotations:       openshift.io/generated-by=OpenShiftNewApp
+Selector:          app=client-ops,deploymentconfig=client-ops
+Type:              ClusterIP
+IP:                172.30.178.162
+Port:              8080-tcp  8080/TCP
+TargetPort:        8080/TCP
+Endpoints:         10.129.0.16:8080
+Port:              8443-tcp  8443/TCP
+TargetPort:        8443/TCP
+Endpoints:         10.129.0.16:8443
+Session Affinity:  None
+Events:            <none>
+===> oc describe service/hello-ops -n proj-ops
+Name:              hello-ops
+Namespace:         proj-ops
+Labels:            app=hello-ops
+Annotations:       openshift.io/generated-by=OpenShiftNewApp
+Selector:          app=hello-ops,deploymentconfig=hello-ops
+Type:              ClusterIP
+IP:                172.30.200.68
+Port:              8080-tcp  8080/TCP
+TargetPort:        8080/TCP
+Endpoints:         10.131.0.16:8080
+Port:              8443-tcp  8443/TCP
+TargetPort:        8443/TCP
+Endpoints:         10.131.0.16:8443
+Session Affinity:  None
+Events:            <none>

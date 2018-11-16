@@ -30,6 +30,7 @@ master)
 	do_command oc get pod -o wide --all-namespaces
 	do_command oc get svc --all-namespaces
 	do_command oc get route --all-namespaces
+	do_command oc get networkpolicy --all-namespaces
 
 	for project in $(oc get project --no-headers | awk '{print $1}'); do
 		if [ x"$?" = x"0" ]; then

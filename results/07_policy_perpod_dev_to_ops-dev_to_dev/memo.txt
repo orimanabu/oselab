@@ -1,0 +1,61 @@
+[ops@ocp311-master1 work]$ oc get networkpolicy
+NAME              POD-SELECTOR    AGE
+deny-by-default   <none>          7h
+hello-ops         app=hello-ops   6m
+[ops@ocp311-master1 work]$ oc get -o yaml networkpolicy hello-ops
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  creationTimestamp: 2018-11-13T14:35:03Z
+  generation: 1
+  name: hello-ops
+  namespace: proj-ops
+  resourceVersion: "192190"
+  selfLink: /apis/extensions/v1beta1/namespaces/proj-ops/networkpolicies/hello-ops
+  uid: 4ede9200-e751-11e8-9571-52540083ecd7
+spec:
+  ingress:
+  - ports:
+    - port: 8080
+      protocol: TCP
+    - port: 8443
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app: hello-ops
+  policyTypes:
+  - Ingress
+[ops@ocp311-master1 work]$ cat ~/hello_ops.yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: hello-ops
+spec:
+  podSelector:
+    matchLabels:
+      app: hello-ops
+  ingress:
+  - ports:
+    - protocol: TCP
+      port: 8080
+    - protocol: TCP
+      port: 8443
+[ops@ocp311-master1 work]$
+
+[ops@ocp311-master1 work]$ oc get pod -o wide
+NAME                 READY     STATUS    RESTARTS   AGE       IP            NODE                       NOMINATED NODE
+client-ops-1-56rg5   1/1       Running   0          1d        10.129.0.16   ocp311-node1.example.com   <none>
+hello-ops-1-lzhrr    1/1       Running   0          1d        10.131.0.16   ocp311-node2.example.com   <none>
+
+[dev@ocp311-master1 ~]$ oc get pod -o wide
+NAME                 READY     STATUS    RESTARTS   AGE       IP            NODE                       NOMINATED NODE
+client-dev-1-7n2gs   1/1       Running   0          23h       10.131.0.24   ocp311-node2.example.com   <none>
+hello-dev-1-gbcwm    1/1       Running   0          23h       10.129.0.11   ocp311-node1.example.com   <none>
+
+[dev@ocp311-master1 ~]$ oc rsh client-dev-1-7n2gs curl http://10.129.0.16:8080
+^Ccommand terminated with exit code 130
+
+[ops@ocp311-master1 work]$ oc rsh client-ops-1-56rg5 curl http://10.131.0.16:8080
+Hello, World... from 10.131.0.16 to 10.129.0.16.
+
+

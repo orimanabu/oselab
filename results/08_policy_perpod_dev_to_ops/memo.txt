@@ -1,0 +1,2 @@
+[dev@ocp311-master1 ~]$ oc rsh client-dev-1-7n2gs curl http://10.131.0.16:8080
+Hello, World... from 10.131.0.16 to 10.131.0.24.

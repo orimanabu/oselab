@@ -8,4 +8,5 @@ function do_command {
 
 do_command iptables -nL
 do_command iptables -nL -t nat
-do_command iptables-save
+do_command iptables -S
+do_command iptables -S -t nat

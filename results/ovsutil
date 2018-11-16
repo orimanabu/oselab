@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#kubectl -n openshift-sdn exec ovs-vxcnt -- ovs-ofctl -O OpenFlow13 dump-flows br0 | less
+
+if [ x"$#" == x"0" ]; then
+	echo "$0 node_regexp cmd"
+	exit 1
+fi
+
+node=$1; shift
+rest="$*"
+
+ns=openshift-sdn
+
+pod=$(kubectl -n ${ns} get pod -o wide | awk '/^ovs.*'${node}'/ {print $1}')
+
+cmd="kubectl -n ${ns} exec ${pod} -- ${rest}"
+
+#echo "cmd: ${cmd}"
+${cmd}

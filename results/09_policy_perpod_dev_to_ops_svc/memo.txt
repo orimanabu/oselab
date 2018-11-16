@@ -1,0 +1,14 @@
+
+[ops@ocp311-master1 work]$ oc get svc
+NAME         TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+client-ops   ClusterIP   172.30.178.162   <none>        8080/TCP,8443/TCP   1d
+hello-ops    ClusterIP   172.30.200.68    <none>        8080/TCP,8443/TCP   1d
+[ops@ocp311-master1 work]$ oc rsh client-ops-1-56rg5 curl http://172.30.200.68:8080
+Hello, World... from 10.131.0.16 to 10.129.0.16.
+[ops@ocp311-master1 work]$ oc rsh client-ops-1-56rg5 curl http://172.30.178.162
+^Ccommand terminated with exit code 130
+
+[dev@ocp311-master1 ~]$ oc rsh client-dev-1-7n2gs curl http://172.30.200.68:8080
+Hello, World... from 10.131.0.16 to 10.131.0.24.
+[dev@ocp311-master1 ~]$
+

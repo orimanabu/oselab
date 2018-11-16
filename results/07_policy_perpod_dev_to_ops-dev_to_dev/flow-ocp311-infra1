@@ -1,0 +1,153 @@
+=> ovs-vsctl show
+cmd: kubectl -n openshift-sdn exec ovs-hncsn -- ovs-vsctl show
+5a1b2872-b69e-408f-9b8a-c3affad229d2
+    Bridge "br0"
+        fail_mode: secure
+        Port "tun0"
+            Interface "tun0"
+                type: internal
+        Port "br0"
+            Interface "br0"
+                type: internal
+        Port "vethbc9a0e1c"
+            Interface "vethbc9a0e1c"
+        Port "vxlan0"
+            Interface "vxlan0"
+                type: vxlan
+                options: {dst_port="4789", key=flow, remote_ip=flow}
+    ovs_version: "2.9.0"
+=> ovs-ofctl -O OpenFlow13 show br0
+cmd: kubectl -n openshift-sdn exec ovs-hncsn -- ovs-ofctl -O OpenFlow13 show br0
+OFPT_FEATURES_REPLY (OF1.3) (xid=0x2): dpid:0000c2374c591840
+n_tables:254, n_buffers:0
+capabilities: FLOW_STATS TABLE_STATS PORT_STATS GROUP_STATS QUEUE_STATS
+OFPST_PORT_DESC reply (OF1.3) (xid=0x3):
+ 1(vxlan0): addr:36:11:b1:d8:be:43
+     config:     0
+     state:      LIVE
+     speed: 0 Mbps now, 0 Mbps max
+ 2(tun0): addr:e2:3a:bb:27:36:d6
+     config:     0
+     state:      LIVE
+     speed: 0 Mbps now, 0 Mbps max
+ 5(vethbc9a0e1c): addr:32:4d:77:31:36:bc
+     config:     0
+     state:      LIVE
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(br0): addr:c2:37:4c:59:18:40
+     config:     PORT_DOWN
+     state:      LINK_DOWN
+     speed: 0 Mbps now, 0 Mbps max
+OFPT_GET_CONFIG_REPLY (OF1.3) (xid=0x5): frags=nx-match miss_send_len=0
+=> ovs-ofctl -O OpenFlow13 dump-ports-desc br0
+cmd: kubectl -n openshift-sdn exec ovs-hncsn -- ovs-ofctl -O OpenFlow13 dump-ports-desc br0
+OFPST_PORT_DESC reply (OF1.3) (xid=0x2):
+ 1(vxlan0): addr:36:11:b1:d8:be:43
+     config:     0
+     state:      LIVE
+     speed: 0 Mbps now, 0 Mbps max
+ 2(tun0): addr:e2:3a:bb:27:36:d6
+     config:     0
+     state:      LIVE
+     speed: 0 Mbps now, 0 Mbps max
+ 5(vethbc9a0e1c): addr:32:4d:77:31:36:bc
+     config:     0
+     state:      LIVE
+     current:    10GB-FD COPPER
+     speed: 10000 Mbps now, 0 Mbps max
+ LOCAL(br0): addr:c2:37:4c:59:18:40
+     config:     PORT_DOWN
+     state:      LINK_DOWN
+     speed: 0 Mbps now, 0 Mbps max
+=> ovs-ofctl -O OpenFlow13 dump-flows br0
+cmd: kubectl -n openshift-sdn exec ovs-hncsn -- ovs-ofctl -O OpenFlow13 dump-flows br0
+OFPST_FLOW reply (OF1.3) (xid=0x2):
+ cookie=0x0, table=0, priority=400,ip,in_port=2,nw_src=10.130.0.1 actions=goto_table:30
+ cookie=0x0, table=0, priority=300,ct_state=-trk,ip actions=ct(table=0)
+ cookie=0x0, table=0, priority=300,ip,in_port=2,nw_src=10.130.0.0/23,nw_dst=10.128.0.0/14 actions=goto_table:25
+ cookie=0x0, table=0, priority=250,ip,in_port=2,nw_dst=224.0.0.0/4 actions=drop
+ cookie=0x0, table=0, priority=200,arp,in_port=1,arp_spa=10.128.0.0/14,arp_tpa=10.130.0.0/23 actions=move:NXM_NX_TUN_ID[0..31]->NXM_NX_REG0[],goto_table:10
+ cookie=0x0, table=0, priority=200,ip,in_port=1,nw_src=10.128.0.0/14 actions=move:NXM_NX_TUN_ID[0..31]->NXM_NX_REG0[],goto_table:10
+ cookie=0x0, table=0, priority=200,ip,in_port=1,nw_dst=10.128.0.0/14 actions=move:NXM_NX_TUN_ID[0..31]->NXM_NX_REG0[],goto_table:10
+ cookie=0x0, table=0, priority=200,arp,in_port=2,arp_spa=10.130.0.1,arp_tpa=10.128.0.0/14 actions=goto_table:30
+ cookie=0x0, table=0, priority=200,ip,in_port=2 actions=goto_table:30
+ cookie=0x0, table=0, priority=150,in_port=1 actions=drop
+ cookie=0x0, table=0, priority=150,in_port=2 actions=drop
+ cookie=0x0, table=0, priority=100,arp actions=goto_table:20
+ cookie=0x0, table=0, priority=100,ip actions=goto_table:20
+ cookie=0x0, table=0, priority=0 actions=drop
+ cookie=0xe3f3959e, table=10, priority=100,tun_src=172.16.99.21 actions=goto_table:30
+ cookie=0x3139d8de, table=10, priority=100,tun_src=172.16.99.41 actions=goto_table:30
+ cookie=0xcc8fad6c, table=10, priority=100,tun_src=172.16.99.42 actions=goto_table:30
+ cookie=0x0, table=10, priority=0 actions=drop
+ cookie=0x0, table=20, priority=100,arp,in_port=5,arp_spa=10.130.0.5,arp_sha=00:00:0a:82:00:05/00:00:ff:ff:ff:ff actions=load:0->NXM_NX_REG0[],goto_table:21
+ cookie=0x0, table=20, priority=100,ip,in_port=5,nw_src=10.130.0.5 actions=load:0->NXM_NX_REG0[],goto_table:21
+ cookie=0x0, table=20, priority=0 actions=drop
+ cookie=0x0, table=21, priority=200,ip,nw_dst=10.128.0.0/14 actions=ct(commit,table=30)
+ cookie=0x0, table=21, priority=0 actions=goto_table:30
+ cookie=0x0, table=25, priority=100,ip,nw_src=10.130.0.5 actions=load:0->NXM_NX_REG0[],goto_table:30
+ cookie=0x0, table=25, priority=0 actions=drop
+ cookie=0x0, table=30, priority=300,arp,arp_tpa=10.130.0.1 actions=output:2
+ cookie=0x0, table=30, priority=300,ip,nw_dst=10.130.0.1 actions=output:2
+ cookie=0x0, table=30, priority=300,ct_state=+rpl,ip,nw_dst=10.130.0.0/23 actions=ct(table=70,nat)
+ cookie=0x0, table=30, priority=200,arp,arp_tpa=10.130.0.0/23 actions=goto_table:40
+ cookie=0x0, table=30, priority=200,ip,nw_dst=10.130.0.0/23 actions=goto_table:70
+ cookie=0x0, table=30, priority=100,arp,arp_tpa=10.128.0.0/14 actions=goto_table:50
+ cookie=0x0, table=30, priority=100,ip,nw_dst=10.128.0.0/14 actions=goto_table:90
+ cookie=0x0, table=30, priority=100,ip,nw_dst=172.30.0.0/16 actions=goto_table:60
+ cookie=0x0, table=30, priority=50,ip,in_port=1,nw_dst=224.0.0.0/4 actions=goto_table:120
+ cookie=0x0, table=30, priority=25,ip,nw_dst=224.0.0.0/4 actions=goto_table:110
+ cookie=0x0, table=30, priority=0,ip actions=goto_table:100
+ cookie=0x0, table=30, priority=0,arp actions=drop
+ cookie=0x0, table=40, priority=100,arp,arp_tpa=10.130.0.5 actions=output:5
+ cookie=0x0, table=40, priority=0 actions=drop
+ cookie=0xe3f3959e, table=50, priority=100,arp,arp_tpa=10.128.0.0/23 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:172.16.99.21->tun_dst,output:1
+ cookie=0x3139d8de, table=50, priority=100,arp,arp_tpa=10.129.0.0/23 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:172.16.99.41->tun_dst,output:1
+ cookie=0xcc8fad6c, table=50, priority=100,arp,arp_tpa=10.131.0.0/23 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:172.16.99.42->tun_dst,output:1
+ cookie=0x0, table=50, priority=0 actions=drop
+ cookie=0x0, table=60, priority=200 actions=output:2
+ cookie=0x0, table=60, priority=0 actions=drop
+ cookie=0x0, table=70, priority=100,ip,nw_dst=10.130.0.5 actions=load:0->NXM_NX_REG1[],load:0x5->NXM_NX_REG2[],goto_table:80
+ cookie=0x0, table=70, priority=0 actions=drop
+ cookie=0x0, table=80, priority=300,ip,nw_src=10.130.0.1 actions=output:NXM_NX_REG2[]
+ cookie=0x0, table=80, priority=200,ct_state=+rpl,ip actions=output:NXM_NX_REG2[]
+ cookie=0x0, table=80, priority=0 actions=drop
+ cookie=0xe3f3959e, table=90, priority=100,ip,nw_dst=10.128.0.0/23 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:172.16.99.21->tun_dst,output:1
+ cookie=0x3139d8de, table=90, priority=100,ip,nw_dst=10.129.0.0/23 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:172.16.99.41->tun_dst,output:1
+ cookie=0xcc8fad6c, table=90, priority=100,ip,nw_dst=10.131.0.0/23 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:172.16.99.42->tun_dst,output:1
+ cookie=0x0, table=90, priority=0 actions=drop
+ cookie=0x0, table=100, priority=200,tcp,nw_dst=172.16.99.31,tp_dst=53 actions=output:2
+ cookie=0x0, table=100, priority=200,udp,nw_dst=172.16.99.31,tp_dst=53 actions=output:2
+ cookie=0x0, table=100, priority=0 actions=goto_table:101
+ cookie=0x0, table=101, priority=0 actions=output:2
+ cookie=0x0, table=110, priority=0 actions=drop
+ cookie=0x0, table=111, priority=100 actions=move:NXM_NX_REG0[]->NXM_NX_TUN_ID[0..31],set_field:172.16.99.21->tun_dst,output:1,set_field:172.16.99.41->tun_dst,output:1,set_field:172.16.99.42->tun_dst,output:1,goto_table:120
+ cookie=0x0, table=120, priority=0 actions=drop
+ cookie=0x0, table=253, actions=note:02.07.00.00.00.00
+=> ovs-dpctl show
+cmd: kubectl -n openshift-sdn exec ovs-hncsn -- ovs-dpctl show
+system@ovs-system:
+	lookups: hit:3446946 missed:31114 lost:80
+	flows: 4
+	masks: hit:9929321 total:5 hit/pkt:2.85
+	port 0: ovs-system (internal)
+	port 1: br0 (internal)
+	port 2: vxlan_sys_4789 (vxlan: packet_type=ptap)
+	port 3: tun0 (internal)
+	port 6: vethbc9a0e1c
+=> ovs-dpctl dump-flows
+cmd: kubectl -n openshift-sdn exec ovs-hncsn -- ovs-dpctl dump-flows
+recirc_id(0),in_port(6),ct_state(-trk),eth_type(0x0800),ipv4(frag=no), packets:256316, bytes:220980914, used:6.088s, flags:SFPR., actions:ct,recirc(0x6)
+recirc_id(0x6),in_port(6),ct_state(+trk),eth_type(0x0800),ipv4(src=10.130.0.5,dst=10.128.0.0/255.252.0.0,frag=no), packets:248710, bytes:220075105, used:6.088s, flags:SFPR., actions:ct(commit),recirc(0x7)
+recirc_id(0),in_port(3),ct_state(-rpl),eth_type(0x0800),ipv4(src=10.130.0.1,dst=10.130.0.5,frag=no), packets:280569, bytes:28804273, used:6.088s, flags:SFPR., actions:6
+recirc_id(0x7),in_port(6),eth_type(0x0800),ipv4(dst=10.130.0.1,frag=no), packets:223971, bytes:84525646, used:6.088s, flags:SFP., actions:3
+=> ovs-dpctl dump-flows -m
+cmd: kubectl -n openshift-sdn exec ovs-hncsn -- ovs-dpctl dump-flows -m
+ufid:b5534d71-bbec-4245-bd18-798533877598, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(vethbc9a0e1c),skb_mark(0/0),ct_state(0/0x20),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=0.0.0.0/0.0.0.0,dst=0.0.0.0/0.0.0.0,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:256326, bytes:220984656, used:0.005s, flags:SFPR., actions:ct,recirc(0x6)
+ufid:4adc54af-5513-49f8-964c-985f75d9b923, recirc_id(0x6),dp_hash(0/0),skb_priority(0/0),in_port(vethbc9a0e1c),skb_mark(0/0),ct_state(0x20/0x20),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.130.0.5,dst=10.128.0.0/255.252.0.0,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:248720, bytes:220078847, used:0.005s, flags:SFPR., actions:ct(commit),recirc(0x7)
+ufid:6761afb0-a19b-41a1-a5fb-52a23c1134c3, recirc_id(0),dp_hash(0/0),skb_priority(0/0),in_port(tun0),skb_mark(0/0),ct_state(0/0x8),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=10.130.0.1,dst=10.130.0.5,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:280582, bytes:28805586, used:0.005s, flags:SFPR., actions:vethbc9a0e1c
+ufid:d5fc8d05-8c29-4a3f-a791-54e40b410cbb, recirc_id(0x7),dp_hash(0/0),skb_priority(0/0),in_port(vethbc9a0e1c),skb_mark(0/0),ct_state(0/0),ct_zone(0/0),ct_mark(0/0),ct_label(0/0),eth(src=00:00:00:00:00:00/00:00:00:00:00:00,dst=00:00:00:00:00:00/00:00:00:00:00:00),eth_type(0x0800),ipv4(src=0.0.0.0/0.0.0.0,dst=10.130.0.1,proto=0/0,tos=0/0,ttl=0/0,frag=no), packets:223981, bytes:84529388, used:0.005s, flags:SFP., actions:tun0
+=> ovs-appctl fdb/show br0
+cmd: kubectl -n openshift-sdn exec ovs-hncsn -- ovs-appctl fdb/show br0
+ port  VLAN  MAC                Age

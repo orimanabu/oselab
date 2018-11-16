@@ -1,0 +1,9 @@
+recirc_id(0),in_port(6),ct_state(-rpl-trk),eth_type(0x0806),arp(sip=10.131.0.24,tip=10.131.0.16,sha=00:00:0a:83:00:18/00:00:ff:ff:ff:ff), packets:1, bytes:42, used:1.393s, actions:4
+recirc_id(0xe4),in_port(6),ct_state(+trk),eth_type(0x0800),ipv4(src=10.131.0.24,dst=10.128.0.0/255.252.0.0,frag=no), packets:5, bytes:410, used:6.398s, flags:FP., actions:ct(commit),recirc(0xe5)
+recirc_id(0xe6),in_port(4),ct_state(+trk),eth_type(0x0800),ipv4(src=10.131.0.16,dst=10.128.0.0/255.252.0.0,frag=no), packets:3, bytes:416, used:6.398s, flags:FP., actions:ct(commit),recirc(0xe7)
+recirc_id(0xe5),in_port(6),ct_state(-rpl),eth_type(0x0800),ipv4(src=10.131.0.16/255.255.255.240,dst=10.131.0.16,proto=6,frag=no),tcp(dst=8080), packets:5, bytes:410, used:6.398s, flags:FP., actions:4
+recirc_id(0),in_port(4),ct_state(-rpl-trk),eth_type(0x0806),arp(sip=10.131.0.16,tip=10.131.0.24,sha=00:00:0a:83:00:10/00:00:ff:ff:ff:ff), packets:0, bytes:0, used:never, actions:6
+recirc_id(0),in_port(6),ct_state(-trk),eth_type(0x0800),ipv4(frag=no), packets:5, bytes:410, used:6.398s, flags:FP., actions:ct,recirc(0xe4)
+recirc_id(0),in_port(4),ct_state(-trk),eth_type(0x0800),ipv4(frag=no), packets:3, bytes:416, used:6.398s, flags:FP., actions:ct,recirc(0xe6)
+recirc_id(0xe8),in_port(4),ct_state(+rpl),eth_type(0x0800),ipv4(src=10.131.0.16/255.255.255.240,dst=10.131.0.24,frag=no), packets:3, bytes:416, used:6.398s, flags:FP., actions:6
+recirc_id(0xe7),in_port(4),ct_state(+rpl),eth_type(0x0800),ipv4(dst=10.131.0.16/255.255.255.240,frag=no), packets:3, bytes:416, used:6.398s, flags:FP., actions:ct(nat),recirc(0xe8)
